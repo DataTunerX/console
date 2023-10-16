@@ -1,0 +1,6 @@
+.eslintrc.js
+.stylelintrc.js
+.lintstagedrc.js
+dist
+node_modules
+public

@@ -1,0 +1,12 @@
+{
+  "user": {
+    "personal-center": "Personal Center",
+    "control": "Access Control",
+    "setting": "Settings",
+    "logout": "Logout"
+  },
+  "feedback": "Feedback",
+  "help": "Help",
+  "messages": "Messages",
+  "count": "Message count"
+}

@@ -1,0 +1,17 @@
+{
+  "message": "You need to get an authorization code to activate the platform.",
+  "esnCode": "ESN code",
+  "esnCodeHelper": "This ESN code is used to get an offline authorization code.",
+  "licenseCode": "Offline Authorization Code",
+  "tooltip": "The authorization code is obtained based on the ESN code and license key. The authorization code can be used only on this device.",
+  "yamlHelper": "Make sure you have included all required modules and offline authorization codes.",
+  "applyHelper": "You can {apply} and paste it into the box above.",
+  "applyLicense": "apply for an authorization code",
+  "confirm": "Activate Now",
+  "title": "License",
+  "back": "Back",
+  "ActivateTitle": "Activate license",
+  "helper": "Are you sure you want to activate the license? Please check carefully to ensure that you have included authorization codes of all required modules. Those codes will take effect immediately once activation.",
+  "success": "Activated: {moduleList}",
+  "failed": "Failed to activate license"
+}
