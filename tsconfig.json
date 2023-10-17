@@ -16,7 +16,8 @@
       "webpack-env",
       "jest",
       "@dao-style/core/volar",
-      "@dao-style/extend/volar"
+      "@dao-style/extend/volar",
+      "@dao-style/v-chart/volar"
     ],
     "paths": {
       "@/*": [

@@ -1,0 +1,185 @@
+/* stylelint-disable scss/at-rule-no-unknown */
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'form-block';
+@import 'layout';
+
+.redirect-link {
+  overflow: hidden;
+  color: var(--dao-primary-blue-040);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hover-link {
+  overflow: hidden;
+  color: var(--dao-text-primary);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--dao-primary-blue-040);
+  }
+}
+
+// icon color
+.icon-success {
+  color: var(--dao-green-030);
+}
+
+.icon-error {
+  color: var(--dao-running-status-error);
+}
+
+.table-header-item__menu {
+  width: 250px !important;
+  margin-left: 49px !important;
+}
+
+.font-gray {
+  color: var(--dao-gray-010);
+}
+
+.dao-table-td {
+  .dao-action-icon[data-action-td] {
+    .dao-action-icon__iconfont {
+      font-size: 13px;
+    }
+  }
+}
+
+.content-grey {
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  background-color: var(--dao-gray-blue-110);
+  border: 1px solid var(--dao-gray-blue-050);
+  border-radius: 10px;
+
+  .dao-form-item__content {
+    padding-bottom: 0 !important;
+  }
+}
+
+.form-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 25px;
+  color: var(--dao-gray-010);
+}
+
+// dao-table link 样式
+.dao-table {
+  .dao-table-td__link {
+    font-weight: 700;
+    color: var(--dao-text-primary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--dao-primary-blue-040);
+    }
+  }
+}
+
+.dash-wrap {
+  padding: 20px;
+  margin-top: 10px;
+  overflow: auto;
+  border: 1px dashed var(--dao-gray-blue-050);
+  border-radius: 10px;
+}
+
+.toolbar-filter-label {
+  margin-right: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dao-text-secondary);
+}
+
+// label-tag 父元素样式
+.label-tag-container {
+  position: relative;
+  min-height: 96px;
+  max-height: 200px;
+  padding: 9px;
+  overflow-y: auto;
+  background: var(--dao-gray-blue-110);
+  border: 1px solid var(--dao-gray-blue-050);
+  border-radius: 3px;
+
+  .label-tag-item + .label-tag-item {
+    margin-top: 8px;
+  }
+}
+
+//multi row edit slot 宽度
+.multi-row-editor {
+  .editor-select {
+    width: 100%;
+  }
+
+  .dao-input-wrapper {
+    width: 100%;
+
+    .dao-input-inner {
+      width: 100%;
+    }
+  }
+}
+
+@keyframes dot-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dao-toolbar {
+  .dao-select.dao-select--size-md {
+    width: 160px;
+  }
+}
+
+.line-link-text {
+  color: var(--dao-acidblue-040);
+  cursor: pointer;
+}
+
+.required-tag {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    color: var(--dao-red-040);
+    content: '*';
+    transform: translate(7px, 3px);
+  }
+}
+
+// 文字按钮
+.text-btn {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dao-primary-blue-040);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--dao-primary-blue-060);
+  }
+
+  &-disabled {
+    color: var(--dao-gray-120);
+    cursor: not-allowed;
+
+    &:hover {
+      color: var(--dao-gray-120);
+    }
+  }
+}

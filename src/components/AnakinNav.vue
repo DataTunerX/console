@@ -1,94 +1,78 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { getActiveRouteFold } from '@/lib/util';
+import { NavRoute } from '@/types/common';
 
-export default defineComponent({
-  name: 'AnakinNav',
+const routes = computed<NavRoute[]>(() => {
+  const items = [
+    {
+      to: { name: 'Datasets' },
+      display: '数据集',
+      icon: 'icon-cluster',
+    },
+    {
+      to: { name: 'Home' },
+      display: 'Home',
+      icon: 'icon-container',
+    },
+  ] as NavRoute[];
+
+  return items;
 });
+
+const activeOpened = computed(() => getActiveRouteFold(routes.value));
+
 </script>
 
 <template>
   <dao-nav
     ref="navRef"
+    class="second-nav"
     type="2nd"
-    :active-opened="['3']"
+    :active-opened="activeOpened"
   >
     <template #header>
       <dao-nav-head
-        icon="icon-apps"
-        title="Application"
+        icon="icon-engine"
+        title="DataTunerX"
         use-font
       />
     </template>
-    <dao-nav-sub
-      index="2"
-      icon="icon-pod"
-      title="Plugins"
-      :disabled="true"
-      use-font
+    <router-link
+      v-for="(route, index) in routes"
+      :key="index"
+      v-slot="{ isActive, navigate }"
+      :to="route.to"
+      custom
     >
-      <dao-nav-item
-        index="2-1"
-        icon="icon-dce"
-        title="DNS"
+      <dao-nav-sub
+        :index="index"
+        :icon="route.icon"
+        :title="route.display"
+        :fold="Boolean(route.children?.length)"
         use-font
-      />
-      <dao-nav-item
-        index="2-2"
-        icon="icon-cluster"
-        title="这个是超过正常长度的nav-item"
-        use-font
-      />
-      <dao-nav-item
-        index="2-3"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-4"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-5"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-6"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-7"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-    </dao-nav-sub>
-    <dao-nav-sub
-      index="3"
-      icon="icon-registry"
-      title="这个是超过正常长度的nav-item"
-      use-font
-    >
-      <dao-nav-item
-        index="3-1"
-        icon="icon-container"
-        title="这个是超过正常长度的nav-item"
-        disabled
-        use-font
-      />
-      <dao-nav-item
-        index="3-2"
-        icon="icon-user"
-        title="Helm"
-        use-font
-      />
-    </dao-nav-sub>
+        :is-active="isActive"
+        @click="navigate"
+      >
+        <template v-if="route.children?.length">
+          <router-link
+            v-for="(ch, chIdx) in route.children"
+            :key="ch.display"
+            v-slot="{ isActive: chIsActive, navigate: chNavigate }"
+            :to="ch.to"
+            custom
+          >
+            <dao-nav-item
+              :index="`${index}-${chIdx}`"
+              :title="ch.display"
+              :is-active="chIsActive"
+              use-font
+              @click="chNavigate"
+            />
+          </router-link>
+        </template>
+      </dao-nav-sub>
+    </router-link>
   </dao-nav>
 </template>
 
@@ -192,5 +176,55 @@ $ghippo-header-aside-button-padding: 2px;
   font-weight: bold;
   line-height: 46px;
   color: rgba(var(--dao-navigation-050-rgb), 0.6);
+}
+
+.cluster-detail {
+  display: flex;
+  width: 100%;
+
+  &__nav {
+    z-index: 99;
+    flex: none;
+
+    .dao-icon.icon-new-tab {
+      color: var(--dao-gray-blue-040);
+    }
+
+    &-title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 30px;
+      margin-right: 12px;
+      margin-left: 12px;
+      line-height: 30px;
+    }
+
+    &-title {
+      overflow: hidden;
+      font-size: 15px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &-exchange {
+      margin-left: 4px;
+      font-size: 16px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    &__menu {
+      width: 250px !important;
+      margin-left: 41px !important;
+    }
+  }
+
+  &__content {
+    flex: 1 1 0;
+    height: 100%;
+    overflow: auto;
+  }
 }
 </style>

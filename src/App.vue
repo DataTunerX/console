@@ -1,11 +1,9 @@
 <template>
   <anakin-header class="ghippo-header" />
 
-  <div class="container">
+  <div id="container">
     <anakin-nav />
-    <div class="content">
-      <router-view />
-    </div>
+    <router-view class="console-content" />
   </div>
 </template>
 
@@ -36,17 +34,16 @@ body {
 }
 
 /* stylelint-disable-next-line selector-max-id */
-.container {
+#container {
   display: flex;
   flex: 1 1 0;
   width: 100%;
   overflow: auto;
 }
 
-.content{
+.console-content{
   flex: 1 1 0px;
   height: 100%;
-  padding: 0 30px 20px;
   overflow: auto;
 }
 </style>

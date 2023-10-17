@@ -8,7 +8,7 @@ import dayjsInstall from './dayjs';
 
 export default function install<T>(app: App<T>) {
   app.use(routerInstall);
-  app.use(daoStyleInstall);
+  app.use(daoStyleInstall, i18n);
   app.use(i18nInstall);
   app.use(dayjsInstall);
   app.use(piniaInstall);
