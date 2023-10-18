@@ -31,7 +31,6 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   rules: {
-    "jsonc/indent": ["error", 2],
     '@typescript-eslint/padding-line-between-statements': [
       'error',
       {
@@ -96,11 +95,7 @@ module.exports = {
     'object-property-newline': ['error', { allowAllPropertiesOnSameLine: false }],
     'vue/object-property-newline': ['error', { allowAllPropertiesOnSameLine: false }],
     'vue/space-infix-ops': ['error', { int32Hint: true }],
-    // 'vue/space-infix-ops': 0,
-    // "template-curly-spacing": ["error", "never"],
-    'vue/object-curly-spacing': ['error', 'always'], // 对象内的间距要求
-    'vue/comma-spacing': ['error'], // 对象内的逗号位置
-    'vue/key-spacing': ['error'], // 冒号位置
+    'vue/multi-word-component-names': 0,
 
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -121,6 +116,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
     curly: 'error', // 强制if括号包裹，无效
+    'max-len': ['error', {code: 150}],
     ...vuejsAccessibilityOff,
   },
   overrides: [

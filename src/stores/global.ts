@@ -1,10 +1,10 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { type App } from 'vue';
 import { loadLanguageAsync, errorHandlers, type ErrorHandler } from '@/plugins';
-import type { GProduct, TopNavResponse, GetGProductLicensesOverQuotaResponse } from '@/models';
 import { TOKEN, USERNAME, FAVICON } from '@/utils/constant';
 import pathJoin from '@/utils/pathJoin';
 import getUrlBase from '@/utils/getUrlBase';
+import type { GProduct, TopNavResponse, GetGProductLicensesOverQuotaResponse } from '@/types/nav';
 
 // eslint-disable-next-line max-len
 type StoreValues = string | GProduct[] | number | TopNavResponse | GetGProductLicensesOverQuotaResponse;

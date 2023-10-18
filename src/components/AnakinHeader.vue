@@ -30,9 +30,35 @@ const userOperation = computed(() => [
 <template>
   <header class="ghippo-header">
     <!-- <div class="ghippo-header-aside" /> -->
-    <span>
-      Futurewei
+    <span class="w-[210px] text-center">
+      DataTunerX
     </span>
+
+    <span>
+      命名空间
+    </span>
+    <dao-select class="ml-[20px]">
+      <dao-option
+        label="boy"
+        :value="true"
+      />
+      <dao-option
+        label="girl"
+        :value="false"
+      />
+      <dao-option
+        label="who?"
+        value="ha"
+      >
+        The third gender
+      </dao-option>
+      <dao-option
+        v-for="i in 1000"
+        :key="i"
+        :value="i"
+      />
+    </dao-select>
+
     <div class="ghippo-toolbox">
       <div class="ghippo-toolbox-item">
         <dao-dropdown

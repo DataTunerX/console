@@ -1,5 +1,5 @@
 <template>
-  <div class="dataset-list">
+  <div class="dataset-list console-main-container">
     <dao-header
       type="2nd"
       :title="$t('views.dataset.title')"
@@ -76,7 +76,6 @@ const onCreate = () => {
 <style lang="scss" scoped>
 .dataset-list {
   flex: auto;
-  padding: 0 12% 30px;
   overflow: auto;
 
   &__page {

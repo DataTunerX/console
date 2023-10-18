@@ -29,10 +29,6 @@ body {
   background: var(--dao-bg);
 }
 
-.ghippo-header {
-  flex: none;
-}
-
 /* stylelint-disable-next-line selector-max-id */
 #container {
   display: flex;

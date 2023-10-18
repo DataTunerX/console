@@ -19,6 +19,7 @@ import {
   DaoKeyValueLayout,
   DaoKeyValueLayoutItem,
   DaoKeyValueEditor,
+  DaoModalLayout,
   registerAllValidations,
   type VueI18nLike,
 } from '@dao-style/extend';
@@ -34,6 +35,7 @@ const components = {
   DaoKeyValueLayoutItem,
   DaoFormItemValidate,
   DaoKeyValueEditor,
+  DaoModalLayout,
 };
 
 setNotyDefault({
