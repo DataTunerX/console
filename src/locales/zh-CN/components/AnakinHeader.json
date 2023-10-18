@@ -1,0 +1,12 @@
+{
+  "user": {
+    "personal-center": "个人中心",
+    "control": "用户与访问控制",
+    "setting": "平台设置",
+    "logout": "退出登录"
+  },
+  "feedback": "建议反馈",
+  "help": "帮助文档",
+  "messages": "消息盒子",
+  "count": "消息数量"
+}

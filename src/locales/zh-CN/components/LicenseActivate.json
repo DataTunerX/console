@@ -1,0 +1,19 @@
+{
+  "message": "您需要完成正版授权后，才能够激活使用平台。",
+  "esnCode": "ESN编码",
+  "esnCodeHelper": "该编码用于换取离线授权码。",
+  "licenseCode": "离线授权码",
+  "tooltip": "授权码是根据ESN编码和许可证密钥申请获得，该授权码只允许该设备下使用",
+  "yamlHelper": "请确保包含您需要的多个子产品和对应的离线授权码。",
+  "applyHelper": "您可以{apply},并将授权码粘贴到上面的输入框中。",
+  "applyLicense": "申请授权码",
+  "confirm": "立即激活",
+  "title": "正版授权",
+  "back": "返回",
+  "ActivateTitle": "激活许可证",
+  "helper": "确定要激活许可证吗？请仔细检查，确保包含全部子产品的最新授权码。激活后立即生效！",
+  "success": "{moduleList}被激活",
+  "failed": "许可证激活失败",
+  "needUpdate": "许可证已过期，请尽快进行许可证续期，并再次激活使用！",
+  "uninstalledTips": "{moduleList}模块未安装请安装后重新激活"
+}

@@ -1,0 +1,211 @@
+variables:
+  CI_BUILDER_VERSION: v0.1.74
+  I18N_CHECK_VERSION: latest
+default:
+  image: docker.m.daocloud.io/node:16.13.2
+  tags:
+    - k8s
+  retry:
+    max: 2
+  before_script:
+    - set -ex
+    - cd $CI_PROJECT_DIR
+    - env
+    - echo "before_script"
+    - node -v
+    - npm -v
+    - npm ci
+
+stages:
+  - test
+  - build
+  - cve-scan
+  - deploy
+  - e2e
+  - version
+  - i18n-check
+  - release
+  - post-merge-build
+
+lint_test:
+  stage: test
+  script:
+    - make lint
+  rules:
+    - if: '$RELEASE'
+      when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^release/'
+
+unit_test:
+  stage: test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  script:
+    - make unit-test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+  rules:
+    - if: '$RELEASE'
+      when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^release/'
+
+build_test:
+  stage: build
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  tags:
+    - docker
+  before_script:
+    - docker -v #override the global before_script
+  script:
+    - export REGISTRY_SERVER_ADDRESS=$DEV_REGISTRY_SERVER_ADDRESS
+    - make release
+  rules:
+    - if: '$RELEASE'
+      when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^release/'
+
+build_prod:
+  stage: build
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  tags:
+    - docker
+  before_script:
+    - docker -v #override the global before_script
+  script:
+    - export REGISTRY_SERVER_ADDRESS=$PROD_REGISTRY_SERVER_ADDRESS
+    - make release
+  rules:
+    - if: '$CI_COMMIT_TAG'
+
+cve_scan:
+  stage: cve-scan
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  tags:
+    - docker
+  script:
+    - export REGISTRY_SERVER_ADDRESS=$DEV_REGISTRY_SERVER_ADDRESS
+    - make cve-scan
+  rules:
+    - if: '$RELEASE'
+      when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^release/'
+  before_script:
+    - docker -v #override the global before_script
+    - docker run -d --network none --name trivy-container release-ci.daocloud.io/ghcr/aquasecurity/trivy sleep 1000
+    - docker cp trivy-container:/usr/local/bin/trivy /usr/local/bin/trivy #Install trivy
+    - docker rm -f trivy-container
+
+deploy_to_dev:
+  stage: deploy
+  image: 
+    name: release.daocloud.io/frontend-ci/kubectl:v1.13.9
+    entrypoint: [""]
+  before_script: []
+  script:
+    - export kubeconfig=$DEV_KUBECONF
+    - export REGISTRY_SERVER_ADDRESS=$DEV_REGISTRY_SERVER_ADDRESS
+    - make deploy
+  rules:
+    - if: '$RELEASE'
+      when: never
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+deploy_to_test:
+  stage: deploy
+  image: 
+    name: release.daocloud.io/frontend-ci/kubectl:v1.13.9
+    entrypoint: [""]
+  allow_failure: true
+  before_script: []
+  script:
+    - export dev_kubeconfig=$DEV_KUBECONF
+    - export test_kubeconfig=$TEST_KUBECONF
+    - export REGISTRY_SERVER_ADDRESS=$DEV_REGISTRY_SERVER_ADDRESS
+    - make deploy-test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+change_backend_version:
+  stage: version
+  before_script:
+    - set -ex
+    - cd $CI_PROJECT_DIR
+    - env
+    - echo "before_script"
+    - node -v
+    - npm -v
+    - npm i esno@0.16.3 fs-extra@10.1.0 semver@7.3.8
+  script:
+    - make change-version
+  rules:
+    - if: '$CI_COMMIT_TAG'
+
+cherry_pick:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  stage: post-merge-build
+  before_script:
+    - apt-get install jq -y
+  script:
+    - bash ./scripts/cherry-pick.sh
+
+minor_release:
+  stage: release
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  before_script:
+    - set -ex
+    - env
+    - npm i esno@0.16.3 fs-extra@10.1.0
+    - npm i -g conventional-changelog-cli @jsdevtools/version-bump-prompt
+  script:
+    - make minor-release
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $RELEASE == "minor"'
+
+patch_release:
+  stage: release
+  image:
+    name: release-ci.daocloud.io/common-ci/common-ci-builder:$CI_BUILDER_VERSION
+  before_script:
+    - set -ex
+    - env
+    - npm i esno@0.16.3 fs-extra@10.1.0
+    - npm i -g conventional-changelog-cli @jsdevtools/version-bump-prompt
+  script:
+    - make patch-release
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^release/ && $RELEASE == "patch"'
+
+i18n-check:
+  stage: i18n-check
+  image: release-ci.daocloud.io/common-ci/i18n-check:$I18N_CHECK_VERSION
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+      - scheduler_failure
+  before_script:
+    - set -ex
+  script:
+    - i18nCheck
+  rules:
+    - if: '$RELEASE'

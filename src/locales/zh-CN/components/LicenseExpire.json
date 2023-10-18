@@ -1,0 +1,7 @@
+{
+  "allExpired": "许可证过期提醒：{licenses}{count}个模块已过期，请联系管理员进行许可证续期。",
+  "partExpired": "许可证过期提醒：{expiredLicenses}{expiredCount}个模块已过期，{expireSoon}{expireSoonCount}个模块即将过期，请联系管理员进行许可证续期。",
+  "allSoonExpire": "许可证过期提醒：{licenses}{count}个模块即将过期，请联系管理员进行许可证续期。",
+  "link": "查看详情",
+  "expired": "许可证过期情况"
+}

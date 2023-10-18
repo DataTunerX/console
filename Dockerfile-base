@@ -1,0 +1,12 @@
+ARG NODE_IMAGE_VERSION=16.13.2
+FROM docker.m.daocloud.io/node:${NODE_IMAGE_VERSION}
+
+WORKDIR /app
+COPY . /app
+
+# package-lock.json is needed
+RUN npm ci
+
+ENV VUE_APP_PUBLIC_BASE_PATH=.
+
+RUN npm run build
