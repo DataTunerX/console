@@ -1,5 +1,5 @@
 import {
-  createRouter, createWebHistory, type RouteRecordRaw, type RouterHistory, type Router,
+  createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHashHistory,
 } from 'vue-router';
 import type { App } from 'vue';
 import DatasetList from '@/views/dataset/DatasetList.vue';
@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
             component: DatasetCreate,
           },
           {
-            path: ':id',
+            path: ':name',
             name: 'DatasetDetail',
             component: DatasetDetail,
           },
@@ -63,7 +63,7 @@ let router: Router | null = null;
 let history: RouterHistory | null = null;
 
 export default (app: App) => {
-  history = createWebHistory();
+  history = createWebHashHistory();
   router = createRouter({
     history,
     routes,

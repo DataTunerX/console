@@ -4,6 +4,7 @@ import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
 import Avatar from '@/assets/avatar.webp';
 import { computed } from 'vue';
 import { noop } from '@vueuse/core';
+import { useNamespaceStore } from '@/stores/namespace';
 
 const userOperation = computed(() => [
   {
@@ -25,6 +26,17 @@ const userOperation = computed(() => [
   },
 ]);
 
+const namespaceStore = useNamespaceStore();
+
+const namespace = computed({
+  get() {
+    return namespaceStore.namespace;
+  },
+  set(val) {
+    namespaceStore.setNamespace(val);
+  },
+});
+
 </script>
 
 <template>
@@ -37,25 +49,15 @@ const userOperation = computed(() => [
     <span>
       命名空间
     </span>
-    <dao-select class="ml-[20px]">
+    <dao-select
+      v-model="namespace"
+      class="ml-[20px]"
+    >
       <dao-option
-        label="boy"
-        :value="true"
-      />
-      <dao-option
-        label="girl"
-        :value="false"
-      />
-      <dao-option
-        label="who?"
-        value="ha"
-      >
-        The third gender
-      </dao-option>
-      <dao-option
-        v-for="i in 1000"
-        :key="i"
-        :value="i"
+        v-for="ns in namespaceStore.namespaces"
+        :key="ns.metadata?.name"
+        :label="ns.metadata?.name"
+        :value="ns.metadata?.name"
       />
     </dao-select>
 

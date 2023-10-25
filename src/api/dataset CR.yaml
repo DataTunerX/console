@@ -1,0 +1,46 @@
+apiVersion: extension.datatunerx.io/v1beta1
+kind: Dataset
+metadata:
+  name: example-dataset
+spec:
+  datasetMetadata:
+    languages: English
+    tags:
+      - NLP
+    license: Apache 2.0
+    size: 1000
+    tasks:
+      name: Translation
+      subTasks:
+        - name: English to French
+        - name: English to Spanish
+    datasetInfo:
+      subsets:
+        - name: Default
+          splits:
+            train:
+              file: s3://example-dataset/train
+            test:
+              file: s3://example-dataset/test
+            validate:
+              file: s3://example-dataset/validate
+        - name: Additional Subset
+      features:
+        - name: instruction
+          dataType: string
+          mapTo: "Content"
+        - name: response
+          dataType: string
+          mapTo: "Result"
+    loadPlugin: true
+    plugin:
+      name: "My Plugin 1"
+      parameters: |
+        {
+          "Param1": "value1",
+          "Param2": 42
+        }
+  datasetCard:
+    datasetCardRef: configmap-dataset-readme
+  datasetFiles:
+    source: s3://example-dataset/source

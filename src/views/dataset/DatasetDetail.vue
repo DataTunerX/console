@@ -1,3 +1,90 @@
+<script lang="ts" setup>
+import { useRoute, useRouter } from 'vue-router';
+import { computed, ref } from 'vue';
+import { useNamespaceStore } from '@/stores/namespace';
+import { Dataset, getDataset } from '@/api/dataset';
+
+const router = useRouter();
+const route = useRoute();
+
+const namespaceStore = useNamespaceStore();
+
+const dataset = ref<Dataset>();
+
+const fetchDataset = () => {
+  getDataset(namespaceStore.namespace, route.params.name as string).then((res) => {
+    dataset.value = res.data;
+  });
+};
+
+fetchDataset();
+
+const name = computed(() => dataset.value?.metadata.name);
+
+const infos = computed(() => {
+  const items = [
+    {
+      label: '语言',
+      value: dataset.value?.spec.datasetMetadata.languages.join(', '),
+    },
+    {
+      label: '许可证',
+      value: dataset.value?.spec.datasetMetadata.license,
+    },
+    {
+      label: '词条数目',
+      value: dataset.value?.spec.datasetMetadata.size,
+    },
+    {
+      label: '任务类型',
+      value: dataset.value?.spec.datasetMetadata.task.name,
+    },
+    {
+      label: '标签',
+      value: dataset.value?.spec.datasetMetadata.tags.join(','),
+      slotId: 'tag',
+    },
+    {
+      label: '子任务类型',
+      value: dataset.value?.spec.datasetMetadata.task.subTasks.map((sub) => sub.name).join(', '),
+    },
+    {
+      label: '数据集文件源',
+      value: dataset.value?.spec.datasetFiles.source,
+    },
+  ];
+
+  return items;
+});
+
+const columns = computed(() => [
+  {
+    id: 'name',
+    header: '子数据集名称',
+  },
+  {
+    id: 'train',
+    header: '训练数据集地址',
+  },
+  {
+    id: 'test',
+    header: '测试数据集地址',
+  },
+  {
+    id: 'validate',
+    header: '验证数据集地址',
+  },
+]);
+
+const subsets = computed(() => dataset.value?.spec.datasetMetadata.datasetInfo.subsets?.map((subset) => ({
+  name: subset.name,
+  train: subset.splits?.train.file,
+  test: subset.splits?.test.file,
+  validate: subset.splits?.validate.file,
+})));
+
+</script>
+
 <template>
   <div class="dataset-detail console-main-container">
     <dao-header
@@ -13,49 +100,28 @@
             :to="{ name: 'DatasetList' }"
           />
           <dao-breadcrumb-item
-            :label="'数据集1'"
+            :label="name"
           />
         </dao-breadcrumb>
       </template>
     </dao-header>
 
-    <div class="flex flex-nowrap justify-between">
-      <dao-card
-        class="flex-1 w-0"
-        type="simple"
-        title="基本信息"
-      >
-        <dao-card-item>
-          <dao-key-value-layout
-            direction="vertical"
-            :column="3"
-            :data="infos"
-          />
-        </dao-card-item>
-      </dao-card>
-
-      <dao-card
-        type="simple"
-        title="插件信息"
-        class="flex-1 ml-[20px]"
-      >
-        <dao-card-item>
-          <dao-key-value-layout
-            direction="vertical"
-            :column="3"
-            :data="infos"
-          />
-        </dao-card-item>
-      </dao-card>
-    </div>
-
     <dao-card
       type="simple"
-      title="数据集文件源"
-      class="mt-[16px]"
+      title="基本信息"
     >
       <dao-card-item>
-        数据集文件源：http://xxxxx.file
+        <dao-key-value-layout
+          direction="vertical"
+          :column="4"
+          :data="infos"
+        >
+          <template #kv-tag="{ row }">
+            <dao-key-value-layout-item :label="row.label">
+              <dao-hover-card :data="row.value?.split(',')" />
+            </dao-key-value-layout-item>
+          </template>
+        </dao-key-value-layout>
       </dao-card-item>
     </dao-card>
 
@@ -64,88 +130,15 @@
       title="数据集信息配置"
       class="mt-[16px]"
     >
-      <dao-card-item class="my-[-10px]">
+      <dao-card-item>
         <dao-table
           hide-toolbar
-          compact
-          :columns="columns"
-          :data="data"
-          :page-layout="[]"
           no-shadow
+          :columns="columns"
+          :data="subsets"
+          :page-layout="[]"
         />
       </dao-card-item>
     </dao-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
-
-const router = useRouter();
-const route = useRoute();
-const { t } = useI18n();
-
-const infos = computed(() => {
-  const items = [
-    {
-      label: 'Language',
-      value: 'Chinese',
-    },
-    {
-      label: 'License',
-      value: 'XX BY',
-    },
-    {
-      label: 'Task',
-      value: 'sss',
-    },
-    {
-      label: '文本处理',
-      value: 'Chinese',
-    },
-    {
-      label: 'Size',
-      value: '10 K',
-    },
-  ];
-
-  return items;
-});
-
-const columns = computed(() => [
-  {
-    id: 'name',
-    header: '子数据集名称',
-  },
-]);
-
-const data = ref([
-  {
-    name: 'DateTest123',
-  },
-  {
-    name: 'DateTest123',
-  },
-  {
-    name: 'DateTest123',
-  },
-]);
-</script>
-
-<style lang="scss" scoped>
-.dataset-detail {
-  &__tabs {
-    margin-top: 20px;
-  }
-
-  .action-icon {
-    margin-right: 10px;
-  }
-
-  .action-button {
-    margin-left: 10px;
-  }
-}
-</style>

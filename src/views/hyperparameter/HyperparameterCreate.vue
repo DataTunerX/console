@@ -1,6 +1,7 @@
 <template>
   <dao-modal-layout
     title="创建参数组"
+    @cancel="$router.back"
   >
     <dao-form>
       <dao-form-group
@@ -66,21 +67,44 @@
             label="scheduler"
             name="scheduler"
             required
-          />
+          >
+            <dao-option
+              v-for="n in SchedulerType"
+              :key="n"
+              :label="n"
+              :value="n"
+            />
+          </dao-form-item-validate>
 
           <dao-form-item-validate
             :tag="DaoSelect"
             label="optimizer"
             name="optimizer"
             required
-          />
+          >
+            <dao-option
+              v-for="n in OptimizerType"
+              :key="n"
+              :label="n"
+              :value="n"
+            />
+          </dao-form-item-validate>
 
           <dao-form-item-validate
             :tag="DaoSelect"
             label="int4/8"
             name="int4/8"
             required
-          />
+          >
+            <dao-option
+              label="int4"
+              value="int4"
+            />
+            <dao-option
+              label="int8"
+              value="int8"
+            />
+          </dao-form-item-validate>
 
           <dao-form-item-validate
             label="loRA_R"
@@ -141,7 +165,14 @@
             label="trainerType"
             name="trainerType"
             required
-          />
+          >
+            <dao-option
+              v-for="n in TrainerType"
+              :key="n"
+              :label="n"
+              :value="n"
+            />
+          </dao-form-item-validate>
 
           <dao-form-item
             label="PEFT"
@@ -168,6 +199,7 @@
 import { yup } from '@/plugins/vee-validate';
 import { DaoSelect } from '@dao-style/core';
 import { useForm } from 'vee-validate';
+import { SchedulerType, OptimizerType, TrainerType } from '@/types/createHyperparameter';
 
 const schema = yup.object({
   name: yup.string().required().RFC1123Label(253).label('数据集名称'),
@@ -175,8 +207,8 @@ const schema = yup.object({
 });
 
 const initialValue = {
-  scheduler: 'cosine',
-  optimizer: 'Adam',
+  scheduler: SchedulerType.COSINE,
+  optimizer: OptimizerType.ADAM,
   int4: false,
   int8: false,
   loRA_R: 4,
@@ -189,7 +221,7 @@ const initialValue = {
   warmupRatio: 0.1,
   weightDecay: 0.0001,
   gradAccSteps: 1,
-  trainerType: 'Standard',
+  trainerType: TrainerType.STANDARD,
   PEFT: false,
   FP16: false,
 
@@ -197,11 +229,7 @@ const initialValue = {
 
 type HyperparameterInfo = typeof initialValue;
 
-const {
-  validate,
-  values: formModel,
-  setValues,
-} = useForm<HyperparameterInfo>({
+useForm<HyperparameterInfo>({
   initialValues: initialValue,
   validationSchema: schema,
 });

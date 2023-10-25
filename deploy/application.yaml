@@ -1,0 +1,44 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: datatunerx-ui
+  namespace: datatunerx
+  labels:
+    app: datatunerx-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datatunerx-ui
+  template:
+    metadata:
+      name: datatunerx-ui
+      labels:
+        app: datatunerx-ui
+    spec:
+      containers:
+        - name: datatunerx-ui
+          image: release.daocloud.io/max/datatunerx-ui:test@sha256:c5020dcc1656ad41d19c3a9f2f045db51b4f6de96b380c17f30b6b85ae11ced1  
+          ports:
+          - containerPort: 8443
+          resources:
+            limits:
+              cpu: 500m
+              memory: 0.5Gi
+            requests:
+              cpu: 500m
+              memory: 0.5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datatunerx-ui
+  namespace: datatunerx
+spec:
+  type: NodePort
+  ports:
+  - port: 8443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    app: datatunerx-ui

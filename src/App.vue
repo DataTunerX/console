@@ -3,7 +3,9 @@
 
   <div id="container">
     <anakin-nav />
-    <router-view class="console-content" />
+    <div class="console-content">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -24,8 +26,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 1280px;
   height: 100%;
-  min-height: 100%;
   background: var(--dao-bg);
 }
 
