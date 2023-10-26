@@ -1,236 +1,277 @@
+<script lang="ts" setup>
+import { DaoCheckbox, DaoSelect } from '@dao-style/core';
+import { useForm } from 'vee-validate';
+import { SchedulerType, OptimizerType, TrainerType } from '@/types/createHyperparameter';
+import { type Hyperparameter } from '@/api/hyperparameter';
+import { object, string, number } from 'yup';
+import { markRaw } from 'vue';
+import { useHyperparameter } from './composition/hyperparameter';
+
+const schema = markRaw(object({
+  metadata: object({
+    name: string().required().RFC1123Label(253).label('数据集名称'),
+  }),
+  spec: object({
+    objective: object({
+      type: string().required(),
+    }),
+    parameters: object({
+      loRA_Alpha: number().required().min(0),
+      loRA_R: number().required().integer().min(3),
+      loRA_Dropout: number().required().min(0)
+        .max(1),
+      learningRate: number().required().min(0)
+        .max(1),
+      epochs: number().required().integer().min(2),
+      blockSize: number().required().integer().min(9),
+      batchSize: number().required().integer().min(2),
+      warmupRatio: number().required().min(0).max(1),
+      weightDecay: number().required().min(0).max(1),
+      gradAccSteps: number().required().integer().min(1),
+    }),
+  }),
+}));
+
+const { hyperparameter } = useHyperparameter();
+
+useForm<Hyperparameter>({
+  initialValues: hyperparameter,
+  validationSchema: schema,
+});
+
+// const onSubmit = handleSubmit(async () => {
+//   console.log('onSubmit');
+// });
+
+</script>
+
 <template>
   <dao-modal-layout
     title="创建参数组"
     @cancel="$router.back"
   >
     <dao-form>
-      <dao-form-group
-        title="基本信息"
-      >
-        <div class="flex">
+      <dao-form-group title="基本信息">
+        <div class="flex space-x-6">
           <dao-form-item-validate
             label="参数组名称"
-            name="name"
+            name="metadata.name"
             required
           />
 
           <dao-form-item-validate
             :tag="DaoSelect"
             label="微调类型"
-            name="name"
+            name="spec.objective.type"
             required
           />
         </div>
       </dao-form-group>
+    </dao-form>
 
-      <dao-form-group title="参数配置">
-        <div class="flex flex-wrap">
-          <dao-form-item-validate
-            label="batchSize"
-            name="batchSize"
-            required
-            :control-props="{
-              type: 'number',
-              step: 1
-            }"
-          />
+    <dao-form
+      type="vertical"
+      class="mt-[20px]"
+    >
+      <dao-form-group
+        title="参数配置"
+      >
+        <div class="parameter-card mr-6 mb-6">
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              :tag="DaoSelect"
+              label="Scheduler"
+              name="spec.parameters.scheduler"
+              required
+            >
+              <dao-option
+                v-for="n in SchedulerType"
+                :key="n"
+                :label="n"
+                :value="n"
+              />
+            </dao-form-item-validate>
 
-          <dao-form-item-validate
-            label="learningRate"
-            name="learningRate"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
+            <dao-form-item-validate
+              :tag="DaoSelect"
+              label="Optimizer"
+              name="spec.parameters.optimizer"
+              required
+            >
+              <dao-option
+                v-for="n in OptimizerType"
+                :key="n"
+                :label="n"
+                :value="n"
+              />
+            </dao-form-item-validate>
+          </div>
 
-          <dao-form-item-validate
-            label="blockSize"
-            name="blockSize"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              class="w-[240px]"
+              label-width="0px"
+              name="spec.parameters.PEFT"
+              :tag="DaoCheckbox"
+            >
+              PEFT
+            </dao-form-item-validate>
 
-          <dao-form-item-validate
-            label="epochs"
-            name="epochs"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
+            <dao-form-item-validate
+              label-width="0px"
+              name="spec.parameters.FP16"
+              :tag="DaoCheckbox"
+            >
+              FP16
+            </dao-form-item-validate>
+          </div>
 
-          <dao-form-item-validate
-            :tag="DaoSelect"
-            label="scheduler"
-            name="scheduler"
-            required
-          >
-            <dao-option
-              v-for="n in SchedulerType"
-              :key="n"
-              :label="n"
-              :value="n"
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              :tag="DaoSelect"
+              label="int4/8"
+              name="spec.parameters.int4/8"
+              required
+            >
+              <dao-option
+                label="int4"
+                value="int4"
+              />
+              <dao-option
+                label="int8"
+                value="int8"
+              />
+            </dao-form-item-validate>
+
+            <dao-form-item-validate
+              label="LoRA_Alpha"
+              name="spec.parameters.loRA_Alpha"
+              required
+              :control-props="{
+                type: 'number',
+              }"
             />
-          </dao-form-item-validate>
+          </div>
 
-          <dao-form-item-validate
-            :tag="DaoSelect"
-            label="optimizer"
-            name="optimizer"
-            required
-          >
-            <dao-option
-              v-for="n in OptimizerType"
-              :key="n"
-              :label="n"
-              :value="n"
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              label="LoRA_R"
+              name="spec.parameters.loRA_R"
+              required
+              :control-props="{
+                type: 'number',
+              }"
             />
-          </dao-form-item-validate>
 
-          <dao-form-item-validate
-            :tag="DaoSelect"
-            label="int4/8"
-            name="int4/8"
-            required
-          >
-            <dao-option
-              label="int4"
-              value="int4"
+            <dao-form-item-validate
+              label="LoRA_Dropout"
+              name="spec.parameters.loRA_Dropout"
+              required
+              :control-props="{
+                type: 'number',
+              }"
             />
-            <dao-option
-              label="int8"
-              value="int8"
+          </div>
+        </div>
+
+        <div class="parameter-card">
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              label="LearningRate"
+              name="spec.parameters.learningRate"
+              required
+              :control-props="{
+                type: 'number',
+              }"
             />
-          </dao-form-item-validate>
 
-          <dao-form-item-validate
-            label="loRA_R"
-            name="loRA_R"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            label="loRA_Alpha"
-            name="loRA_Alpha"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            label="loRA_Dropout"
-            name="loRA_Dropout"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            label="warmupRatio"
-            name="warmupRatio"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            label="weightDecay"
-            name="weightDecay"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            label="gradAccSteps"
-            name="gradAccSteps"
-            required
-            :control-props="{
-              type: 'number',
-            }"
-          />
-
-          <dao-form-item-validate
-            :tag="DaoSelect"
-            label="trainerType"
-            name="trainerType"
-            required
-          >
-            <dao-option
-              v-for="n in TrainerType"
-              :key="n"
-              :label="n"
-              :value="n"
+            <dao-form-item-validate
+              label="Epochs"
+              name="epochs"
+              required
+              :control-props="{
+                type: 'number',
+              }"
             />
-          </dao-form-item-validate>
+          </div>
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              label="BlockSize"
+              name="spec.parameters.blockSize"
+              required
+              :control-props="{
+                type: 'number',
+              }"
+            />
 
-          <dao-form-item
-            label="PEFT"
-            name="trainerType"
-            required
-          >
-            <dao-switch />
-          </dao-form-item>
+            <dao-form-item-validate
+              label="BatchSize"
+              name="spec.parameters.batchSize"
+              required
+              :control-props="{
+                type: 'number',
+                step: 1,
+              }"
+            />
+          </div>
 
-          <dao-form-item
-            label="FP16"
-            name="trainerType"
-            required
-          >
-            <dao-switch />
-          </dao-form-item>
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              label="WarmupRatio"
+              name="spec.parameters.warmupRatio"
+              required
+              :control-props="{
+                type: 'number',
+              }"
+            />
+
+            <dao-form-item-validate
+              label="WeightDecay"
+              name="spec.parameters.weightDecay"
+              required
+              :control-props="{
+                type: 'number',
+              }"
+            />
+          </div>
+
+          <div class="flex space-x-5">
+            <dao-form-item-validate
+              label="GradAccSteps"
+              name="spec.parameters.gradAccSteps"
+              required
+              :control-props="{
+                type: 'number',
+              }"
+            />
+
+            <dao-form-item-validate
+              :tag="DaoSelect"
+              label="TrainerType"
+              name="spec.parameters.trainerType"
+              required
+            >
+              <dao-option
+                v-for="n in TrainerType"
+                :key="n"
+                :label="n"
+                :value="n"
+              />
+            </dao-form-item-validate>
+          </div>
         </div>
       </dao-form-group>
     </dao-form>
   </dao-modal-layout>
 </template>
 
-<script lang="ts" setup>
-import { yup } from '@/plugins/vee-validate';
-import { DaoSelect } from '@dao-style/core';
-import { useForm } from 'vee-validate';
-import { SchedulerType, OptimizerType, TrainerType } from '@/types/createHyperparameter';
+<style lang="scss" scoped>
 
-const schema = yup.object({
-  name: yup.string().required().RFC1123Label(253).label('数据集名称'),
-  learningRate: yup.number().required().min(0).max(1),
-});
-
-const initialValue = {
-  scheduler: SchedulerType.COSINE,
-  optimizer: OptimizerType.ADAM,
-  int4: false,
-  int8: false,
-  loRA_R: 4,
-  loRA_Alpha: 32.0,
-  loRA_Dropout: 0.1,
-  learningRate: 0.001,
-  epochs: 10,
-  blockSize: 512,
-  batchSize: 32,
-  warmupRatio: 0.1,
-  weightDecay: 0.0001,
-  gradAccSteps: 1,
-  trainerType: TrainerType.STANDARD,
-  PEFT: false,
-  FP16: false,
-
-};
-
-type HyperparameterInfo = typeof initialValue;
-
-useForm<HyperparameterInfo>({
-  initialValues: initialValue,
-  validationSchema: schema,
-});
-</script>
+.parameter-card {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 20px 20px 0;
+  border: 1px solid #AAB0B8;
+  border-radius: 15px;
+}
+</style>

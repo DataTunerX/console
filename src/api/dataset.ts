@@ -31,7 +31,6 @@ export interface DatasetMetadata {
   size: string;
   task: Task;
   datasetInfo: DatasetInfo;
-  loadPlugin: boolean;
   plugin: Plugin;
 }
 
@@ -71,6 +70,7 @@ export interface Feature {
 }
 
 export interface Plugin {
+  loadPlugin: boolean;
   name: string;
   parameters: string;
 }

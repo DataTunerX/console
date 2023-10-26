@@ -11,7 +11,7 @@ import { DaoSelect } from '@dao-style/core';
 import { LicenseType, SizeType } from '@/types/createDataset';
 import { createDataset, updateDataset, type Dataset } from '@/api/dataset';
 import { object, array, string } from 'yup';
-import { DataPluginList, listPlugins } from '@/api/plugin';
+import { Plugin, listPlugins } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useRoute, useRouter } from 'vue-router';
 import { nError } from '@/utils/useNoty';
@@ -25,13 +25,13 @@ const isUpdate = computed(() => query.name as string);
 
 const state = reactive(
   {
-    plugins: [] as DataPluginList[],
+    plugins: [] as Plugin[],
   },
 );
 
 const fetchPlugins = () => {
   listPlugins(namespaceStore.namespace).then((res) => {
-    state.plugins = res.data;
+    state.plugins = res.data.items;
   });
 };
 
@@ -44,12 +44,29 @@ const schema = markRaw(object({
   spec: object().shape({
     datasetMetadata: object({
       tags: array().of(yup.string().required().strict()),
-      languages: array().required(),
-      license: string().required(),
-      size: string().required(),
-      task: object({
-        name: string().required(),
+      languages: array().when('plugin.loadPlugin', {
+        is: false,
+        then: array().required(),
+        otherwise: array(),
       }),
+
+      license: string().when('plugin.loadPlugin', {
+        is: false,
+        then: string().required(),
+      }),
+
+      size: string().when('plugin.loadPlugin', {
+        is: false,
+        then: string().required(),
+      }),
+
+      task: object().when('plugin.loadPlugin', {
+        is: false,
+        then: object({
+          name: string().required(),
+        }),
+      }),
+
       datasetInfo: object({
         subsets: array().of(object({
           name: string().required(),
@@ -63,8 +80,15 @@ const schema = markRaw(object({
           }),
         })),
       }),
-    }),
 
+      plugin: object({
+        name: string().when('loadPlugin', {
+          is: true,
+          then: string().required(),
+          otherwise: string(),
+        }),
+      }),
+    }),
   }),
 }));
 
@@ -87,7 +111,7 @@ onMounted(() => {
   }
 });
 
-const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.loadPlugin');
+const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
 
 const { remove: removeFromTags, push: pushToTags } = useFieldArray('spec.datasetMetadata.tags');
 const addTag = () => pushToTags('');
@@ -108,6 +132,12 @@ const toList = () => {
     name: 'DatasetList',
   });
 };
+
+// const onSubmit = () => {
+//   validate().then((valid) => {
+//     console.log(valid);
+//   });
+// };
 
 const onSubmit = handleSubmit(async (values) => {
   try {
@@ -150,22 +180,19 @@ const onSubmit = handleSubmit(async (values) => {
         v-if="loadPlugin"
         label="插件名称"
         :tag="DaoSelect"
+        required
         name="spec.datasetMetadata.plugin.name"
       >
         <dao-option
-          label="boy"
-          :value="true"
+          label="AAA"
+          value="AAA"
         />
         <dao-option
-          label="girl"
-          :value="false"
+          v-for="plugin in state.plugins"
+          :key="plugin.metadata.name"
+          :label="plugin.metadata.name"
+          :value="plugin.metadata.name"
         />
-        <dao-option
-          label="who?"
-          value="ha"
-        >
-          The third gender
-        </dao-option>
       </dao-form-item-validate>
 
       <template v-if="!loadPlugin">

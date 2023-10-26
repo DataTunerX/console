@@ -2,14 +2,14 @@
 import httpClient from '@/plugins/request';
 import type { ObjectMeta } from 'kubernetes-types/meta/v1';
 
-export interface DataPluginList {
+export interface PluginList {
   apiVersion: string
-  items: Item[]
+  items: Plugin[]
   kind: string
   metadata: ObjectMeta
 }
 
-export interface Item {
+export interface Plugin {
   apiVersion: string
   kind: string
   metadata: ObjectMeta
@@ -24,7 +24,7 @@ export interface Spec {
 }
 
 // eslint-disable-next-line max-len
-const listPlugins = (namespace:string) => httpClient.get<DataPluginList[]>(`/apis/extension.datatunerx.io/v1beta1/namespaces/${namespace}/dataplugins`);
+const listPlugins = (namespace:string) => httpClient.get<PluginList>(`/apis/extension.datatunerx.io/v1beta1/namespaces/${namespace}/dataplugins`);
 
 export {
   listPlugins,

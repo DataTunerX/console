@@ -52,9 +52,9 @@ export function useDataset() {
         },
         languages: ['中文'],
         license: LicenseType.CCBY,
-        loadPlugin: true,
         plugin: {
-          name: 'My Plugin 1',
+          loadPlugin: false,
+          name: '',
           parameters: '{\n  "Param1": "value1",\n  "Param2": 42\n}\n',
         },
         size: SizeType.SIZE_1K,

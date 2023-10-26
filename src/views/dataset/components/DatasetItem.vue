@@ -34,22 +34,20 @@ const infos = computed(() => {
     metadata: { creationTimestamp },
     spec: {
       datasetMetadata: {
-        datasetInfo: {
-          subsets: [
-            {
-              splits,
-            },
-          ],
-        },
-        tags, task,
+        datasetInfo,
+        tags,
+        task,
       },
     },
   } = props.data;
 
+  const [firstSubset] = datasetInfo.subsets ?? [];
+  const splits = firstSubset ? firstSubset.splits : null;
+
   const items = [
     {
-      label: 'Task',
-      value: task.name,
+      label: '任务类型',
+      value: task?.name,
     },
     {
       label: '训练数据',
@@ -64,8 +62,8 @@ const infos = computed(() => {
       value: splits?.train.file,
     },
     {
-      label: 'Tags',
-      value: tags.join(','),
+      label: '标签',
+      value: tags?.join(','),
       slotId: 'tag',
     },
     {
@@ -153,7 +151,7 @@ const infos = computed(() => {
           class="text-center"
         >
           <span class="dataset-item__text">
-            {{ props.data.spec.datasetMetadata.license }}
+            {{ props.data.spec.datasetMetadata.license ?? '-' }}
           </span>
         </dao-key-value-layout-item>
 
@@ -162,7 +160,7 @@ const infos = computed(() => {
           label="数据集大小"
         >
           <span class="dataset-item__text dataset-item__size">
-            {{ props.data.spec.datasetMetadata.size }}
+            {{ props.data.spec.datasetMetadata.size ?? '-' }}
           </span>
         </dao-key-value-layout-item>
 
@@ -171,7 +169,9 @@ const infos = computed(() => {
           label="使用插件"
           value="Value3"
         >
-          <span class="dataset-item__text">插件名称</span>
+          <span class="dataset-item__text">
+            {{ props.data.spec.datasetMetadata.plugin.name ?? '-' }}
+          </span>
         </dao-key-value-layout-item>
       </dao-key-value-layout>
     </dao-card-item>
