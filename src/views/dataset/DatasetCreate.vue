@@ -1,33 +1,39 @@
+<!-- eslint-disable @typescript-eslint/no-shadow -->
 <script setup lang="ts">
-import {
-  useForm, useFieldArray, useField,
-} from 'vee-validate';
+import { useForm, useFieldArray, useFieldError } from 'vee-validate';
 import { DaoFormItemValidate } from '@dao-style/extend';
 import {
-  computed, markRaw, reactive, onMounted,
+  computed, markRaw, reactive, onMounted, watch,
 } from 'vue';
-import { yup } from '@/plugins/vee-validate';
-import { DaoSelect } from '@dao-style/core';
-import { LicenseType, SizeType } from '@/types/createDataset';
-import { createDataset, updateDataset, type Dataset } from '@/api/dataset';
-import { object, array, string } from 'yup';
+import { DaoSelect, DaoSwitch } from '@dao-style/core';
+import {
+  LicenseType,
+  SizeType,
+  createDataset,
+  updateDataset,
+  type Dataset,
+  LanguageOptions,
+} from '@/api/dataset';
+import {
+  object, array, string, addMethod,
+} from 'yup';
 import { Plugin, listPlugins } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useRoute, useRouter } from 'vue-router';
 import { nError } from '@/utils/useNoty';
+import { KubernetesError, HttpStatusCode } from '@/plugins/request';
 import { useDataset } from './composition/create';
 
 const namespaceStore = useNamespaceStore();
 const router = useRouter();
 
 const { query } = useRoute();
-const isUpdate = computed(() => query.name as string);
+const isUpdate = computed(() => !!query.name as boolean);
+const title = computed(() => (isUpdate.value ? '更新数据集' : '创建数据集'));
 
-const state = reactive(
-  {
-    plugins: [] as Plugin[],
-  },
-);
+const state = reactive({
+  plugins: [] as Plugin[],
+});
 
 const fetchPlugins = () => {
   listPlugins(namespaceStore.namespace).then((res) => {
@@ -37,91 +43,143 @@ const fetchPlugins = () => {
 
 fetchPlugins();
 
-const schema = markRaw(object({
-  metadata: object({
-    name: string().required().RFC1123Label(253).label('数据集名称'),
-  }),
-  spec: object().shape({
-    datasetMetadata: object({
-      tags: array().of(yup.string().required().strict()),
-      languages: array().when('plugin.loadPlugin', {
-        is: false,
-        then: array().required(),
-        otherwise: array(),
-      }),
+addMethod(array, 'unique', function unique(message, mapper = (a: string) => a) {
+  return this.test('unique', message, (list) => list?.length === new Set(list?.map(mapper)).size);
+});
 
-      license: string().when('plugin.loadPlugin', {
-        is: false,
-        then: string().required(),
-      }),
+// addMethod(array, 'unique', function a(message) {
+//   return this.test('unique', message, function b(list) {
+//     const mapper = (x: any) => x;
+//     const set = [...new Set(list?.map(mapper))];
+//     const isUnique = list?.length === set.length;
 
-      size: string().when('plugin.loadPlugin', {
-        is: false,
-        then: string().required(),
-      }),
+//     if (isUnique) {
+//       return true;
+//     }
+//     const idx = list?.findIndex((l, i) => mapper(l) !== set[i]);
 
-      task: object().when('plugin.loadPlugin', {
-        is: false,
-        then: object({
-          name: string().required(),
+//     return this.createError({
+//       path: `spec.datasetMetadata.tags[${idx}]`,
+//       message,
+//     });
+//   });
+// });
+
+const schema = markRaw(
+  object({
+    metadata: object({
+      name: string().required().RFC1123Label(253).max(64)
+        .label('数据集名称'),
+    }),
+    spec: object().shape({
+      datasetMetadata: object().shape({
+        tags: array().of(string().required()).unique('标签重复'),
+        languages: array().when('plugin.loadPlugin', {
+          is: false,
+          then: (schema) => schema.min(1),
         }),
-      }),
 
-      datasetInfo: object({
-        subsets: array().of(object({
-          name: string().required(),
-          splits: object({
-            train: object({
-              file: string().required(),
+        license: string().when('plugin.loadPlugin', {
+          is: false,
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.notRequired(),
+        }),
+
+        size: string().when('plugin.loadPlugin', {
+          is: false,
+          then: (schema) => schema.required(),
+          otherwise: (schema) => schema.notRequired(),
+        }),
+
+        task: object({
+          name: string()
+            .max(63)
+            .when('plugin.loadPlugin', {
+              is: false,
+              then: (schema) => schema.required(),
+              otherwise: (schema) => schema.notRequired(),
             }),
-            validate: object({
-              file: string().required(),
-            }),
+          subTasks: array()
+            .of(
+              object({
+                name: string().max(63).required(),
+              }),
+            )
+            .unique('子任务名称重复', (obj: { name: string }) => obj.name),
+        }),
+
+        datasetInfo: object({
+          subsets: array()
+            .of(
+              object({
+                name: string().required().max(63),
+                splits: object({
+                  train: object({
+                    file: string().required(),
+                  }),
+                  validate: object({
+                    file: string().required(),
+                  }),
+                }),
+              }),
+            )
+            .unique('子数据集名称重复', (obj: { name: string }) => obj.name),
+        }),
+
+        plugin: object({
+          name: string().when('loadPlugin', {
+            is: true,
+            then: (schema) => schema.required(),
+            otherwise: (schema) => schema.notRequired(),
           }),
-        })),
-      }),
-
-      plugin: object({
-        name: string().when('loadPlugin', {
-          is: true,
-          then: string().required(),
-          otherwise: string(),
         }),
       }),
     }),
   }),
-}));
+);
 
 const { dataset, fetchDataset } = useDataset();
 
 const {
   values: formModel,
   handleSubmit,
-  setValues,
+  resetForm,
+  setFieldError,
 } = useForm<Dataset>({
   initialValues: dataset,
   validationSchema: schema,
 });
 
+const duplicateTag = useFieldError('spec.datasetMetadata.tags');
+const duplicateSubTask = useFieldError('spec.datasetMetadata.task.subTasks');
+const duplicateSubset = useFieldError('spec.datasetMetadata.datasetInfo.subsets');
+
 onMounted(() => {
   if (isUpdate.value) {
     fetchDataset(namespaceStore.namespace, query.name as string).then(() => {
-      setValues(dataset.value);
+      resetForm({ values: dataset.value });
     });
   }
 });
 
-const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
+const {
+  remove: removeFromTags,
+  push: pushToTags,
+  fields,
+} = useFieldArray('spec.datasetMetadata.tags');
 
-const { remove: removeFromTags, push: pushToTags } = useFieldArray('spec.datasetMetadata.tags');
-const addTag = () => pushToTags('');
+const addTag = async () => pushToTags('');
 const removeTag = (index: number) => removeFromTags(index);
 
-const { remove: removeFromSubtasks, push: pushToSubtasks } = useFieldArray('spec.datasetMetadata.task.subTasks');
+const { remove: removeFromSubtasks, push: pushToSubtasks } = useFieldArray(
+  'spec.datasetMetadata.task.subTasks',
+);
 const addSubtask = () => pushToSubtasks({ name: '' });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
-const { remove: removeFromRules, push: pushToRules } = useFieldArray('spec.datasetMetadata.datasetInfo.subsets');
+const { remove: removeFromRules, push: pushToRules } = useFieldArray(
+  'spec.datasetMetadata.datasetInfo.subsets',
+);
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
@@ -148,15 +206,33 @@ const onSubmit = handleSubmit(async (values) => {
     }
     toList();
   } catch (error) {
-    nError('出错了', error);
+    const err = error as KubernetesError;
+
+    if (err.code === HttpStatusCode.Conflict) {
+      setFieldError(
+        'metadata.name',
+        '该名称的数据集已存在',
+        // (error as KubernetesError).message,
+      );
+    } else {
+      nError('创建失败', error);
+    }
   }
 });
 
+watch(
+  () => formModel.spec.datasetMetadata.plugin.loadPlugin,
+  (val) => {
+    if (!val) {
+      resetForm();
+    }
+  },
+);
 </script>
 
 <template>
   <dao-modal-layout
-    title="创建数据集"
+    :title="title"
     @cancel="$router.back"
     @confirm="onSubmit"
   >
@@ -167,17 +243,18 @@ const onSubmit = handleSubmit(async (values) => {
         required
         :control-props="{
           class: '!w-[400px]',
+          disabled: isUpdate,
         }"
       />
 
-      <dao-form-item
+      <dao-form-item-validate
         label="数据集插件配置"
-      >
-        <dao-switch v-model="loadPlugin" />
-      </dao-form-item>
+        name="spec.datasetMetadata.plugin.loadPlugin"
+        :tag="DaoSwitch"
+      />
 
       <dao-form-item-validate
-        v-if="loadPlugin"
+        v-if="formModel.spec.datasetMetadata.plugin.loadPlugin"
         label="插件名称"
         :tag="DaoSelect"
         required
@@ -195,17 +272,18 @@ const onSubmit = handleSubmit(async (values) => {
         />
       </dao-form-item-validate>
 
-      <template v-if="!loadPlugin">
+      <template v-else>
         <dao-form-item :label="'标签'">
           <div
-            v-for="(tag, index) in formModel.spec.datasetMetadata.tags"
-            :key="index"
+            v-for="(field, index) in fields"
+            :key="field.key"
             class="flex"
           >
             <dao-form-item-validate
               label-width="0px"
               :name="`spec.datasetMetadata.tags[${index}]`"
               class="no-padding"
+              required
               :control-props="{
                 class: '!w-[400px]',
               }"
@@ -231,6 +309,12 @@ const onSubmit = handleSubmit(async (values) => {
           >
             添加
           </dao-text-button>
+
+          <template #error>
+            <dao-error-text>
+              {{ duplicateTag }}
+            </dao-error-text>
+          </template>
         </dao-form-item>
 
         <dao-form-item-validate
@@ -239,16 +323,14 @@ const onSubmit = handleSubmit(async (values) => {
           name="spec.datasetMetadata.languages"
           :tag="DaoSelect"
           :control-props="{
-            multiple: true
+            multiple: true,
           }"
         >
           <dao-option
-            label="English"
-            value="英文"
-          />
-          <dao-option
-            label="Chinese"
-            value="中文"
+            v-for="language in LanguageOptions"
+            :key="language"
+            :label="$t(`views.dataset.${language}`)"
+            :value="language"
           />
         </dao-form-item-validate>
 
@@ -325,6 +407,12 @@ const onSubmit = handleSubmit(async (values) => {
             >
               添加
             </dao-text-button>
+
+            <template #error>
+              <dao-error-text>
+                {{ duplicateSubTask }}
+              </dao-error-text>
+            </template>
           </dao-form-item>
         </dao-form-item>
 
@@ -390,6 +478,11 @@ const onSubmit = handleSubmit(async (values) => {
               </span>
             </div>
           </div>
+          <template #error>
+            <dao-error-text>
+              {{ duplicateSubset }}
+            </dao-error-text>
+          </template>
         </dao-form-item>
 
         <dao-form-item label="特征映射">
@@ -403,7 +496,7 @@ const onSubmit = handleSubmit(async (values) => {
               label-width="0px"
               :name="`spec.datasetMetadata.datasetInfo.features[${index}].name`"
               :control-props="{
-                disabled: true
+                disabled: true,
               }"
             />
 

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable max-len */
 import {
-  AnyObjectSchema, AnySchema, BaseSchema, SchemaOf,
+  AnyObjectSchema, AnySchema, Schema,
 } from 'yup';
 import type { DeepRequired, DeepPartial } from 'utility-types';
 import { FieldContext } from 'vee-validate';
@@ -35,7 +35,7 @@ export type YupValidator = AnySchema | AnyObjectSchema;
 
 export type GenericValidateFunction<TValue> = (value: TValue, ctx: FieldValidationMetaInfo) => boolean | string | Promise<boolean | string>;
 
-export type RuleExpression<TValue> = string | Record<string, unknown> | GenericValidateFunction<TValue> | GenericValidateFunction<TValue>[] | YupValidator | BaseSchema<TValue> | undefined;
+export type RuleExpression<TValue> = string | Record<string, unknown> | GenericValidateFunction<TValue> | GenericValidateFunction<TValue>[] | YupValidator | Schema<TValue> | undefined;
 
 export type Concat<T extends string[]> = T extends [infer F, ...infer Z] ? (Z extends [] ? (F extends string ? `${F}` : never) : Z extends string[] ? F extends string ? `${F}${Concat<Z>}` : never: never) : never;
 
@@ -68,10 +68,10 @@ export interface UseFieldReturn<T extends object, K extends string> {
   originFieldInfo: KeyValFieldContext<T, K>
 }
 
-export interface FormOptions<TValues extends Record<string, any>> {
-  validationSchema?: MaybeRef<Record<keyof TValues, GenericValidateFunction<unknown> | string | Record<string, any>> | SchemaOf<TValues> | undefined>;
-  initialValues?: MaybeRef<TValues>;
-  initialErrors?: Record<keyof TValues, string | undefined>;
-  initialTouched?: Record<keyof TValues, boolean>;
-  validateOnMount?: boolean;
-}
+// export interface FormOptions<TValues extends Record<string, any>> {
+//   validationSchema?: MaybeRef<Record<keyof TValues, GenericValidateFunction<unknown> | string | Record<string, any>> | SchemaOf<TValues> | undefined>;
+//   initialValues?: MaybeRef<TValues>;
+//   initialErrors?: Record<keyof TValues, string | undefined>;
+//   initialTouched?: Record<keyof TValues, boolean>;
+//   validateOnMount?: boolean;
+// }

@@ -51,6 +51,7 @@ const namespace = computed({
     </span>
     <dao-select
       v-model="namespace"
+      search
       class="ml-[20px]"
     >
       <dao-option

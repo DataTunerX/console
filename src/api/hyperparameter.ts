@@ -2,11 +2,31 @@
 import type { ObjectMeta } from 'kubernetes-types/meta/v1';
 import httpClient from '@/plugins/request';
 
+export enum FineTuningType {
+  // SFT：生成模型GPT的有监督精调 (supervised fine-tuning)
+  SFT = 'SFT',
+}
+
+export enum SchedulerType {
+  COSINE = 'cosine',
+  LINEAR = 'linear',
+  CONSTANT = 'constant',
+}
+
+export enum OptimizerType {
+  ADAM = 'adam',
+  ADAMW = 'adamw',
+  SGD = 'sgd',
+}
+export enum TrainerType {
+  STANDARD = 'Standard',
+}
+
 export interface HyperparameterList {
-  apiVersion: string
-  items: Hyperparameter[]
-  kind: string
-  metadata: ObjectMeta
+  apiVersion: string;
+  items: Hyperparameter[];
+  kind: string;
+  metadata: ObjectMeta;
 }
 
 /**
@@ -64,6 +84,7 @@ export interface Objective {
  * Finetune paramenter config.
  */
 export interface Parameters {
+  // [key: string]: string | number | boolean | undefined;
   /**
    * BatchSize specifies the size of mini-batches.
    */
@@ -132,31 +153,39 @@ export interface Parameters {
    * WeightDecay specifies the weight decay factor.
    */
   weightDecay: string;
+
+  quantization?: string;
 }
+
+export type StringParameters = Pick<Parameters, 'learningRate' | 'loRA_Alpha'|'loRA_Dropout'|'loRA_R'|'warmupRatio'|'weightDecay'>;
 
 const apiVersion = 'core.datatunerx.io/v1beta1';
 const pathTemplate = `/apis/${apiVersion}/namespaces/{namespace}/hyperparameters`;
 
-const path = (namespace: string) => `${pathTemplate.replace('{namespace}', encodeURIComponent(String(namespace)))}}`;
+const path = (namespace: string) => `${pathTemplate.replace('{namespace}', encodeURIComponent(namespace))}`;
 
-export const listDatasets = (namespace: string) => httpClient.get<HyperparameterList>(path(namespace));
+export const listHyperparameters = (namespace: string) => httpClient.get<HyperparameterList>(path(namespace));
 
-export const createDataset = (namespace: string, dataset: Hyperparameter) => httpClient.post<Hyperparameter>(path(namespace), dataset);
+export const createHyperparameter = (namespace: string, hyperparameter: Hyperparameter) => {
+  const url = path(namespace);
 
-export const updateDataset = (namespace: string, dataset: Hyperparameter) => {
-  const url = `${path(namespace)}/${dataset.metadata.name}`;
-
-  return httpClient.put<Hyperparameter>(url, dataset);
+  return httpClient.post<Hyperparameter>(url, hyperparameter);
 };
 
-export const getDataset = (namespace: string, name: string) => httpClient.get<Hyperparameter>(`${path(namespace)}/${name}`);
+export const updateHyperparameter = (namespace: string, hyperparameter: Hyperparameter) => {
+  const url = `${path(namespace)}/${hyperparameter.metadata.name}`;
 
-export const deleteDataset = (namespace: string, name: string) => httpClient.delete<HyperparameterList>(`${path(namespace)}/${name}`);
+  return httpClient.put<Hyperparameter>(url, hyperparameter);
+};
+
+export const getHyperparameter = (namespace: string, name: string) => httpClient.get<Hyperparameter>(`${path(namespace)}/${name}`);
+
+export const deleteHyperparameter = (namespace: string, name: string) => httpClient.delete<HyperparameterList>(`${path(namespace)}/${name}`);
 
 export default {
-  createDataset,
-  updateDataset,
-  listDatasets,
-  getDataset,
-  deleteDataset,
+  createHyperparameter,
+  updateHyperparameter,
+  listHyperparameters,
+  getHyperparameter,
+  deleteHyperparameter,
 };

@@ -1,121 +1,76 @@
 <script setup lang="tsx">
-import { ref, watchEffect } from 'vue';
 import {
-  type DaoTableSort, defineColumns, TableEmits,
-} from '@dao-style/core';
+  ref, watchEffect, computed, onMounted,
+} from 'vue';
 import { useRouter } from 'vue-router';
+import { defineColumns } from '@dao-style/core';
+import { type Hyperparameter, deleteHyperparameter } from '@/api/hyperparameter';
+import { useNamespaceStore } from '@/stores/namespace';
+import { storeToRefs } from 'pinia';
+import { useDateFormat } from '@dao-style/extend';
+import { nError, nSuccess } from '@/utils/useNoty';
+import { first } from 'lodash';
+import { generateQueryString } from '@/utils/queryString';
+import { useHyperparameter } from './composition/hyperparameter';
 
 const router = useRouter();
+const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(namespaceStore);
 
-interface DataItem {
-  id: string,
-  name: string,
-  gender: string,
-  age: number,
-  company: string,
-}
-
-const data = ref<DataItem[]>([]);
-const showData = ref<DataItem[]>([]);
-const compact = ref(false);
-const selectable = ref(false);
-const expandable = ref(false);
-const hideSetting = ref(false);
-const hideToolbar = ref(false);
-const hideBatchBar = ref(false);
+const showData = ref<Hyperparameter[]>([]);
 const pageSize = ref(10);
 const currentPage = ref(1);
-const eventLog = ref<(string | number | boolean)[]>([]);
-const search = ref({});
-
-const selectedRows = ref([]);
-
-for (let i = 1; i < 101; i += 1) {
-  const item = {
-    id: `id${i}`,
-    name: `name${i}`,
-    gender: 'male',
-    longText: 'longTextjwwjwwjwwjwwjwwjwwjwwjwwjwwjwwjwwjwwjww',
-    age: 20,
-    company: 'DaoCloud',
-  };
-
-  data.value.push(item);
-}
+const search = ref<{ fuzzy?: string[] }>({});
 
 const columns = defineColumns([
   {
     id: 'name',
-    header: 'Name',
-    sortable: true,
-    defaultWidth: '100px',
-    minWidth: 200,
-    maxWidth: 500,
-    className: 'name',
-  },
-  {
-    id: 'gender',
-    header: 'Gender',
-    defaultWidth: '200px',
-    minWidth: 100,
+    header: '名称',
     sortable: true,
   },
   {
-    id: 'longText',
-    header: 'LongText',
-    minWidth: 100,
+    id: 'fineTuningType',
+    header: '微调类型',
   },
   {
-    id: 'age',
-    header: 'Age',
+    id: 'parameters',
+    header: '参数预览',
+  },
+  {
+    id: 'createAt',
+    header: '创建时间',
   },
   {
     id: 'action',
-    header: 'Action',
+    header: '',
+    defaultWidth: '60px',
   },
-] as const);
+]);
 
-watchEffect(() => {
-  showData.value = data.value.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value,
-  );
+const { hyperparameters, fetchHyperparameters, loading } = useHyperparameter();
+
+const refresh = () => fetchHyperparameters(namespace.value);
+
+onMounted(() => {
+  refresh();
 });
 
-const sortChangeEvent = (params: DaoTableSort) => {
-  eventLog.value.push('-- sort change --', JSON.stringify(params));
-};
+const filteredData = computed(() => hyperparameters.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? '')));
 
-const nextPage = (val: number) => {
-  eventLog.value.push('-- next --', val);
-};
+watchEffect(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = currentPage.value * pageSize.value;
 
-const prevPage: TableEmits['prev'] = async (val: number) => {
-  await new Promise((resolve) => {
-    resolve(1);
+  showData.value = filteredData.value.slice(startIndex, endIndex);
+});
+
+const onUpdate = (name: string) => {
+  router.push({
+    name: 'HyperparameterCreate',
+    query: {
+      name,
+    },
   });
-  eventLog.value.push('-- prev --', val);
-};
-
-const pageChange = (val: number) => {
-  eventLog.value.push('-- page change --', val);
-};
-
-const sizeChange = (val: number) => {
-  eventLog.value.push('-- size change --', val);
-};
-
-const onDelete = (row: Record<string, unknown>, rowIndex: number) => {
-  data.value.splice(rowIndex, 1);
-  eventLog.value.push('-- row-delete --', JSON.stringify(row), rowIndex);
-};
-
-const searchChange = () => {
-  eventLog.value.push('-- search --');
-};
-
-const refresh = () => {
-  eventLog.value.push('-- refresh --');
 };
 
 const onCreate = () => {
@@ -124,6 +79,29 @@ const onCreate = () => {
   });
 };
 
+let hyperparameterToDelete: string;
+const isShow = ref(false);
+
+const hideDialog = () => {
+  isShow.value = false;
+};
+
+const showDialog = (hyperparameter: string) => {
+  isShow.value = true;
+  hyperparameterToDelete = hyperparameter;
+};
+
+const confirmDelete = () => {
+  deleteHyperparameter(namespace.value, hyperparameterToDelete)
+    .then(() => {
+      hideDialog();
+      refresh();
+      nSuccess('删除成功');
+    })
+    .catch((err) => {
+      nError('删除失败', err);
+    });
+};
 </script>
 
 <template>
@@ -137,46 +115,80 @@ const onCreate = () => {
       id="demo"
       v-model:page-size="pageSize"
       v-model:current-page="currentPage"
-      v-model:selected-rows="selectedRows"
       v-model:search="search"
-      :fuzzy="{ key: 'fuzzy' }"
+      :loading="loading"
+      :fuzzy="{ key: 'fuzzy', single: true }"
       :columns="columns"
       :data="showData"
-      :compact="compact"
-      :selectable="selectable"
-      :expandable="expandable"
-      :total="100"
-      :hide-toolbar="hideToolbar"
-      :hide-batch-bar="hideBatchBar"
-      :hide-setting="hideSetting"
-      :page-size-options="[10, 15, 20]"
-      @sort-change="sortChangeEvent"
-      @next="nextPage"
-      @prev="prevPage"
-      @page-change="pageChange"
-      @size-change="sizeChange"
-      @search="searchChange"
+      :total="filteredData.length"
       @refresh="refresh"
     >
-      <template #th-action="{column}">
+      <template #th-action="{ column }">
         <div>{{ column.header }}</div>
       </template>
 
-      <template #td-action-menu="{row,rowIndex}">
-        <dao-dropdown-item>Edit</dao-dropdown-item>
+      <template #td-name="{ row }">
+        <router-link
+          class="list-name-link"
+          :to="{
+            name: 'HyperparameterDetail',
+            params: {
+              name: row.metadata.name,
+            },
+          }"
+        >
+          {{ row.metadata.name }}
+        </router-link>
+      </template>
+
+      <template #td-createAt="{ row }">
+        {{ useDateFormat(row.metadata.creationTimestamp) }}
+      </template>
+
+      <template #td-fineTuningType="{ row }">
+        {{ row.spec.objective.type }}
+      </template>
+
+      <template #td-parameters="{ row }">
+        <dao-hover-card :data="generateQueryString(row.spec.parameters)" />
+      </template>
+
+      <template #td-action-menu="{ row }">
+        <dao-dropdown-item @click="onUpdate(row.metadata.name as string)">
+          编辑
+        </dao-dropdown-item>
         <dao-dropdown-item
           color="red"
-          @click="onDelete(row,rowIndex)"
+          @click="showDialog(row.metadata.name as string)"
         >
-          Delete
+          删除
         </dao-dropdown-item>
       </template>
 
       <template #action>
         <dao-button @click="onCreate">
-          Create
+          创建
         </dao-button>
       </template>
     </dao-table>
   </div>
+
+  <dao-dialog
+    :model-value="isShow"
+    header="Basic Dialog"
+    @cancel="hideDialog"
+    @confirm="confirmDelete"
+  >
+    <div class="body">
+      <div class="content">
+        确认删除参数组 {{ hyperparameterToDelete }} 吗？
+      </div>
+    </div>
+    <template #footer>
+      <dao-confirm-dialog-footer
+        :text="hyperparameterToDelete"
+        confirm-text="delete"
+      />
+    </template>
+  </dao-dialog>
 </template>

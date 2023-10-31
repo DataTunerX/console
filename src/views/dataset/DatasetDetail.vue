@@ -3,7 +3,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, getDataset } from '@/api/dataset';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
@@ -22,10 +24,12 @@ fetchDataset();
 const name = computed(() => dataset.value?.metadata.name);
 
 const infos = computed(() => {
+  const languages = dataset.value?.spec.datasetMetadata.languages?.map((lang) => t(`views.dataset.${lang}`)).join(', ') ?? '-';
+
   const items = [
     {
       label: '语言',
-      value: dataset.value?.spec.datasetMetadata.languages.join(', '),
+      value: languages,
     },
     {
       label: '许可证',
@@ -41,7 +45,7 @@ const infos = computed(() => {
     },
     {
       label: '标签',
-      value: dataset.value?.spec.datasetMetadata.tags.join(','),
+      value: dataset.value?.spec.datasetMetadata.tags?.join(','),
       slotId: 'tag',
     },
     {
@@ -50,7 +54,7 @@ const infos = computed(() => {
     },
     {
       label: '数据集文件源',
-      value: dataset.value?.spec.datasetFiles.source,
+      value: dataset.value?.spec.datasetFiles?.source,
     },
   ];
 

@@ -111,3 +111,7 @@ minor-release:
 .PHONY: patch-release
 patch-release:
 	npx esno ./scripts/patch-release.ts
+
+.PHONY build
+build:
+	docker buildx build --builder=builder --platform linux/amd64,linux/arm64 -t release.daocloud.io/max/datatunerx-ui:v0.0.1 -f Dockerfile . --push  

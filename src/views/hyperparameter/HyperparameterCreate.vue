@@ -1,54 +1,169 @@
-<script lang="ts" setup>
-import { DaoCheckbox, DaoSelect } from '@dao-style/core';
+<!-- eslint-disable camelcase -->
+<!-- eslint-disable @typescript-eslint/ban-ts-comment -->
+
+<script setup lang="ts">
+import { useRoute, useRouter } from 'vue-router';
+import {
+  computed, watch, onMounted, markRaw,
+} from 'vue';
 import { useForm } from 'vee-validate';
-import { SchedulerType, OptimizerType, TrainerType } from '@/types/createHyperparameter';
-import { type Hyperparameter } from '@/api/hyperparameter';
+import { useNamespaceStore } from '@/stores/namespace';
+import { storeToRefs } from 'pinia';
+import { nError, nSuccess } from '@/utils/useNoty';
+import { DaoCheckbox, DaoSelect } from '@dao-style/core';
+import {
+  type Hyperparameter,
+  type StringParameters,
+  FineTuningType,
+  SchedulerType,
+  OptimizerType,
+  TrainerType,
+  createHyperparameter,
+  updateHyperparameter,
+} from '@/api/hyperparameter';
 import { object, string, number } from 'yup';
-import { markRaw } from 'vue';
+import { cloneDeep } from 'lodash';
 import { useHyperparameter } from './composition/hyperparameter';
 
-const schema = markRaw(object({
-  metadata: object({
-    name: string().required().RFC1123Label(253).label('数据集名称'),
-  }),
-  spec: object({
-    objective: object({
-      type: string().required(),
-    }),
-    parameters: object({
-      loRA_Alpha: number().required().min(0),
-      loRA_R: number().required().integer().min(3),
-      loRA_Dropout: number().required().min(0)
-        .max(1),
-      learningRate: number().required().min(0)
-        .max(1),
-      epochs: number().required().integer().min(2),
-      blockSize: number().required().integer().min(9),
-      batchSize: number().required().integer().min(2),
-      warmupRatio: number().required().min(0).max(1),
-      weightDecay: number().required().min(0).max(1),
-      gradAccSteps: number().required().integer().min(1),
-    }),
-  }),
-}));
+const { namespace } = storeToRefs(useNamespaceStore());
+const router = useRouter();
+const { query } = useRoute();
+const isUpdate = computed(() => !!query.name as boolean);
+const title = computed(() => (isUpdate.value ? '更新参数组' : '创建参数组'));
 
-const { hyperparameter } = useHyperparameter();
+// 定义 Quantization 常量
+const Quantization = {
+  default: 'default',
+  int4: 'int4',
+  int8: 'int8',
+};
 
-useForm<Hyperparameter>({
+// 定义表单验证模式
+const schema = markRaw(
+  object({
+    metadata: object({
+      name: string().required().RFC1123Label(253).label('数据集名称'),
+    }),
+    spec: object({
+      objective: object({
+        type: string().required(),
+      }),
+      parameters: object({
+        loRA_Alpha: number().required().min(0),
+        loRA_R: number().required().integer().min(3),
+        loRA_Dropout: number().required().min(0).max(1),
+        learningRate: number().required().min(0).max(1),
+        epochs: number().required().integer().min(2),
+        blockSize: number().required().integer().min(9),
+        batchSize: number().required().integer().min(2),
+        warmupRatio: number().required().min(0).max(1),
+        weightDecay: number().required().min(0).max(1),
+        gradAccSteps: number().required().integer().min(1),
+      }),
+    }),
+  }),
+);
+
+// 获取超参数相关信息
+const { hyperparameter, fetchHyperparameter } = useHyperparameter();
+
+// 表单处理
+const {
+  values: formModel,
+  setValues,
+  handleSubmit,
+  resetForm,
+} = useForm<Hyperparameter>({
   initialValues: hyperparameter,
   validationSchema: schema,
 });
 
-// const onSubmit = handleSubmit(async () => {
-//   console.log('onSubmit');
-// });
+const toList = () => {
+  router.push({ name: 'HyperparameterList' });
+};
 
+const onSubmit = handleSubmit(async () => {
+  const model: Hyperparameter = cloneDeep(formModel);
+
+  const keys: (keyof StringParameters)[] = [
+    'learningRate',
+    'loRA_Alpha',
+    'loRA_Dropout',
+    'loRA_R',
+    'warmupRatio',
+    'weightDecay',
+  ];
+
+  keys.forEach((key) => {
+    model.spec.parameters[key] = `${model.spec.parameters[key]}`;
+  });
+
+  try {
+    if (isUpdate.value) {
+      await updateHyperparameter(namespace.value, model);
+    } else {
+      await createHyperparameter(namespace.value, model);
+    }
+    nSuccess('成功');
+    toList();
+  } catch (error) {
+    nError('出错了', error);
+  }
+});
+
+const updateQuantization = (val?: string) => {
+  const valuesToUpdate = {
+    spec: {
+      parameters: {
+        int4: val === Quantization.int4,
+        int8: val === Quantization.int8,
+      },
+    },
+  };
+
+  setValues(valuesToUpdate);
+};
+
+const retrieveQuantization = () => {
+  const { parameters } = hyperparameter.value.spec;
+  let quantizationValue = Quantization.default;
+
+  if (parameters.int4) {
+    quantizationValue = Quantization.int4;
+  } else if (parameters.int8) {
+    quantizationValue = Quantization.int8;
+  }
+
+  setValues({
+    spec: {
+      parameters: {
+        quantization: quantizationValue,
+      },
+    },
+  });
+};
+
+// 监听表单字段 "quantization" 的变化
+watch(
+  () => formModel.spec.parameters.quantization,
+  (val?: string) => updateQuantization(val),
+);
+
+// 处理更新和创建超参数的逻辑
+onMounted(async () => {
+  if (isUpdate.value) {
+    await fetchHyperparameter(namespace.value, query.name as string);
+    resetForm({ values: hyperparameter.value });
+    retrieveQuantization();
+  }
+});
 </script>
 
 <template>
   <dao-modal-layout
-    title="创建参数组"
+    :title="title"
     @cancel="$router.back"
+    @confirm="onSubmit"
   >
     <dao-form>
       <dao-form-group title="基本信息">
@@ -57,6 +172,9 @@ useForm<Hyperparameter>({
             label="参数组名称"
             name="metadata.name"
             required
+            :control-props="{
+              disabled: isUpdate,
+            }"
           />
 
           <dao-form-item-validate
@@ -64,7 +182,14 @@ useForm<Hyperparameter>({
             label="微调类型"
             name="spec.objective.type"
             required
-          />
+          >
+            <dao-option
+              v-for="fineTuning in FineTuningType"
+              :key="fineTuning"
+              :label="fineTuning"
+              :value="fineTuning"
+            />
+          </dao-form-item-validate>
         </div>
       </dao-form-group>
     </dao-form>
@@ -73,9 +198,7 @@ useForm<Hyperparameter>({
       type="vertical"
       class="mt-[20px]"
     >
-      <dao-form-group
-        title="参数配置"
-      >
+      <dao-form-group title="参数配置">
         <div class="parameter-card mr-6 mb-6">
           <div class="flex space-x-5">
             <dao-form-item-validate
@@ -130,16 +253,20 @@ useForm<Hyperparameter>({
             <dao-form-item-validate
               :tag="DaoSelect"
               label="int4/8"
-              name="spec.parameters.int4/8"
+              name="spec.parameters.quantization"
               required
             >
               <dao-option
+                label="默认"
+                :value="Quantization.default"
+              />
+              <dao-option
                 label="int4"
-                value="int4"
+                :value="Quantization.int4"
               />
               <dao-option
                 label="int8"
-                value="int8"
+                :value="Quantization.int8"
               />
             </dao-form-item-validate>
 
@@ -187,7 +314,7 @@ useForm<Hyperparameter>({
 
             <dao-form-item-validate
               label="Epochs"
-              name="epochs"
+              name="spec.parameters.epochs"
               required
               :control-props="{
                 type: 'number',
@@ -266,12 +393,11 @@ useForm<Hyperparameter>({
 </template>
 
 <style lang="scss" scoped>
-
 .parameter-card {
   display: inline-flex;
   flex-direction: column;
   padding: 20px 20px 0;
-  border: 1px solid #AAB0B8;
+  border: 1px solid #aab0b8;
   border-radius: 15px;
 }
 </style>

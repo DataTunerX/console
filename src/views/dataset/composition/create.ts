@@ -1,5 +1,5 @@
 import { type Dataset, getDataset } from '@/api/dataset';
-import { SizeType, LicenseType } from '@/types/createDataset';
+import { SizeType, LicenseType, LanguageOptions } from '@/api/dataset';
 import { reactive, ref, toRefs } from 'vue';
 
 export function useDataset() {
@@ -14,7 +14,7 @@ export function useDataset() {
         datasetCardRef: 'configmap-dataset-readme',
       },
       datasetFiles: {
-        source: 's3://example-dataset/source',
+        source: '',
       },
       datasetMetadata: {
         datasetInfo: {
@@ -35,22 +35,19 @@ export function useDataset() {
               name: 'Default',
               splits: {
                 test: {
-                  file: 's3://example-dataset/test',
+                  file: '',
                 },
                 train: {
-                  file: 's3://example-dataset/train',
+                  file: '',
                 },
                 validate: {
-                  file: 's3://example-dataset/validate',
+                  file: '',
                 },
               },
             },
-            {
-              name: 'Additional Subset',
-            },
           ],
         },
-        languages: ['中文'],
+        languages: [LanguageOptions.zh],
         license: LicenseType.CCBY,
         plugin: {
           loadPlugin: false,
@@ -62,12 +59,6 @@ export function useDataset() {
         task: {
           name: 'Translation',
           subTasks: [
-            {
-              name: 'English to French',
-            },
-            {
-              name: 'English to Spanish',
-            },
           ],
         },
       },

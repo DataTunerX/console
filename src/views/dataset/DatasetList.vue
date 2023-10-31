@@ -1,61 +1,82 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import {
+  ref, watch, watchEffect,
+  computed,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, listDatasets, deleteDataset } from '@/api/dataset';
-import { chunk, get, first } from 'lodash';
 import { nSuccess, nError } from '@/utils/useNoty';
+import { storeToRefs } from 'pinia';
+import { first } from 'lodash';
 import DatasetItem from './components/DatasetItem.vue';
+
+// 常量定义
+const pageSize = ref(10);
+const defaultSearch = { fuzzy: [] };
 
 const router = useRouter();
 const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(namespaceStore);
 
-const search = ref<{fuzzy?: string[]}>({});
+// 数据状态
+const search = ref(defaultSearch);
+const currentPage = ref(1);
+const datasets = ref<Dataset[]>([]);
+const loading = ref(true);
+const showData = ref<Dataset[]>([]);
+const datasetToDelete = ref<string>('');
+const isShow = ref(false);
 
+// 创建数据集
 const onCreate = () => {
   router.push({
     name: 'DatasetCreate',
   });
 };
 
-const currentPage = ref(1);
-const currentPageSize = ref(10);
-
-const datasets = ref<Dataset[]>([]);
-const loading = ref(true);
+// 加载数据集列表
 const fetchDatasets = async () => {
   loading.value = true;
   try {
-    const res = await listDatasets(namespaceStore.namespace);
+    const res = await listDatasets(namespace.value);
 
-    loading.value = false;
     datasets.value = res.data.items;
+
+    if (datasets.value.length) {
+      currentPage.value = 1;
+    }
   } catch (error) {
     nError('出错了', error);
+  } finally {
+    loading.value = false;
   }
 };
 
-fetchDatasets();
+// 显示数据集列表
+const filteredData = computed(() => datasets.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? '')));
 
-const currentDatasets = computed(() => {
-  const filteredData = datasets.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? ''));
+watchEffect(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = currentPage.value * pageSize.value;
 
-  return get(chunk(filteredData, currentPageSize.value), currentPage.value - 1) ?? [];
+  showData.value = filteredData.value.slice(startIndex, endIndex);
 });
 
-const datasetToDelete = ref<string>('');
-
-const isShow = ref(false);
-const hideDialog = () => {
-  isShow.value = !isShow.value;
-};
-const showDialog = (dataset:string) => {
+// 显示删除对话框
+const showDialog = (dataset: string) => {
   isShow.value = true;
   datasetToDelete.value = dataset;
 };
 
+// 隐藏删除对话框
+const hideDialog = () => {
+  isShow.value = false;
+};
+
+// 确认删除数据集
 const confirmDelete = () => {
-  deleteDataset(namespaceStore.namespace, datasetToDelete.value).then(() => {
+  deleteDataset(namespace.value, datasetToDelete.value).then(() => {
     hideDialog();
     fetchDatasets();
     nSuccess('删除成功');
@@ -63,6 +84,13 @@ const confirmDelete = () => {
     nError('删除失败', err);
   });
 };
+
+// 监听命名空间变化，重新加载数据集
+watch(() => namespaceStore.namespace, () => {
+  fetchDatasets();
+}, {
+  immediate: true,
+});
 </script>
 
 <template>
@@ -87,7 +115,7 @@ const confirmDelete = () => {
 
     <div v-loading="loading">
       <dataset-item
-        v-for="dataset in currentDatasets"
+        v-for="dataset in showData"
         :key="dataset.metadata.name"
         class="mt-[20px]"
         :data="dataset"
@@ -95,7 +123,7 @@ const confirmDelete = () => {
       />
       <dao-pagination
         v-model:current-page="currentPage"
-        v-model:page-size="currentPageSize"
+        v-model:page-size="pageSize"
         class="mt-[20px]"
         :total="datasets.length"
       />

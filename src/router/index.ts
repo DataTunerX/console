@@ -2,12 +2,15 @@ import {
   createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHashHistory,
 } from 'vue-router';
 import type { App } from 'vue';
+import RouterContent from '@/views/RouterContent.vue';
+
 import DatasetList from '@/views/dataset/DatasetList.vue';
 import DatasetCreate from '@/views/dataset/DatasetCreate.vue';
+import DatasetDetail from '@/views/dataset/DatasetDetail.vue';
+
 import HyperparameterList from '@/views/hyperparameter/HyperparameterList.vue';
 import HyperparameterCreate from '@/views/hyperparameter/HyperparameterCreate.vue';
-import RouterContent from '@/views/RouterContent.vue';
-import DatasetDetail from '@/views/dataset/DatasetDetail.vue';
+import HyperparameterDetail from '@/views/hyperparameter/HyperparameterDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -50,6 +53,11 @@ const routes: Array<RouteRecordRaw> = [
             path: 'create',
             name: 'HyperparameterCreate',
             component: HyperparameterCreate,
+          },
+          {
+            path: ':name',
+            name: 'HyperparameterDetail',
+            component: HyperparameterDetail,
           },
         ],
 

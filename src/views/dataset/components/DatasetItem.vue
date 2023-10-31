@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
 import { Dataset } from '@/api/dataset';
-import { useDayjs } from '@/lib/util';
 import { useRouter } from 'vue-router';
+import { useDateFormat } from '@dao-style/extend';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   data: {
@@ -13,8 +16,6 @@ const props = defineProps({
 
 const router = useRouter();
 const emits = defineEmits(['on-delete']);
-
-const $dayjs = useDayjs();
 
 const editDataset = () => {
   router.push({
@@ -51,15 +52,15 @@ const infos = computed(() => {
     },
     {
       label: '训练数据',
-      value: splits?.test.file,
+      value: splits?.train.file,
     },
     {
       label: '创建时间',
-      value: creationTimestamp ? $dayjs(creationTimestamp).format('YYYY-MM-DD HH:mm') : '-',
+      value: useDateFormat(creationTimestamp),
     },
     {
       label: '测试数据',
-      value: splits?.train.file,
+      value: splits?.test.file,
     },
     {
       label: '标签',
@@ -73,6 +74,12 @@ const infos = computed(() => {
   ];
 
   return items;
+});
+
+const languages = computed(() => {
+  const langs = props.data.spec.datasetMetadata.languages;
+
+  return langs?.map((lang) => t(`views.dataset.${lang}`)).join(',') ?? '-';
 });
 </script>
 
@@ -166,11 +173,10 @@ const infos = computed(() => {
 
         <dao-key-value-layout-item
           class="text-center"
-          label="使用插件"
-          value="Value3"
+          label="语言"
         >
           <span class="dataset-item__text">
-            {{ props.data.spec.datasetMetadata.plugin.name ?? '-' }}
+            {{ languages }}
           </span>
         </dao-key-value-layout-item>
       </dao-key-value-layout>
@@ -187,6 +193,7 @@ const infos = computed(() => {
     color: var(--dao-text-pageTitle);
 
     &__text {
+      display: inline-block;
       max-width: 75%;
       margin-right: 30px;
       overflow: hidden;
