@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useNamespaceStore } from '@/stores/namespace';
-import { Hyperparameter, getHyperparameter } from '@/api/hyperparameter';
+import { Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
 import { useDateFormat } from '@dao-style/extend';
 import { nError } from '@/utils/useNoty';
 
@@ -15,7 +15,7 @@ const hyperparameter = ref<Hyperparameter | null>(null);
 // 获取超参数详细信息
 const fetchDataset = async () => {
   try {
-    const res = await getHyperparameter(namespaceStore.namespace, route.params.name as string);
+    const res = await hyperparameterClient.read(namespaceStore.namespace, route.params.name as string);
 
     hyperparameter.value = res.data;
   } catch (error) {

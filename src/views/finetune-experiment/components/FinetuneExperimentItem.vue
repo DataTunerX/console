@@ -1,15 +1,13 @@
+<!-- eslint-disable @typescript-eslint/no-shadow -->
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
-import { Dataset } from '@/api/dataset';
 import { useRouter } from 'vue-router';
 import { useDateFormat } from '@dao-style/extend';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import { FinetuneExperiment } from '@/api/finetune-experiment';
 
 const props = defineProps({
   data: {
-    type: Object as PropType<Dataset>,
+    type: Object as PropType<FinetuneExperiment>,
     default: () => ({}),
   },
 });
@@ -17,9 +15,9 @@ const props = defineProps({
 const router = useRouter();
 const emits = defineEmits(['on-delete']);
 
-const editDataset = () => {
+const editFineTuneExperiment = () => {
   router.push({
-    name: 'DatasetCreate',
+    name: 'FinetuneExperimentCreate',
     query: {
       name: props.data.metadata?.name,
     },
@@ -31,71 +29,55 @@ const onDelete = () => {
 };
 
 const infos = computed(() => {
-  const {
-    metadata,
-    spec,
-  } = props.data;
-
+  const { data: { metadata, spec } } = props;
   const creationTimestamp = metadata?.creationTimestamp;
-
-  const datasetMetadata = spec?.datasetMetadata;
-  const datasetInfo = datasetMetadata?.datasetInfo;
-  const task = datasetMetadata?.task;
-  const tags = datasetMetadata?.tags;
-
-  const [firstSubset] = datasetInfo?.subsets ?? [];
-  const splits = firstSubset ? firstSubset.splits : null;
+  const llms = spec?.finetuneJobs.map((job) => job.spec?.finetune.llm);
+  const datasets = spec?.finetuneJobs.map((job) => job.spec?.finetune.dataset);
+  const hyperparameters = spec?.finetuneJobs.map((job) => job.spec?.finetune.hyperparameter);
 
   const items = [
     {
-      label: '任务类型',
-      value: task?.name,
+      label: '基础大语言模型',
+      value: llms?.join(','),
+      slotId: 'llm',
     },
     {
-      label: '训练数据',
-      value: splits?.train?.file,
+      label: '数据集',
+      value: datasets?.join(','),
+      slotId: 'dataset',
+    },
+    {
+      label: '参数组',
+      value: hyperparameters?.join(','),
+      slotId: 'hyperparameter',
+    },
+    {
+      label: '评估方式',
+      value: spec?.scoringConfig.name,
     },
     {
       label: '创建时间',
       value: useDateFormat(creationTimestamp),
-    },
-    {
-      label: '测试数据',
-      value: splits?.test?.file,
-    },
-    {
-      label: '标签',
-      value: tags?.join(','),
-      slotId: 'tag',
-    },
-    {
-      label: '验证数据',
-      value: splits?.validate?.file,
     },
   ];
 
   return items;
 });
 
-const languages = computed(() => {
-  const langs = props.data.spec?.datasetMetadata.languages;
-
-  return langs?.map((lang) => t(`views.dataset.${lang}`)).join(',') ?? '-';
-});
 </script>
 
 <template>
   <dao-card
-    class="dataset-item"
+    class="finetune-experiment-item"
     icon="icon-mspider"
     divider
     use-font
   >
     <template #title>
       <router-link
-        class="dataset-item__header__text active"
+        class="finetune-experiment-item__header__text active"
         :to="{
-          name: 'DatasetDetail',
+          name: 'FinetuneExperimentDetail',
           params: { name: props.data.metadata?.name },
         }"
       >
@@ -103,11 +85,11 @@ const languages = computed(() => {
       </router-link>
 
       <dao-state-icon :type="'success'">
-        可用
+        运行中
       </dao-state-icon>
 
       <dao-state-icon :type="'error'">
-        不可用
+        运行中
       </dao-state-icon>
     </template>
 
@@ -121,8 +103,11 @@ const languages = computed(() => {
         />
         <template #menu>
           <dao-dropdown-menu>
-            <dao-dropdown-item @click="editDataset">
+            <dao-dropdown-item @click="editFineTuneExperiment">
               编辑
+            </dao-dropdown-item>
+            <dao-dropdown-item @click="editFineTuneExperiment">
+              停止
             </dao-dropdown-item>
             <dao-dropdown-item type="divider" />
             <dao-dropdown-item
@@ -136,12 +121,24 @@ const languages = computed(() => {
       </dao-dropdown>
     </template>
 
-    <dao-card-item>
+    <dao-card-item class="finetune-experiment-item__base-info">
       <dao-key-value-layout
         :column="2"
         :data="infos"
       >
-        <template #kv-tag="{ row }">
+        <template #kv-llm="{ row }">
+          <dao-key-value-layout-item :label="row.label">
+            <dao-hover-card :data="row.value?.split(',')" />
+          </dao-key-value-layout-item>
+        </template>
+
+        <template #kv-dataset="{ row }">
+          <dao-key-value-layout-item :label="row.label">
+            <dao-hover-card :data="row.value?.split(',')" />
+          </dao-key-value-layout-item>
+        </template>
+
+        <template #kv-hyperparameter="{ row }">
           <dao-key-value-layout-item :label="row.label">
             <dao-hover-card :data="row.value?.split(',')" />
           </dao-key-value-layout-item>
@@ -155,40 +152,46 @@ const languages = computed(() => {
         class="flex flex-nowrap flex-grow items-center"
       >
         <dao-key-value-layout-item
-          label="许可证信息"
+          label="已持续时间"
           class="text-center"
         >
-          <span class="dataset-item__text">
-            {{ props.data.spec?.datasetMetadata.license ?? "-" }}
+          <span class="finetune-experiment-item__text">
+            1小时32分
           </span>
         </dao-key-value-layout-item>
 
         <dao-key-value-layout-item
           class="text-center"
-          label="数据集大小"
+          label="最高评分"
         >
-          <span class="dataset-item__text dataset-item__size">
-            {{ props.data.spec?.datasetMetadata.size ?? "-" }}
+          <span class="finetune-experiment-item__text finetune-experiment-item__size">
+            86
           </span>
         </dao-key-value-layout-item>
 
         <dao-key-value-layout-item
           class="text-center"
-          label="语言"
+          label="任务状态"
         >
-          <span class="dataset-item__text">
-            {{ languages }}
-          </span>
+          <span class="finetune-experiment-item__text" />
         </dao-key-value-layout-item>
       </dao-key-value-layout>
     </dao-card-item>
   </dao-card>
 </template>
 
-<style lang="scss" scoped>
-.dataset-item {
+<style lang="scss">
+.finetune-experiment-item {
+  &.finetune-experiment-item{
+    margin-top: 20px;
+  }
+
+  // &__base-info.dao-card-item {
+  //   flex: 1.25 1 0;
+  // }
+
   &__header {
-    display: flex;
+   display: flex;
     align-items: center;
     font-weight: 700;
     color: var(--dao-text-pageTitle);
@@ -220,5 +223,10 @@ const languages = computed(() => {
   &__size {
     color: var(--dao-green-030);
   }
+
+}
+
+.dao-key-value-layout.is-horizontal .dao-key-value-layout-item__label {
+  width: 110px;
 }
 </style>

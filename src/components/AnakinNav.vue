@@ -6,14 +6,19 @@ import { NavRoute } from '@/types/common';
 const routes = computed<NavRoute[]>(() => {
   const items = [
     {
+      to: { name: 'FinetuneExperimentList' },
+      display: '微调实验',
+      icon: 'icon-registry',
+    },
+    {
       to: { name: 'DatasetList' },
       display: '数据集',
-      icon: 'icon-cluster',
+      icon: 'icon-apps',
     },
     {
       to: { name: 'HyperparameterList' },
       display: '参数组',
-      icon: 'icon-container',
+      icon: 'icon-config-file',
     },
   ] as NavRoute[];
 
@@ -31,13 +36,13 @@ const activeOpened = computed(() => getActiveRouteFold(routes.value));
     type="2nd"
     :active-opened="activeOpened"
   >
-    <template #header>
+    <!-- <template #header>
       <dao-nav-head
         icon="icon-engine"
         title="DataTunerX"
         use-font
       />
-    </template>
+    </template> -->
     <router-link
       v-for="(route, index) in routes"
       :key="index"
@@ -84,6 +89,7 @@ $ghippo-header-aside-button-padding: 2px;
   &__nav {
     z-index: 99;
     flex: none;
+    padding-top: 10px;
 
   //   .dao-icon.icon-new-tab {
   //     color: var(--dao-gray-blue-040);

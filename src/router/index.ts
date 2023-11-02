@@ -1,5 +1,5 @@
 import {
-  createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHashHistory,
+  createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHistory,
 } from 'vue-router';
 import type { App } from 'vue';
 import RouterContent from '@/views/RouterContent.vue';
@@ -11,6 +11,10 @@ import DatasetDetail from '@/views/dataset/DatasetDetail.vue';
 import HyperparameterList from '@/views/hyperparameter/HyperparameterList.vue';
 import HyperparameterCreate from '@/views/hyperparameter/HyperparameterCreate.vue';
 import HyperparameterDetail from '@/views/hyperparameter/HyperparameterDetail.vue';
+
+import FinetuneExperimentList from '@/views/finetune-experiment/FinetuneExperimentList.vue';
+import FinetuneExperimentDetail from '@/views/finetune-experiment/FinetuneExperimentDetail.vue';
+import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperimentCreate.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,7 +66,28 @@ const routes: Array<RouteRecordRaw> = [
         ],
 
       },
+      {
+        path: 'fine-tune',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'FinetuneExperimentList',
+            component: FinetuneExperimentList,
+          },
+          {
+            path: 'create',
+            name: 'FinetuneExperimentCreate',
+            component: FinetuneExperimentCreate,
+          },
+          {
+            path: ':name',
+            name: 'FinetuneExperimentDetail',
+            component: FinetuneExperimentDetail,
+          },
+        ],
 
+      },
     ],
   },
 ];
@@ -71,7 +96,7 @@ let router: Router | null = null;
 let history: RouterHistory | null = null;
 
 export default (app: App) => {
-  history = createWebHashHistory();
+  history = createWebHistory();
   router = createRouter({
     history,
     routes,

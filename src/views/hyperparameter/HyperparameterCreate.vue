@@ -15,11 +15,11 @@ import {
   type Hyperparameter,
   type StringParameters,
   FineTuningType,
-  SchedulerType,
-  OptimizerType,
+  Scheduler,
+  Optimizer,
   TrainerType,
-  createHyperparameter,
-  updateHyperparameter,
+  Quantization,
+  hyperparameterClient,
 } from '@/api/hyperparameter';
 import { object, string, number } from 'yup';
 import { cloneDeep } from 'lodash';
@@ -30,13 +30,6 @@ const router = useRouter();
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
 const title = computed(() => (isUpdate.value ? '更新参数组' : '创建参数组'));
-
-// 定义 Quantization 常量
-const Quantization = {
-  default: 'default',
-  int4: 'int4',
-  int8: 'int8',
-};
 
 // 定义表单验证模式
 const schema = markRaw(
@@ -49,15 +42,15 @@ const schema = markRaw(
         type: string().required(),
       }),
       parameters: object({
-        loRA_Alpha: number().required().min(0),
-        loRA_R: number().required().integer().min(3),
-        loRA_Dropout: number().required().min(0).max(1),
-        learningRate: number().required().min(0).max(1),
-        epochs: number().required().integer().min(2),
-        blockSize: number().required().integer().min(9),
-        batchSize: number().required().integer().min(2),
-        warmupRatio: number().required().min(0).max(1),
-        weightDecay: number().required().min(0).max(1),
+        loRA_Alpha: number().required().moreThan(0),
+        loRA_R: number().required().integer().moreThan(2),
+        loRA_Dropout: number().required().moreThan(0).lessThan(1),
+        learningRate: number().required().moreThan(0).lessThan(1),
+        epochs: number().required().integer().moreThan(1),
+        blockSize: number().required().integer().moreThan(8),
+        batchSize: number().required().integer().moreThan(1),
+        warmupRatio: number().required().moreThan(0).lessThan(1),
+        weightDecay: number().required().moreThan(0).lessThan(1),
         gradAccSteps: number().required().integer().min(1),
       }),
     }),
@@ -99,10 +92,10 @@ const onSubmit = handleSubmit(async () => {
   });
 
   try {
-    if (isUpdate.value) {
-      await updateHyperparameter(namespace.value, model);
+    if (isUpdate.value && model.metadata.name) {
+      await hyperparameterClient.update(namespace.value, model.metadata.name, model);
     } else {
-      await createHyperparameter(namespace.value, model);
+      await hyperparameterClient.create(namespace.value, model);
     }
     nSuccess('成功');
     toList();
@@ -208,7 +201,7 @@ onMounted(async () => {
               required
             >
               <dao-option
-                v-for="n in SchedulerType"
+                v-for="n in Scheduler"
                 :key="n"
                 :label="n"
                 :value="n"
@@ -222,7 +215,7 @@ onMounted(async () => {
               required
             >
               <dao-option
-                v-for="n in OptimizerType"
+                v-for="n in Optimizer"
                 :key="n"
                 :label="n"
                 :value="n"
@@ -231,14 +224,14 @@ onMounted(async () => {
           </div>
 
           <div class="flex space-x-5">
-            <dao-form-item-validate
+            <!-- <dao-form-item-validate
               class="w-[240px]"
               label-width="0px"
               name="spec.parameters.PEFT"
               :tag="DaoCheckbox"
             >
               PEFT
-            </dao-form-item-validate>
+            </dao-form-item-validate> -->
 
             <dao-form-item-validate
               label-width="0px"
@@ -296,6 +289,7 @@ onMounted(async () => {
               required
               :control-props="{
                 type: 'number',
+                step: 0.01,
               }"
             />
           </div>
@@ -309,6 +303,7 @@ onMounted(async () => {
               required
               :control-props="{
                 type: 'number',
+                step: 0.01,
               }"
             />
 
@@ -349,6 +344,7 @@ onMounted(async () => {
               required
               :control-props="{
                 type: 'number',
+                step: 0.01,
               }"
             />
 
@@ -358,6 +354,7 @@ onMounted(async () => {
               required
               :control-props="{
                 type: 'number',
+                step: 0.01,
               }"
             />
           </div>

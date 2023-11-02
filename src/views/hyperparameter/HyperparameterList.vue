@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import {
-  ref, watchEffect, computed, onMounted,
+  ref, watchEffect, computed, watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
-import { type Hyperparameter, deleteHyperparameter } from '@/api/hyperparameter';
+import { type Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { useDateFormat } from '@dao-style/extend';
@@ -51,9 +51,16 @@ const { hyperparameters, fetchHyperparameters, loading } = useHyperparameter();
 
 const refresh = () => fetchHyperparameters(namespace.value);
 
-onMounted(() => {
+// 监听命名空间变化，重新加载数据集
+watch(() => namespaceStore.namespace, () => {
   refresh();
+}, {
+  immediate: true,
 });
+
+const onSearch = () => {
+  currentPage.value = 1;
+};
 
 const filteredData = computed(() => hyperparameters.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? '')));
 
@@ -92,7 +99,7 @@ const showDialog = (hyperparameter: string) => {
 };
 
 const confirmDelete = () => {
-  deleteHyperparameter(namespace.value, hyperparameterToDelete)
+  hyperparameterClient.delete(namespace.value, hyperparameterToDelete)
     .then(() => {
       hideDialog();
       refresh();
@@ -122,6 +129,7 @@ const confirmDelete = () => {
       :data="showData"
       :total="filteredData.length"
       @refresh="refresh"
+      @search="onSearch"
     >
       <template #th-action="{ column }">
         <div>{{ column.header }}</div>

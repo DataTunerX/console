@@ -36,19 +36,14 @@ const namespace = computed({
     namespaceStore.setNamespace(val);
   },
 });
-
 </script>
 
 <template>
   <header class="ghippo-header">
-    <!-- <div class="ghippo-header-aside" /> -->
-    <span class="w-[210px] text-center">
-      DataTunerX
-    </span>
+    <!-- <div class="" /> -->
+    <span class="ghippo-header__product"> DataTunerX </span>
 
-    <span>
-      命名空间
-    </span>
+    <span class="ghippo-header__namespace"> 命名空间 </span>
     <dao-select
       v-model="namespace"
       search
@@ -68,19 +63,13 @@ const namespace = computed({
           trigger="click"
           :offset="5"
         >
-          <anakin-header-button
-            class="ghippo-user-trigger"
-          >
+          <anakin-header-button class="ghippo-user-trigger">
             <img
               class="ghippo-user-avatar ghippo-header-logo-img"
               :src="Avatar"
               alt="user.username"
             >
-            <span
-              class="ghippo-user-avatar ghippo-user-username"
-            >
-              Max
-            </span>
+            <span class="ghippo-user-avatar ghippo-user-username"> Max </span>
             <dao-icon
               use-font
               name="icon-dropdown-line"
@@ -110,7 +99,7 @@ const namespace = computed({
   </header>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $ghippo-header-background: var(--dao-top-gray-010);
 $ghippo-header-color: var(--dao-navigation-090);
 
@@ -120,6 +109,22 @@ $ghippo-header-color: var(--dao-navigation-090);
   height: 50px;
   color: $ghippo-header-color;
   background-color: $ghippo-header-background;
+
+  &__product {
+    width: 210px;
+    /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+    font-family: PingFang SC-Bold, PingFang SC;
+    font-size: 26px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+  }
+
+  &__namespace {
+    margin-left: 30px;
+    font-size: 16px;
+    font-weight: bold;
+  }
 }
 
 .ghippo-header-logo {

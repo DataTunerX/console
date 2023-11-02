@@ -1,7 +1,6 @@
 /* eslint-disable no-use-before-define */
-/* eslint-disable max-len */
-import httpClient from '@/plugins/request';
-import type { ObjectMeta } from 'kubernetes-types/meta/v1';
+import { K8sClient } from '@/plugins/axios/client';
+import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
 
 export enum LicenseType {
   CCBY = 'CC BY',
@@ -38,100 +37,205 @@ export interface DatasetList {
   apiVersion: string;
   items: Dataset[];
   kind: string;
-  metadata: ObjectMeta;
+  metadata: ListMeta;
 }
 
+/**
+ * Dataset is the Schema for the datasets API
+ */
 export interface Dataset {
-  apiVersion: string;
-  kind: string;
-  metadata: ObjectMeta;
-  spec: Spec;
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers
+   * should convert recognized schemas to the latest internal value, and may reject
+   * unrecognized values. More info:
+   * https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may
+   * infer this from the endpoint the client submits requests to. Cannot be updated. In
+   * CamelCase. More info:
+   * https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: ObjectMeta;
+  /**
+   * DatasetSpec defines the desired state of Dataset
+   */
+  spec?: Spec;
+  /**
+   * DatasetStatus defines the observed state of Dataset
+   */
+  status?: Status;
 }
 
+/**
+* DatasetSpec defines the desired state of Dataset
+*/
 export interface Spec {
+  /**
+   * DatasetCard defines a dataset's readme, in type of markdown
+   */
+  datasetCard?: DatasetCard;
+  /**
+   * DatasetFiles defines a dataset's source file address
+   */
+  datasetFiles?: DatasetFiles;
+  /**
+   * INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "make" to
+   * regenerate code after modifying this file
+   */
   datasetMetadata: DatasetMetadata;
-  datasetCard: DatasetCard;
-  datasetFiles: DatasetFiles;
 }
 
+/**
+* DatasetCard defines a dataset's readme, in type of markdown
+*/
+export interface DatasetCard {
+  datasetCardRef?: string;
+}
+
+/**
+* DatasetFiles defines a dataset's source file address
+*/
+export interface DatasetFiles {
+  source?: string;
+}
+
+/**
+* INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "make" to
+* regenerate code after modifying this file
+*/
 export interface DatasetMetadata {
-  languages: string[];
-  tags: string[];
-  license: string;
-  size: string;
-  task: Task;
-  datasetInfo: DatasetInfo;
-  plugin: Plugin;
+  /**
+   * DatasetInfo defines the dataset description include subsets and features
+   */
+  datasetInfo?: DatasetInfo;
+  languages?: string[];
+  license?: string;
+  /**
+   * Plugin defines a plugin used by a dataset
+   */
+  plugin?: Plugin;
+  size?: string;
+  tags?: string[];
+  /**
+   * Task defines a dataset task type
+   */
+  task?: Task;
 }
 
-export interface Task {
-  name: string;
-  subTasks: SubTask[];
-}
-
-export interface SubTask {
-  name: string;
-}
-
+/**
+* DatasetInfo defines the dataset description include subsets and features
+*/
 export interface DatasetInfo {
-  subsets: Subset[];
-  features: Feature[];
+  features?: Feature[];
+  subsets?: Subset[];
 }
 
+/**
+* Feature defines a dataset's column name as a feature and its data type and relationship
+* to finetune feature fields
+*/
+export interface Feature {
+  dataType?: string;
+  mapTo?: string;
+  name?: FeatureName;
+}
+
+export enum FeatureName {
+  Instruction = 'instruction',
+  Response = 'response',
+}
+
+/**
+* Subset defines a dataset‘s subset
+*/
 export interface Subset {
-  name: string;
+  name?: string;
+  /**
+   * Splits defines a dataset's train-splits, test-splits, validate-splits address info
+   */
   splits?: Splits;
 }
 
+/**
+* Splits defines a dataset's train-splits, test-splits, validate-splits address info
+*/
 export interface Splits {
-  train: File;
-  test: File;
-  validate: File;
+  /**
+   * Test defines a dataset's subsets' test-splits file address
+   */
+  test?: Test;
+  /**
+   * Train defines a dataset's subsets' train-splits file address
+   */
+  train?: Train;
+  /**
+   * Validate defines a dataset's subsets' validate-splits file address
+   */
+  validate?: Validate;
 }
 
-export interface File {
-  file: string;
+/**
+* Test defines a dataset's subsets' test-splits file address
+*/
+export interface Test {
+  file?: string;
 }
 
-export interface Feature {
-  name: string;
-  dataType: string;
-  mapTo: string;
+/**
+* Train defines a dataset's subsets' train-splits file address
+*/
+export interface Train {
+  file?: string;
 }
 
+/**
+* Validate defines a dataset's subsets' validate-splits file address
+*/
+export interface Validate {
+  file?: string;
+}
+
+/**
+* Plugin defines a plugin used by a dataset
+*/
 export interface Plugin {
   loadPlugin: boolean;
-  name: string;
-  parameters: string;
+  name?: string;
+  parameters?: string;
 }
 
-export interface DatasetCard {
-  datasetCardRef: string;
+/**
+* Task defines a dataset task type
+*/
+export interface Task {
+  name?: string;
+  subTasks?: SubTask[];
 }
 
-export interface DatasetFiles {
-  source: string;
+/**
+* EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE: json tags are required.  Any
+* new fields you add must have json tags for the fields to be serialized. SubTask defines a
+* dataset task's subtask
+*/
+export interface SubTask {
+  name?: string;
+}
+
+/**
+* DatasetStatus defines the observed state of Dataset
+*/
+export interface Status {
+  /**
+   * INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make"
+   * to regenerate code after modifying this file
+   */
+  state?: string;
 }
 
 const apiVersion = 'extension.datatunerx.io/v1beta1';
+const kind = 'Dataset';
 
-export const createDataset = (namespace: string, dataset: Dataset) => httpClient.post<Dataset>(`/apis/${apiVersion}/namespaces/${namespace}/datasets`, dataset);
-
-export const updateDataset = (namespace: string, dataset: Dataset) => httpClient.put<Dataset>(
-  `/apis/${apiVersion}/namespaces/${namespace}/datasets/${dataset.metadata.name}`,
-  dataset,
-);
-
-export const listDatasets = (namespace: string) => httpClient.get<DatasetList>(`/apis/${apiVersion}/namespaces/${namespace}/datasets`);
-
-export const getDataset = (namespace: string, name: string) => httpClient.get<Dataset>(`/apis/${apiVersion}/namespaces/${namespace}/datasets/${name}`);
-
-export const deleteDataset = (namespace: string, name: string) => httpClient.delete<DatasetList>(`/apis/${apiVersion}/namespaces/${namespace}/datasets/${name}`);
-
-export default {
-  createDataset,
-  updateDataset,
-  listDatasets,
-  getDataset,
-  deleteDataset,
-};
+export const datasetClient = new K8sClient<Dataset>(apiVersion, kind);

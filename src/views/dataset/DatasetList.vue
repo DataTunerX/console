@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import {
-  ref, watch, watchEffect,
-  computed,
+  ref, watch, watchEffect, computed,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useNamespaceStore } from '@/stores/namespace';
-import { Dataset, listDatasets, deleteDataset } from '@/api/dataset';
+import { Dataset, datasetClient } from '@/api/dataset';
 import { nSuccess, nError } from '@/utils/useNoty';
 import { storeToRefs } from 'pinia';
 import { first } from 'lodash';
@@ -13,14 +12,13 @@ import DatasetItem from './components/DatasetItem.vue';
 
 // 常量定义
 const pageSize = ref(10);
-const defaultSearch = { fuzzy: [] };
 
 const router = useRouter();
 const namespaceStore = useNamespaceStore();
 const { namespace } = storeToRefs(namespaceStore);
 
 // 数据状态
-const search = ref(defaultSearch);
+const search = ref<{ fuzzy: string[] }>();
 const currentPage = ref(1);
 const datasets = ref<Dataset[]>([]);
 const loading = ref(true);
@@ -39,7 +37,7 @@ const onCreate = () => {
 const fetchDatasets = async () => {
   loading.value = true;
   try {
-    const res = await listDatasets(namespace.value);
+    const res = await datasetClient.list(namespace.value);
 
     datasets.value = res.data.items;
 
@@ -53,8 +51,12 @@ const fetchDatasets = async () => {
   }
 };
 
+const onSearch = () => {
+  currentPage.value = 1;
+};
+
 // 显示数据集列表
-const filteredData = computed(() => datasets.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? '')));
+const filteredData = computed(() => datasets.value.filter((item) => item.metadata?.name?.includes(first(search.value?.fuzzy) ?? '')));
 
 watchEffect(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
@@ -76,21 +78,27 @@ const hideDialog = () => {
 
 // 确认删除数据集
 const confirmDelete = () => {
-  deleteDataset(namespace.value, datasetToDelete.value).then(() => {
-    hideDialog();
-    fetchDatasets();
-    nSuccess('删除成功');
-  }).catch((err) => {
-    nError('删除失败', err);
-  });
+  datasetClient.delete(namespace.value, datasetToDelete.value)
+    .then(() => {
+      hideDialog();
+      fetchDatasets();
+      nSuccess('删除成功');
+    })
+    .catch((err) => {
+      nError('删除失败', err);
+    });
 };
 
 // 监听命名空间变化，重新加载数据集
-watch(() => namespaceStore.namespace, () => {
-  fetchDatasets();
-}, {
-  immediate: true,
-});
+watch(
+  () => namespaceStore.namespace,
+  () => {
+    fetchDatasets();
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <template>
@@ -105,6 +113,7 @@ watch(() => namespaceStore.namespace, () => {
       :search-placeholder="' '"
       :fuzzy="{ key: 'fuzzy', single: true }"
       @refresh="fetchDatasets"
+      @search="onSearch"
     >
       <template #action>
         <dao-button @click="onCreate">
@@ -116,7 +125,7 @@ watch(() => namespaceStore.namespace, () => {
     <div v-loading="loading">
       <dataset-item
         v-for="dataset in showData"
-        :key="dataset.metadata.name"
+        :key="dataset.metadata?.name"
         class="mt-[20px]"
         :data="dataset"
         @on-delete="(dataset) => showDialog(dataset)"
@@ -125,7 +134,7 @@ watch(() => namespaceStore.namespace, () => {
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
         class="mt-[20px]"
-        :total="datasets.length"
+        :total="filteredData.length"
       />
     </div>
   </div>
@@ -154,6 +163,5 @@ watch(() => namespaceStore.namespace, () => {
 .dataset-list {
   flex: auto;
   overflow: auto;
-
 }
 </style>

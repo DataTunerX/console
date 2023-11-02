@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useNamespaceStore } from '@/stores/namespace';
-import { Dataset, getDataset } from '@/api/dataset';
+import { Dataset, datasetClient } from '@/api/dataset';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -14,17 +14,17 @@ const namespaceStore = useNamespaceStore();
 const dataset = ref<Dataset>();
 
 const fetchDataset = () => {
-  getDataset(namespaceStore.namespace, route.params.name as string).then((res) => {
+  datasetClient.read(namespaceStore.namespace, route.params.name as string).then((res) => {
     dataset.value = res.data;
   });
 };
 
 fetchDataset();
 
-const name = computed(() => dataset.value?.metadata.name);
+const name = computed(() => dataset.value?.metadata?.name);
 
 const infos = computed(() => {
-  const languages = dataset.value?.spec.datasetMetadata.languages?.map((lang) => t(`views.dataset.${lang}`)).join(', ') ?? '-';
+  const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.dataset.${lang}`)).join(', ') ?? '-';
 
   const items = [
     {
@@ -33,28 +33,28 @@ const infos = computed(() => {
     },
     {
       label: '许可证',
-      value: dataset.value?.spec.datasetMetadata.license,
+      value: dataset.value?.spec?.datasetMetadata.license,
     },
     {
       label: '词条数目',
-      value: dataset.value?.spec.datasetMetadata.size,
+      value: dataset.value?.spec?.datasetMetadata.size,
     },
     {
       label: '任务类型',
-      value: dataset.value?.spec.datasetMetadata.task.name,
+      value: dataset.value?.spec?.datasetMetadata.task?.name,
     },
     {
       label: '标签',
-      value: dataset.value?.spec.datasetMetadata.tags?.join(','),
+      value: dataset.value?.spec?.datasetMetadata.tags?.join(','),
       slotId: 'tag',
     },
     {
       label: '子任务类型',
-      value: dataset.value?.spec.datasetMetadata.task.subTasks.map((sub) => sub.name).join(', '),
+      value: dataset.value?.spec?.datasetMetadata.task?.subTasks?.map((sub) => sub.name).join(', '),
     },
     {
       label: '数据集文件源',
-      value: dataset.value?.spec.datasetFiles?.source,
+      value: dataset.value?.spec?.datasetFiles?.source,
     },
   ];
 
@@ -80,11 +80,11 @@ const columns = computed(() => [
   },
 ]);
 
-const subsets = computed(() => dataset.value?.spec.datasetMetadata.datasetInfo.subsets?.map((subset) => ({
+const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?.subsets?.map((subset) => ({
   name: subset.name,
-  train: subset.splits?.train.file,
-  test: subset.splits?.test.file,
-  validate: subset.splits?.validate.file,
+  train: subset.splits?.train?.file,
+  test: subset.splits?.test?.file,
+  validate: subset.splits?.validate?.file,
 })));
 
 </script>

@@ -120,6 +120,11 @@ module.exports = {
     "@typescript-eslint/no-shadow": "error",
     curly: "error", // 强制if括号包裹，无效
     "max-len": ["error", { code: 150, ignoreStrings: true }],
+    "jsonc/indent": ["error",
+        2,
+        {}
+    ],
+    // "jsonc/auto": true,
     ...vuejsAccessibilityOff,
   },
   overrides: [

@@ -1,4 +1,6 @@
-import { type Dataset, getDataset } from '@/api/dataset';
+import {
+  type Dataset, FeatureName, datasetClient,
+} from '@/api/dataset';
 import { SizeType, LicenseType, LanguageOptions } from '@/api/dataset';
 import { reactive, ref, toRefs } from 'vue';
 
@@ -22,12 +24,12 @@ export function useDataset() {
             {
               dataType: 'string',
               mapTo: 'Content',
-              name: 'instruction',
+              name: FeatureName.Instruction,
             },
             {
               dataType: 'string',
               mapTo: 'Result',
-              name: 'response',
+              name: FeatureName.Response,
             },
           ],
           subsets: [
@@ -68,16 +70,24 @@ export function useDataset() {
   const state = reactive({
     dataset,
     loading: false,
+    datasets: [] as Dataset[],
   });
 
   const fetchDataset = async (namespace: string, name: string) => {
-    await getDataset(namespace, name).then((res) => {
+    await datasetClient.read(namespace, name).then((res) => {
       state.dataset = res.data;
+    });
+  };
+
+  const fetchDatasets = async (namespace: string) => {
+    await datasetClient.list(namespace).then((res) => {
+      state.datasets = res.data.items;
     });
   };
 
   return {
     ...toRefs(state),
     fetchDataset,
+    fetchDatasets,
   };
 }

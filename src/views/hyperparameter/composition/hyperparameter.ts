@@ -2,11 +2,11 @@ import { reactive, toRefs } from 'vue';
 import {
   Hyperparameter,
   FineTuningType,
-  SchedulerType,
-  OptimizerType,
+  Scheduler,
+  Optimizer,
   TrainerType,
-  getHyperparameter,
-  listHyperparameters,
+  Quantization,
+  hyperparameterClient,
 } from '@/api/hyperparameter';
 import { nError } from '@/utils/useNoty';
 
@@ -22,8 +22,8 @@ const defaultHyperparameter: Hyperparameter = {
       type: FineTuningType.SFT,
     },
     parameters: {
-      scheduler: SchedulerType.COSINE,
-      optimizer: OptimizerType.ADAM,
+      scheduler: Scheduler.Cosine,
+      optimizer: Optimizer.AdamW,
       int4: false,
       int8: false,
       loRA_R: '4',
@@ -36,10 +36,10 @@ const defaultHyperparameter: Hyperparameter = {
       warmupRatio: '0.1',
       weightDecay: '0.0001',
       gradAccSteps: 1,
-      trainerType: TrainerType.STANDARD,
+      trainerType: TrainerType.Standard,
       PEFT: false,
       FP16: false,
-      quantization: 'int4',
+      quantization: Quantization.default,
     },
   },
 };
@@ -54,7 +54,7 @@ export const useHyperparameter = () => {
   // 获取指定命名空间和名称的超参数
   const fetchHyperparameter = async (namespace: string, name: string) => {
     try {
-      const res = await getHyperparameter(namespace, name);
+      const res = await hyperparameterClient.read(namespace, name);
 
       state.hyperparameter = res.data;
     } catch (error) {
@@ -66,7 +66,7 @@ export const useHyperparameter = () => {
   const fetchHyperparameters = async (namespace: string) => {
     try {
       state.loading = true;
-      const res = await listHyperparameters(namespace);
+      const res = await hyperparameterClient.list(namespace);
 
       state.hyperparameters = res.data.items;
     } catch (error) {

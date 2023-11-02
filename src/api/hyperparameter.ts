@@ -1,32 +1,24 @@
 /* eslint-disable no-use-before-define */
-import type { ObjectMeta } from 'kubernetes-types/meta/v1';
-import httpClient from '@/plugins/request';
+import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
+import { K8sClient } from '@/plugins/axios/client';
 
 export enum FineTuningType {
   // SFT：生成模型GPT的有监督精调 (supervised fine-tuning)
   SFT = 'SFT',
 }
 
-export enum SchedulerType {
-  COSINE = 'cosine',
-  LINEAR = 'linear',
-  CONSTANT = 'constant',
-}
-
-export enum OptimizerType {
-  ADAM = 'adam',
-  ADAMW = 'adamw',
-  SGD = 'sgd',
-}
-export enum TrainerType {
-  STANDARD = 'Standard',
+// 定义 Quantization 常量
+export enum Quantization {
+  default= 'default',
+  int4= 'int4',
+  int8= 'int8'
 }
 
 export interface HyperparameterList {
   apiVersion: string;
   items: Hyperparameter[];
   kind: string;
-  metadata: ObjectMeta;
+  metadata: ListMeta;
 }
 
 /**
@@ -84,7 +76,6 @@ export interface Objective {
  * Finetune paramenter config.
  */
 export interface Parameters {
-  // [key: string]: string | number | boolean | undefined;
   /**
    * BatchSize specifies the size of mini-batches.
    */
@@ -132,7 +123,7 @@ export interface Parameters {
   /**
    * Optimizer specifies the optimization algorithm.
    */
-  optimizer: string;
+  optimizer: Optimizer;
   /**
    * PEFT indicates whether to enable Performance Evaluation and Forecasting Tool.
    */
@@ -140,7 +131,7 @@ export interface Parameters {
   /**
    * Scheduler specifies the learning rate scheduler.
    */
-  scheduler: string;
+  scheduler: Scheduler;
   /**
    * TrainerType specifies the type of trainer to use.
    */
@@ -154,38 +145,40 @@ export interface Parameters {
    */
   weightDecay: string;
 
-  quantization?: string;
+  quantization: Quantization;
 }
 
-export type StringParameters = Pick<Parameters, 'learningRate' | 'loRA_Alpha'|'loRA_Dropout'|'loRA_R'|'warmupRatio'|'weightDecay'>;
+/**
+* Optimizer specifies the optimization algorithm.
+*/
+export enum Optimizer {
+  Adam = 'Adam',
+  AdamW = 'AdamW',
+  Sgd = 'SGD',
+}
+
+/**
+* Scheduler specifies the learning rate scheduler.
+*/
+export enum Scheduler {
+  Constant = 'Constant',
+  Cosine = 'Cosine',
+  Linear = 'Linear',
+}
+
+/**
+ * TrainerType specifies the type of trainer to use.
+ */
+export enum TrainerType {
+  Standard = 'Standard',
+}
+
+export type StringParameters = Pick<
+  Parameters,
+  'learningRate' | 'loRA_Alpha' | 'loRA_Dropout' | 'loRA_R' | 'warmupRatio' | 'weightDecay'
+>;
 
 const apiVersion = 'core.datatunerx.io/v1beta1';
-const pathTemplate = `/apis/${apiVersion}/namespaces/{namespace}/hyperparameters`;
+const kind = 'Hyperparameter';
 
-const path = (namespace: string) => `${pathTemplate.replace('{namespace}', encodeURIComponent(namespace))}`;
-
-export const listHyperparameters = (namespace: string) => httpClient.get<HyperparameterList>(path(namespace));
-
-export const createHyperparameter = (namespace: string, hyperparameter: Hyperparameter) => {
-  const url = path(namespace);
-
-  return httpClient.post<Hyperparameter>(url, hyperparameter);
-};
-
-export const updateHyperparameter = (namespace: string, hyperparameter: Hyperparameter) => {
-  const url = `${path(namespace)}/${hyperparameter.metadata.name}`;
-
-  return httpClient.put<Hyperparameter>(url, hyperparameter);
-};
-
-export const getHyperparameter = (namespace: string, name: string) => httpClient.get<Hyperparameter>(`${path(namespace)}/${name}`);
-
-export const deleteHyperparameter = (namespace: string, name: string) => httpClient.delete<HyperparameterList>(`${path(namespace)}/${name}`);
-
-export default {
-  createHyperparameter,
-  updateHyperparameter,
-  listHyperparameters,
-  getHyperparameter,
-  deleteHyperparameter,
-};
+export const hyperparameterClient = new K8sClient<Hyperparameter>(apiVersion, kind);

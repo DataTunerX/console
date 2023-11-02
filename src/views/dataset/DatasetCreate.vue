@@ -9,19 +9,18 @@ import { DaoSelect, DaoSwitch } from '@dao-style/core';
 import {
   LicenseType,
   SizeType,
-  createDataset,
-  updateDataset,
   type Dataset,
   LanguageOptions,
+  datasetClient,
 } from '@/api/dataset';
 import {
   object, array, string, addMethod,
 } from 'yup';
-import { Plugin, listPlugins } from '@/api/plugin';
+import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useRoute, useRouter } from 'vue-router';
 import { nError } from '@/utils/useNoty';
-import { KubernetesError, HttpStatusCode } from '@/plugins/request';
+import { KubernetesError, HttpStatusCode } from '@/plugins/axios';
 import { useDataset } from './composition/create';
 
 const namespaceStore = useNamespaceStore();
@@ -36,7 +35,7 @@ const state = reactive({
 });
 
 const fetchPlugins = () => {
-  listPlugins(namespaceStore.namespace).then((res) => {
+  dataPluginClient.list(namespaceStore.namespace).then((res) => {
     state.plugins = res.data.items;
   });
 };
@@ -183,7 +182,7 @@ const { remove: removeFromRules, push: pushToRules } = useFieldArray(
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
-const canRemove = computed(() => formModel.spec.datasetMetadata.datasetInfo.subsets.length > 1);
+const canRemove = computed(() => (formModel.spec?.datasetMetadata.datasetInfo?.subsets?.length ?? 0) > 1);
 
 const toList = () => {
   router.push({
@@ -199,10 +198,10 @@ const toList = () => {
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    if (isUpdate.value) {
-      await updateDataset(namespaceStore.namespace, values);
+    if (isUpdate.value && values.metadata?.name) {
+      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, values);
     } else {
-      await createDataset(namespaceStore.namespace, values);
+      await datasetClient.create(namespaceStore.namespace, values);
     }
     toList();
   } catch (error) {
@@ -221,7 +220,7 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 watch(
-  () => formModel.spec.datasetMetadata.plugin.loadPlugin,
+  () => formModel.spec?.datasetMetadata.plugin?.loadPlugin,
   (val) => {
     if (!val) {
       resetForm();
@@ -254,7 +253,7 @@ watch(
       />
 
       <dao-form-item-validate
-        v-if="formModel.spec.datasetMetadata.plugin.loadPlugin"
+        v-if="formModel.spec?.datasetMetadata.plugin?.loadPlugin"
         label="插件名称"
         :tag="DaoSelect"
         required
@@ -374,7 +373,7 @@ watch(
             label-width="85px"
           >
             <div
-              v-for="(tag, index) in formModel.spec.datasetMetadata.task.subTasks"
+              v-for="(tag, index) in formModel.spec?.datasetMetadata.task?.subTasks"
               :key="index"
               class="flex"
             >
@@ -419,7 +418,7 @@ watch(
         <dao-form-item :label="'数据集信息'">
           <div class="kpd-form-block">
             <div
-              v-for="(rule, index) in formModel.spec.datasetMetadata.datasetInfo.subsets"
+              v-for="(rule, index) in formModel.spec?.datasetMetadata.datasetInfo?.subsets"
               :key="index"
               class="kpd-form-block__item"
             >
@@ -487,7 +486,7 @@ watch(
 
         <dao-form-item label="特征映射">
           <div
-            v-for="(tag, index) in formModel.spec.datasetMetadata.datasetInfo.features"
+            v-for="(tag, index) in formModel.spec?.datasetMetadata.datasetInfo?.features"
             :key="index"
             class="flex"
           >
