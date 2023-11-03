@@ -115,4 +115,4 @@ patch-release:
 .PHONY: build
 build:
 		yarn build
-		docker buildx build --builder=builder --platform linux/amd64,linux/arm64 -t release.daocloud.io/max/datatunerx-ui:v0.0.3 -f Dockerfile . --push
+		docker buildx build --builder=builder --platform linux/amd64,linux/arm64 -t release.daocloud.io/max/datatunerx-ui:v0.0.4 -f Dockerfile . --push
