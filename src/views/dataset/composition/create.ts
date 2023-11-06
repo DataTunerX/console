@@ -1,71 +1,76 @@
 import {
-  type Dataset, FeatureName, datasetClient,
+  type Dataset,
+  FeatureName,
+  datasetClient,
+  SizeType,
+  LicenseType,
+  LanguageOptions,
+  TEXT_GENERATION,
 } from '@/api/dataset';
-import { SizeType, LicenseType, LanguageOptions } from '@/api/dataset';
 import { reactive, ref, toRefs } from 'vue';
 
-export function useDataset() {
-  const dataset = ref<Dataset>({
-    apiVersion: 'extension.datatunerx.io/v1beta1',
-    kind: 'Dataset',
-    metadata: {
-      name: 'example-dataset',
+const initialValue: Dataset = {
+  apiVersion: 'extension.datatunerx.io/v1beta1',
+  kind: 'Dataset',
+  metadata: {
+    name: 'example-dataset',
+  },
+  spec: {
+    datasetCard: {
+      datasetCardRef: 'configmap-dataset-readme',
     },
-    spec: {
-      datasetCard: {
-        datasetCardRef: 'configmap-dataset-readme',
-      },
-      datasetFiles: {
-        source: '',
-      },
-      datasetMetadata: {
-        datasetInfo: {
-          features: [
-            {
-              dataType: 'string',
-              mapTo: 'Content',
-              name: FeatureName.Instruction,
-            },
-            {
-              dataType: 'string',
-              mapTo: 'Result',
-              name: FeatureName.Response,
-            },
-          ],
-          subsets: [
-            {
-              name: 'Default',
-              splits: {
-                test: {
-                  file: '',
-                },
-                train: {
-                  file: '',
-                },
-                validate: {
-                  file: '',
-                },
+    datasetFiles: {
+      source: '',
+    },
+    datasetMetadata: {
+      datasetInfo: {
+        features: [
+          {
+            dataType: 'string',
+            mapTo: 'Content',
+            name: FeatureName.Instruction,
+          },
+          {
+            dataType: 'string',
+            mapTo: 'Result',
+            name: FeatureName.Response,
+          },
+        ],
+        subsets: [
+          {
+            name: 'Default',
+            splits: {
+              test: {
+                file: '',
+              },
+              train: {
+                file: '',
+              },
+              validate: {
+                file: '',
               },
             },
-          ],
-        },
-        languages: [LanguageOptions.zh],
-        license: LicenseType.CCBY,
-        plugin: {
-          loadPlugin: false,
-          name: '',
-          parameters: '{\n  "Param1": "value1",\n  "Param2": 42\n}\n',
-        },
-        size: SizeType.SIZE_1K,
-        tags: ['NLP'],
-        task: {
-          name: 'Translation',
-          subTasks: [
-          ],
-        },
+          },
+        ],
+      },
+      languages: [LanguageOptions.zh],
+      license: LicenseType.CCBY,
+      plugin: {
+        loadPlugin: false,
+        name: '',
+      },
+      size: SizeType.SIZE_1K,
+      tags: [],
+      task: {
+        name: TEXT_GENERATION,
+        subTasks: [],
       },
     },
-  });
+  },
+};
+
+export function useDataset() {
+  const dataset = ref<Dataset>(initialValue);
 
   const state = reactive({
     dataset,

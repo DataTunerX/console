@@ -24,7 +24,9 @@ fetchDataset();
 const name = computed(() => dataset.value?.metadata?.name);
 
 const infos = computed(() => {
-  const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.dataset.${lang}`)).join(', ') ?? '-';
+  const languages = dataset.value?.spec?.datasetMetadata.languages
+    ?.map((lang) => t(`views.dataset.${lang}`))
+    .join(', ') ?? '-';
 
   const items = [
     {
@@ -87,13 +89,19 @@ const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?
   validate: subset.splits?.validate?.file,
 })));
 
+const onEdit = () => {
+  router.push({
+    name: 'DatasetCreate',
+    query: {
+      name: name.value,
+    },
+  });
+};
 </script>
 
 <template>
   <div class="dataset-detail console-main-container">
-    <dao-header
-      type="3rd"
-    >
+    <dao-header type="3rd">
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-cluster"
@@ -103,10 +111,17 @@ const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?
             label="数据集"
             :to="{ name: 'DatasetList' }"
           />
-          <dao-breadcrumb-item
-            :label="name"
-          />
+          <dao-breadcrumb-item :label="name" />
         </dao-breadcrumb>
+      </template>
+
+      <template #action>
+        <dao-button
+          type="tertiary"
+          @click="onEdit"
+        >
+          编辑
+        </dao-button>
       </template>
     </dao-header>
 
@@ -132,7 +147,7 @@ const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?
     <dao-card
       type="simple"
       title="数据集信息配置"
-      class="mt-[16px]"
+      class="dataset-detail__subset-info"
     >
       <dao-card-item>
         <dao-table
@@ -146,3 +161,15 @@ const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?
     </dao-card>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.dataset-detail {
+  &__subset-info {
+    margin-top: 16px;
+
+    :deep(.dao-card-container) {
+      padding: 0;
+    }
+  }
+}
+</style>

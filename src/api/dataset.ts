@@ -148,6 +148,33 @@ export enum FeatureName {
   Response = 'response',
 }
 
+export const TEXT_GENERATION = 'Text Generation';
+const LANGUAGE_MODELING = 'language-modeling';
+const MASKED_LANGUAGE_MODELING = 'masked-language-modeling';
+const NATURAL_LANGUAGE_INFERENCE = 'natural-language-inference';
+
+export const QUESTION_ANSWERING = 'Question Answering';
+const EXTRACTIVE_QA = 'extractive-qa';
+const OPEN_DOMAIN_QA = 'open-domain-qa';
+const MULTI_CHOICE_QA = 'multi-choice-qa';
+const CLOSED_DOMAIN_QA = 'closed-domain-qa';
+
+export const TEXT_CLASSIFICATION = 'Text Classification';
+const MULTI_CLASS_CLASSIFICATION = 'multi-class-classification';
+const SENTIMENT_CLASSIFICATION = 'sentiment-classification';
+const TOPIC_CLASSIFICATION = 'topic-classification';
+const MULTI_LABEL_CLASSIFICATION = 'multi-label-classification';
+
+export const SUMMARIZATION = 'Summarization';
+const NEWS_ARTICLES_SUMMARIZATION = 'news-articles-summarization';
+
+export const taskCategories = {
+  [TEXT_GENERATION]: [LANGUAGE_MODELING, MASKED_LANGUAGE_MODELING, NATURAL_LANGUAGE_INFERENCE],
+  [QUESTION_ANSWERING]: [EXTRACTIVE_QA, OPEN_DOMAIN_QA, MULTI_CHOICE_QA, CLOSED_DOMAIN_QA],
+  [TEXT_CLASSIFICATION]: [MULTI_CLASS_CLASSIFICATION, SENTIMENT_CLASSIFICATION, TOPIC_CLASSIFICATION, MULTI_LABEL_CLASSIFICATION],
+  [SUMMARIZATION]: [NEWS_ARTICLES_SUMMARIZATION],
+};
+
 /**
 * Subset defines a dataset‘s subset
 */

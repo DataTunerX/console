@@ -134,6 +134,15 @@ const getLabels = (row?: Record<string, string> | null) => {
 
   return Object.entries(row).map(([key, value]) => `${key}:${value}`);
 };
+
+const onEdit = () => {
+  router.push({
+    name: 'HyperparameterCreate',
+    query: {
+      name: name.value,
+    },
+  });
+};
 </script>
 
 <template>
@@ -150,6 +159,15 @@ const getLabels = (row?: Record<string, string> | null) => {
           />
           <dao-breadcrumb-item :label="name" />
         </dao-breadcrumb>
+      </template>
+
+      <template #action>
+        <dao-button
+          type="tertiary"
+          @click="onEdit"
+        >
+          编辑
+        </dao-button>
       </template>
     </dao-header>
 

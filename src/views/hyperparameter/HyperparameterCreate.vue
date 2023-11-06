@@ -159,7 +159,7 @@ onMounted(async () => {
     @cancel="$router.back"
     @confirm="onSubmit"
   >
-    <dao-form>
+    <dao-form label-width="120px">
       <dao-form-group title="基本信息">
         <dao-form-item-validate
           label="参数组名称"
@@ -167,6 +167,7 @@ onMounted(async () => {
           required
           :control-props="{
             disabled: isUpdate,
+            class: 'input-form-width'
           }"
         />
 
@@ -175,6 +176,10 @@ onMounted(async () => {
           label="微调类型"
           name="spec.objective.type"
           required
+          :control-props="{
+            disabled: isUpdate,
+            class: 'select-form-width'
+          }"
         >
           <dao-option
             v-for="fineTuning in FineTuningType"
@@ -190,9 +195,7 @@ onMounted(async () => {
       type="vertical"
       class="mt-[20px]"
     >
-      <dao-form-group
-        title="参数配置"
-      >
+      <dao-form-group title="参数配置">
         <div class="flex flex-wrap flex-col items-start">
           <div class="parameter-card mb-6">
             <div class="flex space-x-5">
@@ -224,37 +227,6 @@ onMounted(async () => {
                 />
               </dao-form-item-validate>
 
-              <!-- <dao-form-item-validate
-                class="w-[240px]"
-                label-width="0px"
-                name="spec.parameters.PEFT"
-                :tag="DaoCheckbox"
-              >
-                PEFT
-              </dao-form-item-validate> -->
-            </div>
-
-            <div class="flex space-x-5">
-              <dao-form-item-validate
-                :tag="DaoSelect"
-                label="Int4/8"
-                name="spec.parameters.quantization"
-                required
-              >
-                <dao-option
-                  label="默认"
-                  :value="Quantization.default"
-                />
-                <dao-option
-                  label="int4"
-                  :value="Quantization.int4"
-                />
-                <dao-option
-                  label="int8"
-                  :value="Quantization.int8"
-                />
-              </dao-form-item-validate>
-
               <dao-form-item-validate
                 label="FP16"
                 name="spec.parameters.FP16"
@@ -271,6 +243,15 @@ onMounted(async () => {
                   label="False"
                 />
               </dao-form-item-validate>
+
+              <!-- <dao-form-item-validate
+                class="w-[240px]"
+                label-width="0px"
+                name="spec.parameters.PEFT"
+                :tag="DaoCheckbox"
+              >
+                PEFT
+              </dao-form-item-validate> -->
             </div>
 
             <div class="flex space-x-5">
@@ -301,6 +282,28 @@ onMounted(async () => {
                   step: 0.01,
                 }"
               />
+            </div>
+
+            <div class="flex space-x-5">
+              <dao-form-item-validate
+                :tag="DaoSelect"
+                label="Int4/8"
+                name="spec.parameters.quantization"
+                required
+              >
+                <dao-option
+                  label="默认"
+                  :value="Quantization.default"
+                />
+                <dao-option
+                  label="int4"
+                  :value="Quantization.int4"
+                />
+                <dao-option
+                  label="int8"
+                  :value="Quantization.int8"
+                />
+              </dao-form-item-validate>
             </div>
           </div>
 
@@ -399,11 +402,18 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+$form-width: 400px;
+
+:deep(.input-form-width.dao-input),
+:deep(.select-form-width.dao-select) {
+  width: $form-width;
+}
+
 .parameter-card {
   display: inline-flex;
   flex-direction: column;
   padding: 20px 20px 0;
   border-radius: 15px;
-  box-shadow: 0 0 10px 0 rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

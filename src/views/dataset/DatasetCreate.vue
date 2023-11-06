@@ -7,7 +7,7 @@ import { DaoFormItemValidate } from '@dao-style/extend';
 import {
   computed, markRaw, reactive, onMounted,
 } from 'vue';
-import { DaoSelect, DaoSwitch } from '@dao-style/core';
+import { DaoSelect } from '@dao-style/core';
 import {
   LicenseType,
   SizeType,
@@ -16,6 +16,7 @@ import {
   datasetClient,
   SubTask,
   Subset,
+  taskCategories,
 } from '@/api/dataset';
 import {
   object, array, string, addMethod,
@@ -47,7 +48,11 @@ const fetchPlugins = () => {
 fetchPlugins();
 
 addMethod(array, 'unique', function unique(message, mapper = (a: string) => a) {
-  return this.test('unique', message, (list) => list?.length === new Set(list?.map(mapper)).size);
+  return this.test('unique', message, (list) => {
+    const filteredList = list?.map(mapper).filter((item) => item);
+
+    return filteredList?.length === new Set(filteredList).size;
+  });
 });
 
 // addMethod(array, 'unique', function a(message) {
@@ -162,9 +167,11 @@ const {
 const addSubtask = () => pushToSubtasks({ name: '' });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
-const { remove: removeFromRules, push: pushToRules, fields: subsets } = useFieldArray<Subset>(
-  'spec.datasetMetadata.datasetInfo.subsets',
-);
+const {
+  remove: removeFromRules,
+  push: pushToRules,
+  fields: subsets,
+} = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
@@ -198,16 +205,12 @@ const onSubmit = handleSubmit(async (values) => {
     const err = error as KubernetesError;
 
     if (err.code === HttpStatusCode.Conflict) {
-      setFieldError(
-        'metadata.name',
-        '该名称的数据集已存在',
-      );
+      setFieldError('metadata.name', '该名称的数据集已存在');
     } else {
       nError('创建失败', error);
     }
   }
 });
-
 </script>
 
 <template>
@@ -334,9 +337,17 @@ const onSubmit = handleSubmit(async (values) => {
         name="spec.datasetMetadata.task.name"
         required
         :control-props="{
-          class: 'input-form-width',
+          class: 'select-form-width',
         }"
-      />
+        :tag="DaoSelect"
+      >
+        <dao-option
+          v-for="(_, category) in taskCategories"
+          :key="category"
+          :label="category"
+          :value="category"
+        />
+      </dao-form-item-validate>
 
       <dao-form-item v-if="!subTasks?.length">
         <dao-text-button
@@ -367,10 +378,15 @@ const onSubmit = handleSubmit(async (values) => {
               :name="`spec.datasetMetadata.task.subTasks[${index}].name`"
               class="no-padding flex-1"
               :padding-bottom="field.isLast ? 0 : 10"
-              :control-props="{
-                block: true,
-              }"
-            />
+              :tag="DaoSelect"
+            >
+              <dao-option
+                v-for="subTask in taskCategories[formModel.spec?.datasetMetadata.task?.name as keyof typeof taskCategories]"
+                :key="subTask"
+                :label="subTask"
+                :value="subTask"
+              />
+            </dao-form-item-validate>
 
             <dao-text-button
               :prop="{
@@ -403,7 +419,7 @@ const onSubmit = handleSubmit(async (values) => {
 
       <dao-form-item :label="'数据集信息'">
         <div class="kpd-form-block">
-          <dao-form-item-validate
+          <!-- <dao-form-item-validate
             label-width="80px"
             label="插件配置"
             name="spec.datasetMetadata.plugin.loadPlugin"
@@ -424,7 +440,7 @@ const onSubmit = handleSubmit(async (values) => {
               :label="plugin.metadata.name"
               :value="plugin.metadata.name"
             />
-          </dao-form-item-validate>
+          </dao-form-item-validate> -->
 
           <div
             v-for="(field, index) in subsets"
@@ -437,7 +453,7 @@ const onSubmit = handleSubmit(async (values) => {
               required
               :control-props="{
                 class: 'input-form-width',
-                disabled: loadPlugin
+                disabled: loadPlugin,
               }"
             />
             <dao-form-item-validate
@@ -446,7 +462,7 @@ const onSubmit = handleSubmit(async (values) => {
               required
               :control-props="{
                 class: 'input-form-width',
-                disabled: loadPlugin
+                disabled: loadPlugin,
               }"
             />
             <dao-form-item-validate
@@ -454,7 +470,7 @@ const onSubmit = handleSubmit(async (values) => {
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.test.file`"
               :control-props="{
                 class: 'input-form-width',
-                disabled: loadPlugin
+                disabled: loadPlugin,
               }"
             />
             <dao-form-item-validate
@@ -463,7 +479,7 @@ const onSubmit = handleSubmit(async (values) => {
               required
               :control-props="{
                 class: 'input-form-width',
-                disabled: loadPlugin
+                disabled: loadPlugin,
               }"
             />
             <dao-icon
@@ -572,6 +588,10 @@ $form-width: 500px;
 
   &__item {
     display: flex;
+  }
+
+  :deep(.dao-select.dao-select--size-md) {
+    width: 100%;
   }
 }
 </style>
