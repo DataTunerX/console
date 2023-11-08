@@ -1,5 +1,31 @@
 {
-  "title": "数据集",
+  "header": "数据集",
   "zh-CN": "中文",
-  "en-US": "英文"
+  "en-US": "英文",
+  "create": "创建数据集",
+  "update": "更新数据集",
+  "deleteConfirm": "确认删除数据集 {datasetToDelete} 吗？",
+
+  "tag": "标签",
+  "duplicateTags": "标签重复",
+  "datasetName": "数据集名称",
+  "language": "语言",
+  "licenseType": "授权协议",
+  "size": "词条数目",
+  "taskType": "任务类型",
+  "subtaskType": "子任务类型",
+  "duplicateSubtask": "子任务名称重复",
+  "addSubtaskType": "添加子任务类型",
+  "datasetInformation": "数据集信息",
+  "pluginConfiguration": "插件配置",
+  "pluginName": "插件名称",
+  "subsetName": "子数据集名称",
+  "trainingDataFile": "训练数据集地址",
+  "testingDataFile": "测试数据集地址",
+  "validationDataFile": "验证数据集地址",
+  "featureMapping": "特征映射",
+  "dataSourceInformation": "数据源信息",
+  "datasetNameExists": "该名称的数据集已存在",
+  "addDatasetInfoConfig": "添加数据集信息配置"
+
 }

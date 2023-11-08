@@ -17,7 +17,7 @@ const routes = computed<NavRoute[]>(() => {
     },
     {
       to: { name: 'HyperparameterList' },
-      display: '参数组',
+      display: '超参组',
       icon: 'icon-config-file',
     },
   ] as NavRoute[];

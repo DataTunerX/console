@@ -1,5 +1,29 @@
 {
-  "title": "数据集",
+  "header": "Dataset",
   "zh-CN": "Chinese",
-  "en-US": "English"
+  "en-US": "English",
+  "create": "Create Dataset",
+  "update": "Update Dataset",
+  "deleteConfirm": "Confirm deletion of dataset {datasetToDelete}?",
+
+  "tag": "Tag",
+  "duplicateTags": "Duplicate Tags",
+  "datasetName": "Dataset Name",
+  "language": "Language",
+  "licenseType": "License Type",
+  "size": "Size",
+  "taskType": "Task Type",
+  "subtaskType": "Subtask Type",
+  "addSubtaskType": "Add Subtask Type",
+  "datasetInformation": "Dataset Information",
+  "pluginConfiguration": "Plugin Configuration",
+  "pluginName": "Plugin Name",
+  "subsetName": "Subset Name",
+  "trainingDataFile": "Training Data File",
+  "testingDataFile": "Testing Data File",
+  "validationDataFile": "Validation Data File",
+  "featureMapping": "Feature Mapping",
+  "dataSourceInformation": "Data Source Information",
+  "datasetNameExists": "A dataset with this name already exists",
+  "addDatasetInfoConfig": "Add Dataset Information Configuration"
 }

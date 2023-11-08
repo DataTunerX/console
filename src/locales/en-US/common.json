@@ -18,6 +18,7 @@
   "exported": "exported",
   "create": "create",
   "created": "created",
+  "add": "add",
   "delete": "delete",
   "deleted": "deleted",
   "remove": "remove",

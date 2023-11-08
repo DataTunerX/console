@@ -28,7 +28,7 @@ const { namespace } = storeToRefs(useNamespaceStore());
 const router = useRouter();
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
-const title = computed(() => (isUpdate.value ? '更新参数组' : '创建参数组'));
+const title = computed(() => (isUpdate.value ? '更新超参组' : '创建超参组'));
 
 // 定义表单验证模式
 const schema = markRaw(
@@ -162,7 +162,7 @@ onMounted(async () => {
     <dao-form label-width="120px">
       <dao-form-group title="基本信息">
         <dao-form-item-validate
-          label="参数组名称"
+          label="超参组名称"
           name="metadata.name"
           required
           :control-props="{

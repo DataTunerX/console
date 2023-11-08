@@ -4,10 +4,10 @@ import {
   useForm, useFieldArray, useFieldError, useField,
 } from 'vee-validate';
 import { DaoFormItemValidate } from '@dao-style/extend';
+import { DaoSwitch, DaoSelect } from '@dao-style/core';
 import {
   computed, markRaw, reactive, onMounted,
 } from 'vue';
-import { DaoSelect } from '@dao-style/core';
 import {
   LicenseType,
   SizeType,
@@ -26,14 +26,17 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { useRoute, useRouter } from 'vue-router';
 import { nError } from '@/utils/useNoty';
 import { KubernetesError, HttpStatusCode } from '@/plugins/axios';
+import { useI18n } from 'vue-i18n';
 import { useDataset } from './composition/create';
+
+const { t } = useI18n();
 
 const namespaceStore = useNamespaceStore();
 const router = useRouter();
 
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
-const title = computed(() => (isUpdate.value ? '更新数据集' : '创建数据集'));
+const title = computed(() => (isUpdate.value ? t('views.dataset.update') : t('views.dataset.create')));
 
 const state = reactive({
   plugins: [] as Plugin[],
@@ -77,11 +80,11 @@ const schema = markRaw(
   object({
     metadata: object({
       name: string().required().RFC1123Label(253).max(64)
-        .label('数据集名称'),
+        .label(t('views.dataset.datasetName')),
     }),
     spec: object().shape({
       datasetMetadata: object().shape({
-        tags: array().of(string().required()).unique('标签重复'),
+        tags: array().of(string().required()).unique(t('views.dataset.duplicateTags')),
         languages: array().min(1),
         license: string().required(),
         size: string().required(),
@@ -93,7 +96,7 @@ const schema = markRaw(
                 name: string().max(63).required(),
               }),
             )
-            .unique('子任务名称重复', (obj: { name: string }) => obj.name),
+            .unique(t('views.dataset.duplicateSubtask'), (obj: { name: string }) => obj.name),
         }),
 
         datasetInfo: object({
@@ -223,7 +226,7 @@ const onSubmit = handleSubmit(async (values) => {
   >
     <dao-form label-width="170px">
       <dao-form-item-validate
-        label="数据集名称"
+        :label="$t('views.dataset.datasetName')"
         name="metadata.name"
         required
         :control-props="{
@@ -232,7 +235,7 @@ const onSubmit = handleSubmit(async (values) => {
         }"
       />
       <dao-form-item
-        :label="'标签'"
+        :label="$t('views.dataset.tag')"
         class="multi-row-block"
         :padding-bottom="10"
       >
@@ -270,7 +273,7 @@ const onSubmit = handleSubmit(async (values) => {
           }"
           @click="addTag"
         >
-          添加
+          {{ $t('common.add') }}
         </dao-text-button>
 
         <template #error>
@@ -282,7 +285,7 @@ const onSubmit = handleSubmit(async (values) => {
 
       <dao-form-item-validate
         required
-        label="语言"
+        :label="$t('views.dataset.language')"
         name="spec.datasetMetadata.languages"
         :tag="DaoSelect"
         :control-props="{
@@ -299,7 +302,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item-validate>
 
       <dao-form-item-validate
-        label="授权协议"
+        :label="$t('views.dataset.licenseType')"
         name="spec.datasetMetadata.license"
         :tag="DaoSelect"
         required
@@ -316,7 +319,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item-validate>
 
       <dao-form-item-validate
-        :label="'词条数目'"
+        :label="$t('views.dataset.size')"
         name="spec.datasetMetadata.size"
         :tag="DaoSelect"
         required
@@ -333,7 +336,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item-validate>
 
       <dao-form-item-validate
-        label="任务类型"
+        :label="$t('views.dataset.taskType')"
         name="spec.datasetMetadata.task.name"
         required
         :control-props="{
@@ -357,13 +360,13 @@ const onSubmit = handleSubmit(async (values) => {
           }"
           @click="addSubtask"
         >
-          添加子任务类型
+          {{ $t('views.dataset.addSubtaskType') }}
         </dao-text-button>
       </dao-form-item>
 
       <dao-form-item v-else>
         <dao-form-item
-          :label="'子任务类型'"
+          :label="$t('views.dataset.subtaskType')"
           label-width="85px"
           class="multi-row-block background"
           :padding-bottom="0"
@@ -406,7 +409,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="text-button__add"
             @click="addSubtask"
           >
-            添加
+            {{ $t('common.add') }}
           </dao-text-button>
 
           <template #error>
@@ -417,11 +420,11 @@ const onSubmit = handleSubmit(async (values) => {
         </dao-form-item>
       </dao-form-item>
 
-      <dao-form-item :label="'数据集信息'">
+      <dao-form-item :label="$t('views.dataset.datasetInformation')">
         <div class="kpd-form-block">
-          <!-- <dao-form-item-validate
+          <dao-form-item-validate
             label-width="80px"
-            label="插件配置"
+            :label="$t('views.dataset.pluginConfiguration')"
             name="spec.datasetMetadata.plugin.loadPlugin"
             :tag="DaoSwitch"
           />
@@ -429,7 +432,7 @@ const onSubmit = handleSubmit(async (values) => {
           <dao-form-item-validate
             v-if="loadPlugin"
             label-width="80px"
-            label="插件名称"
+            :label="$t('views.dataset.pluginName')"
             :tag="DaoSelect"
             required
             name="spec.datasetMetadata.plugin.name"
@@ -440,7 +443,7 @@ const onSubmit = handleSubmit(async (values) => {
               :label="plugin.metadata.name"
               :value="plugin.metadata.name"
             />
-          </dao-form-item-validate> -->
+          </dao-form-item-validate>
 
           <div
             v-for="(field, index) in subsets"
@@ -448,7 +451,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="kpd-form-block__item"
           >
             <dao-form-item-validate
-              label="子数据集名称"
+              :label="$t('views.dataset.subsetName')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].name`"
               required
               :control-props="{
@@ -457,7 +460,7 @@ const onSubmit = handleSubmit(async (values) => {
               }"
             />
             <dao-form-item-validate
-              label="训练数据集地址"
+              :label="$t('views.dataset.trainingDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.train.file`"
               required
               :control-props="{
@@ -466,7 +469,7 @@ const onSubmit = handleSubmit(async (values) => {
               }"
             />
             <dao-form-item-validate
-              label="测试数据集地址"
+              :label="$t('views.dataset.testingDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.test.file`"
               :control-props="{
                 class: 'input-form-width',
@@ -474,7 +477,7 @@ const onSubmit = handleSubmit(async (values) => {
               }"
             />
             <dao-form-item-validate
-              label="验证数据集地址"
+              :label="$t('views.dataset.validationDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.validate.file`"
               required
               :control-props="{
@@ -500,7 +503,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="kpd-form-block__add-btn"
             @click="handleAddRule"
           >
-            添加数据集信息配置
+            {{ $t('views.dataset.addDatasetInfoConfig') }}
           </dao-text-button>
         </div>
         <template #error>
@@ -510,7 +513,7 @@ const onSubmit = handleSubmit(async (values) => {
         </template>
       </dao-form-item>
 
-      <dao-form-item label="特征映射">
+      <dao-form-item :label="$t('views.dataset.featureMapping')">
         <div
           v-for="(tag, index) in formModel.spec?.datasetMetadata.datasetInfo?.features"
           :key="index"
@@ -533,7 +536,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item>
 
       <dao-form-item-validate
-        label="数据源信息"
+        :label="$t('views.dataset.dataSourceInformation')"
         name="spec.datasetFiles.source"
         :control-props="{
           class: 'input-form-width',
