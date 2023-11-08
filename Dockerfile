@@ -6,6 +6,7 @@ RUN apk -U upgrade
 
 COPY dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY startup.sh /usr/share
 
 RUN chown -R nginx:nginx /var/cache/nginx && \
         chown -R nginx:nginx /var/log/nginx && \
@@ -13,6 +14,10 @@ RUN chown -R nginx:nginx /var/cache/nginx && \
 RUN touch /var/run/nginx.pid && \
         chown -R nginx:nginx /var/run/nginx.pid
 
+RUN chmod a+x /usr/share/startup.sh && chown nginx /etc/nginx
+
+EXPOSE 8443
+
 USER nginx
 
-EXPOSE 8080
+CMD /usr/share/startup.sh && nginx -g 'daemon off;'

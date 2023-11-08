@@ -4,6 +4,7 @@ import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
 import Avatar from '@/assets/avatar.webp';
 import { computed } from 'vue';
 import { noop } from '@vueuse/core';
+import { useNamespaceStore } from '@/stores/namespace';
 
 const userOperation = computed(() => [
   {
@@ -25,33 +26,50 @@ const userOperation = computed(() => [
   },
 ]);
 
+const namespaceStore = useNamespaceStore();
+
+const namespace = computed({
+  get() {
+    return namespaceStore.namespace;
+  },
+  set(val) {
+    namespaceStore.setNamespace(val);
+  },
+});
 </script>
 
 <template>
   <header class="ghippo-header">
-    <!-- <div class="ghippo-header-aside" /> -->
-    <span>
-      Futurewei
-    </span>
+    <!-- <div class="" /> -->
+    <span class="ghippo-header__product"> DataTunerX </span>
+
+    <span class="ghippo-header__namespace"> 命名空间 </span>
+    <dao-select
+      v-model="namespace"
+      search
+      class="ml-[20px]"
+    >
+      <dao-option
+        v-for="ns in namespaceStore.namespaces"
+        :key="ns.metadata?.name"
+        :label="ns.metadata?.name"
+        :value="ns.metadata?.name"
+      />
+    </dao-select>
+
     <div class="ghippo-toolbox">
       <div class="ghippo-toolbox-item">
         <dao-dropdown
           trigger="click"
           :offset="5"
         >
-          <anakin-header-button
-            class="ghippo-user-trigger"
-          >
+          <anakin-header-button class="ghippo-user-trigger">
             <img
               class="ghippo-user-avatar ghippo-header-logo-img"
               :src="Avatar"
               alt="user.username"
             >
-            <span
-              class="ghippo-user-avatar ghippo-user-username"
-            >
-              Max
-            </span>
+            <span class="ghippo-user-avatar ghippo-user-username"> Max </span>
             <dao-icon
               use-font
               name="icon-dropdown-line"
@@ -81,7 +99,7 @@ const userOperation = computed(() => [
   </header>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $ghippo-header-background: var(--dao-top-gray-010);
 $ghippo-header-color: var(--dao-navigation-090);
 
@@ -91,6 +109,22 @@ $ghippo-header-color: var(--dao-navigation-090);
   height: 50px;
   color: $ghippo-header-color;
   background-color: $ghippo-header-background;
+
+  &__product {
+    width: 210px;
+    /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+    font-family: PingFang SC-Bold, PingFang SC;
+    font-size: 26px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+  }
+
+  &__namespace {
+    margin-left: 30px;
+    font-size: 16px;
+    font-weight: bold;
+  }
 }
 
 .ghippo-header-logo {

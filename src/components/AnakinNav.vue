@@ -1,94 +1,83 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { getActiveRouteFold } from '@/lib/util';
+import { NavRoute } from '@/types/common';
 
-export default defineComponent({
-  name: 'AnakinNav',
+const routes = computed<NavRoute[]>(() => {
+  const items = [
+    {
+      to: { name: 'FinetuneExperimentList' },
+      display: '微调实验',
+      icon: 'icon-registry',
+    },
+    {
+      to: { name: 'DatasetList' },
+      display: '数据集',
+      icon: 'icon-apps',
+    },
+    {
+      to: { name: 'HyperparameterList' },
+      display: '参数组',
+      icon: 'icon-config-file',
+    },
+  ] as NavRoute[];
+
+  return items;
 });
+
+const activeOpened = computed(() => getActiveRouteFold(routes.value));
+
 </script>
 
 <template>
   <dao-nav
     ref="navRef"
+    class="console__nav"
     type="2nd"
-    :active-opened="['3']"
+    :active-opened="activeOpened"
   >
-    <template #header>
+    <!-- <template #header>
       <dao-nav-head
-        icon="icon-apps"
-        title="Application"
+        icon="icon-engine"
+        title="DataTunerX"
         use-font
       />
-    </template>
-    <dao-nav-sub
-      index="2"
-      icon="icon-pod"
-      title="Plugins"
-      :disabled="true"
-      use-font
+    </template> -->
+    <router-link
+      v-for="(route, index) in routes"
+      :key="index"
+      v-slot="{ isActive, navigate }"
+      :to="route.to"
+      custom
     >
-      <dao-nav-item
-        index="2-1"
-        icon="icon-dce"
-        title="DNS"
+      <dao-nav-sub
+        :index="index"
+        :icon="route.icon"
+        :title="route.display"
+        :fold="Boolean(route.children?.length)"
         use-font
-      />
-      <dao-nav-item
-        index="2-2"
-        icon="icon-cluster"
-        title="这个是超过正常长度的nav-item"
-        use-font
-      />
-      <dao-nav-item
-        index="2-3"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-4"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-5"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-6"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-      <dao-nav-item
-        index="2-7"
-        icon="icon-cluster"
-        title="2048"
-        use-font
-      />
-    </dao-nav-sub>
-    <dao-nav-sub
-      index="3"
-      icon="icon-registry"
-      title="这个是超过正常长度的nav-item"
-      use-font
-    >
-      <dao-nav-item
-        index="3-1"
-        icon="icon-container"
-        title="这个是超过正常长度的nav-item"
-        disabled
-        use-font
-      />
-      <dao-nav-item
-        index="3-2"
-        icon="icon-user"
-        title="Helm"
-        use-font
-      />
-    </dao-nav-sub>
+        :is-active="isActive"
+        @click="navigate"
+      >
+        <template v-if="route.children?.length">
+          <router-link
+            v-for="(ch, chIdx) in route.children"
+            :key="ch.display"
+            v-slot="{ isActive: chIsActive, navigate: chNavigate }"
+            :to="ch.to"
+            custom
+          >
+            <dao-nav-item
+              :index="`${index}-${chIdx}`"
+              :title="ch.display"
+              :is-active="chIsActive"
+              use-font
+              @click="chNavigate"
+            />
+          </router-link>
+        </template>
+      </dao-nav-sub>
+    </router-link>
   </dao-nav>
 </template>
 
@@ -96,101 +85,51 @@ export default defineComponent({
 $ghippo-header-height: 50px;
 $ghippo-header-aside-button-padding: 2px;
 
-.ghippo-header-sidebar-main {
-  margin-left: 20px - $ghippo-header-aside-button-padding;
-}
+.console {
+  &__nav {
+    z-index: 99;
+    flex: none;
+    padding-top: 10px;
 
-.ghippo-header-aside-button {
-  display: block;
-  // 此处padding-left + ghippo-header-sidebar-main margin-left = 20px
-  padding: 8px + $ghippo-header-aside-button-padding $ghippo-header-aside-button-padding;
+  //   .dao-icon.icon-new-tab {
+  //     color: var(--dao-gray-blue-040);
+  //   }
 
-  .ghippo-header-aside-icon {
-    position: relative;
-    display: block;
-    width: 18px;
-    height: 2px;
-    background-color: var(--dao-navigation-090);
-    border-radius: 1px;
+  //   &-title-wrap {
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: space-between;
+  //     height: 30px;
+  //     margin-right: 12px;
+  //     margin-left: 12px;
+  //     line-height: 30px;
+  //   }
 
-    &::before,
-    &::after {
-      position: absolute;
-      right: 5px;
-      left: 0;
-      display: block;
-      height: 2px;
-      content: '';
-      background: var(--dao-navigation-090);
-      border-radius: 1px;
-      transition: left 0.3s, right 0.3s;
-      will-change: left, right;
-    }
+  //   &-title {
+  //     overflow: hidden;
+  //     font-size: 15px;
+  //     font-weight: 600;
+  //     text-overflow: ellipsis;
+  //     white-space: nowrap;
+  //   }
 
-    &::before {
-      top: -6px;
-    }
+  //   &-exchange {
+  //     margin-left: 4px;
+  //     font-size: 16px;
+  //     font-weight: 400;
+  //     cursor: pointer;
+  //   }
 
-    &::after {
-      bottom: -6px;
-    }
+  //   &__menu {
+  //     width: 250px !important;
+  //     margin-left: 41px !important;
+  //   }
+  // }
 
-    &--active {
-      &::before,
-      &::after {
-        right: 0;
-        left: 5px;
-      }
-    }
+  // &__content {
+  //   flex: 1 1 0;
+  //   height: 100%;
+  //   overflow: auto;
   }
-}
-
-.ghippo-header-nav-main {
-  // position: fixed;
-  // 和header高有关
-  top: $ghippo-header-height;
-  bottom: 0;
-  left: 0;
-  // loading的z-index是9999
-  z-index: 10000;
-  min-width: 210px;
-  overflow: hidden auto;
-  background-color: var(--dao-navigation-010);
-
-  &--no-scrollbar {
-    pointer-events: none;
-  }
-
-  .ghippo-nav-body {
-    pointer-events: auto;
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    visibility: visible;
-    transform: translate3d(-100%, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.slide-in-left-enter-active {
-  animation: slide-in-left 0.3s ease-in;
-}
-
-.slide-in-left-leave-active {
-  animation: slide-in-left 0.3s ease-in reverse;
-}
-
-.ghippo-nav-title {
-  height: 46px;
-  padding-left: 20px;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 46px;
-  color: rgba(var(--dao-navigation-050-rgb), 0.6);
 }
 </style>

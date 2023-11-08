@@ -1,6 +1,5 @@
 export {
   initGlobalStore,
-  registerGlobalStoreHandler,
   registerLoadLanguageAsyncHandler,
   clearLoadLanguageAsyncHandler,
   registerErrorHandlers,

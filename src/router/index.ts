@@ -1,14 +1,94 @@
 import {
-  createRouter, createWebHistory, type RouteRecordRaw, type RouterHistory, type Router,
+  createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHistory,
 } from 'vue-router';
 import type { App } from 'vue';
-import HomeView from '../views/HomeView.vue';
+import RouterContent from '@/views/RouterContent.vue';
+
+import DatasetList from '@/views/dataset/DatasetList.vue';
+import DatasetCreate from '@/views/dataset/DatasetCreate.vue';
+import DatasetDetail from '@/views/dataset/DatasetDetail.vue';
+
+import HyperparameterList from '@/views/hyperparameter/HyperparameterList.vue';
+import HyperparameterCreate from '@/views/hyperparameter/HyperparameterCreate.vue';
+import HyperparameterDetail from '@/views/hyperparameter/HyperparameterDetail.vue';
+
+import FinetuneExperimentList from '@/views/finetune-experiment/FinetuneExperimentList.vue';
+import FinetuneExperimentDetail from '@/views/finetune-experiment/FinetuneExperimentDetail.vue';
+import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperimentCreate.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
+    redirect: {
+      name: 'DatasetList',
+    },
+    children: [
+      {
+        path: 'datasets',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'DatasetList',
+            component: DatasetList,
+          },
+          {
+            path: 'create',
+            name: 'DatasetCreate',
+            component: DatasetCreate,
+          },
+          {
+            path: ':name',
+            name: 'DatasetDetail',
+            component: DatasetDetail,
+          },
+        ],
+      },
+      {
+        path: 'hyperparameter',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'HyperparameterList',
+            component: HyperparameterList,
+          },
+          {
+            path: 'create',
+            name: 'HyperparameterCreate',
+            component: HyperparameterCreate,
+          },
+          {
+            path: ':name',
+            name: 'HyperparameterDetail',
+            component: HyperparameterDetail,
+          },
+        ],
+
+      },
+      {
+        path: 'fine-tune',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'FinetuneExperimentList',
+            component: FinetuneExperimentList,
+          },
+          {
+            path: 'create',
+            name: 'FinetuneExperimentCreate',
+            component: FinetuneExperimentCreate,
+          },
+          {
+            path: ':name',
+            name: 'FinetuneExperimentDetail',
+            component: FinetuneExperimentDetail,
+          },
+        ],
+
+      },
+    ],
   },
 ];
 

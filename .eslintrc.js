@@ -1,7 +1,10 @@
-const path = require('path');
+const path = require("path");
 
 const vuejsAccessibilityOff = Object.keys(
-  require(path.resolve(path.dirname(require.resolve('eslint-plugin-vuejs-accessibility')), '../dist/index')).rules,
+  require(path.resolve(
+    path.dirname(require.resolve("eslint-plugin-vuejs-accessibility")),
+    "../dist/index"
+  )).rules
 ).reduce((rules, rule) => {
   rules[`vuejs-accessibility/${rule}`] = 0;
 
@@ -16,70 +19,69 @@ module.exports = {
     jest: true,
     browser: true,
   },
-  parser: 'vue-eslint-parser',
+  parser: "vue-eslint-parser",
   parserOptions: {
     ecmaVersion: 2020,
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module',
-    extraFileExtensions: ['.vue'],
+    parser: "@typescript-eslint/parser",
+    sourceType: "module",
+    extraFileExtensions: [".vue"],
   },
-  plugins: ['vue', '@typescript-eslint'],
+  plugins: ["vue", "@typescript-eslint"],
   extends: [
-    'plugin:jsonc/recommended-with-json',
-    'plugin:vue/vue3-recommended',
-    '@vue/airbnb',
-    '@vue/typescript/recommended',
+    "plugin:jsonc/recommended-with-json",
+    "plugin:vue/vue3-recommended",
+    "@vue/airbnb",
+    "@vue/typescript/recommended",
   ],
   rules: {
-    "jsonc/indent": ["error", 2],
-    '@typescript-eslint/padding-line-between-statements': [
-      'error',
+    "@typescript-eslint/padding-line-between-statements": [
+      "error",
       {
-        blankLine: 'always',
-        prev: ['interface', 'type'],
-        next: '*',
+        blankLine: "always",
+        prev: ["interface", "type"],
+        next: "*",
       },
     ],
-    'padding-line-between-statements': [
-      'error',
+    "padding-line-between-statements": [
+      "error",
       {
-        blankLine: 'always',
-        prev: ['const', 'let', 'var'],
-        next: '*',
+        blankLine: "always",
+        prev: ["const", "let", "var"],
+        next: "*",
       },
       {
-        blankLine: 'any',
-        prev: ['const', 'let', 'var'],
-        next: ['const', 'let', 'var'],
+        blankLine: "any",
+        prev: ["const", "let", "var"],
+        next: ["const", "let", "var"],
       },
       {
-        blankLine: 'always',
-        prev: '*',
-        next: 'return',
+        blankLine: "always",
+        prev: "*",
+        next: "return",
       },
       {
-        blankLine: 'always',
-        prev: '*',
-        next: 'function',
+        blankLine: "always",
+        prev: "*",
+        next: "function",
       },
     ],
-    'brace-style': ['error', '1tbs', { allowSingleLine: false }],
-    'eol-last': ['error', 'always'],
-    'comma-spacing': [
-      'error',
+    "brace-style": ["error", "1tbs", { allowSingleLine: false }],
+    "eol-last": ["error", "always"],
+    "comma-spacing": [
+      "error",
       {
         before: false,
         after: true,
       },
     ],
-    quotes: ['error', 'single'],
-    'jsx-quotes': ['error', 'prefer-double'],
-    'vue/html-quotes': ['error', 'double', { avoidEscape: true }],
-    'max-statements-per-line': ['error', { max: 1 }],
-    'vue/multiline-html-element-content-newline': ['error'], // 多行html中的内容是否独占一行
-    'vue/singleline-html-element-content-newline': ['error'],
-    'vue/max-attributes-per-line': [
-      'error',
+    quotes: ["error", "single"],
+    "jsx-quotes": ["error", "prefer-double"],
+    "vue/html-quotes": ["error", "double", { avoidEscape: true }],
+    "max-statements-per-line": ["error", { max: 1 }],
+    "vue/multiline-html-element-content-newline": ["error"], // 多行html中的内容是否独占一行
+    "vue/singleline-html-element-content-newline": ["error"],
+    "vue/max-attributes-per-line": [
+      "error",
       {
         singleline: {
           max: 1,
@@ -89,43 +91,45 @@ module.exports = {
         },
       },
     ],
-    'array-element-newline': ['error', 'consistent'],
-    'array-bracket-newline': ['error', 'consistent'], // []新一行
-    'vue/array-bracket-newline': ['error', 'consistent'],
-    'comma-dangle': ['error', 'always-multiline'], // 最后一个对象元素加逗号
-    'object-property-newline': ['error', { allowAllPropertiesOnSameLine: false }],
-    'vue/object-property-newline': ['error', { allowAllPropertiesOnSameLine: false }],
-    'vue/space-infix-ops': ['error', { int32Hint: true }],
-    // 'vue/space-infix-ops': 0,
-    // "template-curly-spacing": ["error", "never"],
-    'vue/object-curly-spacing': ['error', 'always'], // 对象内的间距要求
-    'vue/comma-spacing': ['error'], // 对象内的逗号位置
-    'vue/key-spacing': ['error'], // 冒号位置
+    "array-element-newline": ["error", "consistent"],
+    "array-bracket-newline": ["error", "consistent"], // []新一行
+    "vue/array-bracket-newline": ["error", "consistent"],
+    "comma-dangle": ["error", "always-multiline"], // 最后一个对象元素加逗号
+    "object-property-newline": ["error", { allowAllPropertiesOnSameLine: false }],
+    "vue/object-property-newline": ["error", { allowAllPropertiesOnSameLine: false }],
+    "vue/space-infix-ops": ["error", { int32Hint: true }],
+    "vue/multi-word-component-names": 0,
 
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'import/prefer-default-export': 0,
-    'import/no-extraneous-dependencies': 0,
-    'import/no-unresolved': 0,
-    'import/extensions': [
-      'error',
-      'ignorePackages',
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 0,
+    "import/extensions": [
+      "error",
+      "ignorePackages",
       {
-        js: 'never',
-        mjs: 'never',
-        jsx: 'never',
-        ts: 'never',
-        tsx: 'never',
+        js: "never",
+        mjs: "never",
+        jsx: "never",
+        ts: "never",
+        tsx: "never",
       },
     ],
-    'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'error',
-    curly: 'error', // 强制if括号包裹，无效
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    curly: "error", // 强制if括号包裹，无效
+    "max-len": ["error", { code: 150, ignoreStrings: true }],
+    "jsonc/indent": ["error",
+        2,
+        {}
+    ],
+    // "jsonc/auto": true,
     ...vuejsAccessibilityOff,
   },
   overrides: [
     {
-      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
+      files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
       env: {
         jest: true,
       },
@@ -133,6 +137,11 @@ module.exports = {
     {
       files: ["*.json", "*.json5", "*.jsonc"],
       parser: "jsonc-eslint-parser",
-    }
+    },
   ],
+  globals: {
+    defineProps: true,
+    defineEmits: true,
+    defineExpose: true,
+  },
 };

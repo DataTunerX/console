@@ -1,0 +1,37 @@
+.kpd-form-block {
+  padding: 20px 40px 0 20px;
+  border: 1px dashed var(--dao-gray-blue-050);
+  border-radius: 10px;
+
+  &__item {
+    position: relative;
+    padding-top: 20px;
+    background: var(--dao-gray-blue-110);
+    border: 1px solid var(--dao-gray-blue-050);
+    border-radius: 10px;
+  }
+
+  &__item + &__item {
+    margin-top: 20px;
+  }
+
+  &__remove-btn {
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    padding: 2px;
+    font-size: 18px;
+    color: var(--dao-gray-blue-040);
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+
+  &__add-btn {
+    display: inline-block;
+    margin: 10px 0;
+
+    .dao-icon {
+      margin-right: 5px;
+    }
+  }
+}
