@@ -72,7 +72,6 @@ const {
   values: formModel,
   setValues,
   handleSubmit,
-  resetForm,
 } = useForm<Hyperparameter>({
   initialValues: hyperparameter,
   validationSchema: schema,
