@@ -115,7 +115,7 @@ const confirmDelete = () => {
   <div class="hyperparameter-list console-main-container">
     <dao-header
       type="2nd"
-      :title="'参数组'"
+      :title="'超参组'"
     />
 
     <dao-table
@@ -189,13 +189,13 @@ const confirmDelete = () => {
   >
     <div class="body">
       <div class="content">
-        确认删除参数组 {{ hyperparameterToDelete }} 吗？
+        确认删除超参组 {{ hyperparameterToDelete }} 吗？
       </div>
     </div>
     <template #footer>
       <dao-confirm-dialog-footer
         :text="hyperparameterToDelete"
-        confirm-text="delete"
+        confirm-text="删除"
       />
     </template>
   </dao-dialog>

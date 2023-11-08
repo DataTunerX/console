@@ -105,7 +105,7 @@ watch(
   <div class="dataset-list console-main-container">
     <dao-header
       type="2nd"
-      :title="$t('views.dataset.title')"
+      :title="$t('views.dataset.header')"
     />
 
     <dao-toolbar
@@ -117,7 +117,7 @@ watch(
     >
       <template #action>
         <dao-button @click="onCreate">
-          创建数据集
+          {{ $t('views.dataset.create') }}
         </dao-button>
       </template>
     </dao-toolbar>
@@ -147,13 +147,13 @@ watch(
   >
     <div class="body">
       <div class="content">
-        确认删除数据集 {{ datasetToDelete }} 吗？
+        {{ $t('views.dataset.deleteConfirm', { datasetToDelete }) }}
       </div>
     </div>
     <template #footer>
       <dao-confirm-dialog-footer
         :text="datasetToDelete"
-        confirm-text="delete"
+        :confirm-text="$t('common.delete')"
       />
     </template>
   </dao-dialog>

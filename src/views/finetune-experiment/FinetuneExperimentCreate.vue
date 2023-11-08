@@ -77,7 +77,7 @@ const columns = computed(() => [
   },
   {
     id: 'hyperparameter',
-    header: '参数组',
+    header: '超参组',
   },
   {
     id: 'action',
@@ -109,46 +109,52 @@ const onSubmit = handleSubmit(async () => {
     @cancel="$router.back"
     @confirm="onSubmit"
   >
-    <dao-form>
+    <dao-form label-width="120px">
       <dao-form-group title="基本信息">
-        <dao-form-item-validate
-          label="实验名称"
-          name="metadata.name"
-          required
-        />
-        <dao-form-item-validate
-          label="评估方式"
-          name="spec.scoringConfig.name"
-          :tag="DaoSelect"
-        >
-          <dao-option
-            v-for="scoringConfig in scoringConfigs"
-            :key="scoringConfig.metadata?.name"
-            :label="scoringConfig.metadata?.name"
-            :value="scoringConfig.metadata?.name"
+        <div class="flex">
+          <dao-form-item-validate
+            label="实验名称"
+            name="metadata.name"
+            required
           />
-        </dao-form-item-validate>
+          <dao-form-item-validate
+            label="评估方式"
+            name="spec.scoringConfig.name"
+            :tag="DaoSelect"
+          >
+            <dao-option
+              v-for="scoringConfig in scoringConfigs"
+              :key="scoringConfig.metadata?.name"
+              :label="scoringConfig.metadata?.name"
+              :value="scoringConfig.metadata?.name"
+            />
+          </dao-form-item-validate>
+        </div>
       </dao-form-group>
 
       <dao-form-group title="任务">
         <div class="flex space-x-6">
-          <FinetuneJobComponent @add="onAdd" />
-          <dao-table
-            class="flex-1"
-            :data="jobs"
-            :columns="columns"
-          >
-            <template #td-action="{ rowIndex }">
-              <dao-text-button
-                :prop="{
-                  type: 'default',
-                  icon: 'icon-close',
-                }"
-                class="text-button__delete"
-                @click="remove(rowIndex)"
-              />
-            </template>
-          </dao-table>
+          <div class="flex-1">
+            <FinetuneJobComponent @add="onAdd">
+              <dao-table
+                class="flex-1"
+                :data="jobs"
+                :columns="columns"
+                hide-setting
+              >
+                <template #td-action="{ rowIndex }">
+                  <dao-text-button
+                    :prop="{
+                      type: 'default',
+                      icon: 'icon-close',
+                    }"
+                    class="text-button__delete"
+                    @click="remove(rowIndex)"
+                  />
+                </template>
+              </dao-table>
+            </FinetuneJobComponent>
+          </div>
         </div>
       </dao-form-group>
     </dao-form>

@@ -47,7 +47,7 @@ const infos = computed(() => {
       slotId: 'dataset',
     },
     {
-      label: '参数组',
+      label: '超参组',
       value: hyperparameters?.join(','),
       slotId: 'hyperparameter',
     },
