@@ -23,7 +23,7 @@ import {
 } from '@/api/hyperparameter';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { useNamespaceStore } from '@/stores/namespace';
-import { useHyperparameter } from './composition/hyperparameter';
+import { retrieveQuantization, useHyperparameter } from './composition/hyperparameter';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const router = useRouter();
@@ -111,20 +111,13 @@ const updateQuantization = (val?: string) => {
   setValues(valuesToUpdate);
 };
 
-const retrieveQuantization = () => {
+const resetQuantization = () => {
   const { parameters } = hyperparameter.value.spec;
-  let quantizationValue = Quantization.default;
-
-  if (parameters.int4) {
-    quantizationValue = Quantization.int4;
-  } else if (parameters.int8) {
-    quantizationValue = Quantization.int8;
-  }
 
   setValues({
     spec: {
       parameters: {
-        quantization: quantizationValue,
+        quantization: retrieveQuantization(parameters),
       },
     },
   });
@@ -141,7 +134,7 @@ onMounted(async () => {
   if (isUpdate.value) {
     await fetchHyperparameter(namespace.value, query.name as string);
     resetForm({ values: hyperparameter.value });
-    retrieveQuantization();
+    resetQuantization();
   }
 });
 </script>

@@ -31,15 +31,19 @@ const onDelete = () => {
 const infos = computed(() => {
   const { data: { metadata, spec } } = props;
   const creationTimestamp = metadata?.creationTimestamp;
-  const llms = spec?.finetuneJobs.map((job) => job.spec?.finetune.llm);
-  const datasets = spec?.finetuneJobs.map((job) => job.spec?.finetune.dataset);
-  const hyperparameters = spec?.finetuneJobs.map((job) => job.spec?.finetune.hyperparameter);
+  const llms = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.llm).filter((i) => i);
+  const datasets = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.dataset);
+  const hyperparameters = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.hyperparameter);
 
   const items = [
     {
-      label: '基础大语言模型',
+      label: '基础大模型',
       value: llms?.join(','),
       slotId: 'llm',
+    },
+    {
+      label: '评估方式',
+      value: spec?.scoringConfig.name,
     },
     {
       label: '数据集',
@@ -47,17 +51,13 @@ const infos = computed(() => {
       slotId: 'dataset',
     },
     {
+      label: '创建时间',
+      value: useDateFormat(creationTimestamp),
+    },
+    {
       label: '超参组',
       value: hyperparameters?.join(','),
       slotId: 'hyperparameter',
-    },
-    {
-      label: '评估方式',
-      value: spec?.scoringConfig.name,
-    },
-    {
-      label: '创建时间',
-      value: useDateFormat(creationTimestamp),
     },
   ];
 

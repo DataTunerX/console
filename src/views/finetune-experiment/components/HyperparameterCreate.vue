@@ -24,12 +24,12 @@ import { object, string, number } from 'yup';
 import { cloneDeep } from 'lodash';
 import { useHyperparameter } from '@/views/hyperparameter/composition/hyperparameter';
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: '',
-  },
-});
+// const props = defineProps({
+//   modelValue: {
+//     type: String,
+//     default: '',
+//   },
+// });
 
 const emit = defineEmits<{(e: 'update:modelValue', value: string): void }>();
 
@@ -65,7 +65,7 @@ const schema = markRaw(
 );
 
 // 获取超参数相关信息
-const { hyperparameters, hyperparameter, fetchHyperparameters } = useHyperparameter();
+const { hyperparameter, fetchHyperparameters } = useHyperparameter();
 
 // 表单处理
 const {
@@ -110,6 +110,8 @@ const onSubmit = handleSubmit(async () => {
   }
 });
 
+onSubmit();
+
 const updateQuantization = (val?: string) => {
   const valuesToUpdate = {
     spec: {
@@ -142,6 +144,8 @@ const retrieveQuantization = () => {
   });
 };
 
+retrieveQuantization();
+
 // 监听表单字段 "quantization" 的变化
 watch(
   () => formModel.spec.parameters.quantization,
@@ -160,25 +164,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex space-x-6">
-    <div class="flex-1">
-      <dao-form-item-validate
-        label="超参组"
-        label-width="60px"
-        name="metadata.name"
-        :tag="DaoSelect"
-        required
-        :control-props="{
-          class: '!w-full',
-        }"
-      >
-        <dao-option
-          v-for="params in hyperparameters"
-          :key="params.metadata.name"
-          :label="params.metadata.name"
-          :value="params.metadata.name"
-        />
-      </dao-form-item-validate>
-    </div>
+    <div class="flex-1" />
 
     <div class="flex-1">
       <dao-form-item-validate

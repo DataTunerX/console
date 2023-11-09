@@ -8,6 +8,7 @@ import {
   TrainerType,
   Quantization,
   hyperparameterClient,
+  Parameters,
 } from '@/api/hyperparameter';
 
 import { nError } from '@/utils/useNoty';
@@ -39,7 +40,7 @@ const defaultHyperparameter: Hyperparameter = {
       weightDecay: '0.0001',
       gradAccSteps: 1,
       trainerType: TrainerType.Standard,
-      PEFT: false,
+      PEFT: true,
       FP16: false,
       quantization: Quantization.default,
     },
@@ -96,4 +97,16 @@ export const useHyperparameter = () => {
     fetchHyperparameter,
     fetchHyperparameters,
   };
+};
+
+export const retrieveQuantization = (parameters: Parameters) => {
+  let quantizationValue = Quantization.default;
+
+  if (parameters.int4) {
+    quantizationValue = Quantization.int4;
+  } else if (parameters.int8) {
+    quantizationValue = Quantization.int8;
+  }
+
+  return quantizationValue;
 };

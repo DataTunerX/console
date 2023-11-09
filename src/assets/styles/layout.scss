@@ -1,7 +1,16 @@
 .console-main-container {
+  flex: 1 1 0px;
   padding: 0 30px 30px;
+
+  .dao-header.dao-header--3rd {
+    margin-bottom: 10px;
+  }
 }
 
 .dao-card-header-title {
   overflow: hidden;
+}
+
+.dao-breadcrumb__label {
+  word-break: break-all;
 }

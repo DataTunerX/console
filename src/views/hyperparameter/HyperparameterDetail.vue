@@ -4,8 +4,11 @@ import { computed, ref } from 'vue';
 import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
+import {
+  Hyperparameter, hyperparameterClient,
+} from '@/api/hyperparameter';
 import { nError } from '@/utils/useNoty';
+import { retrieveQuantization } from './composition/hyperparameter';
 
 const router = useRouter();
 const route = useRoute();
@@ -17,7 +20,10 @@ const hyperparameter = ref<Hyperparameter | null>(null);
 // 获取超参数详细信息
 const fetchDataset = async () => {
   try {
-    const res = await hyperparameterClient.read(namespaceStore.namespace, route.params.name as string);
+    const res = await hyperparameterClient.read(
+      namespaceStore.namespace,
+      route.params.name as string,
+    );
 
     hyperparameter.value = res.data;
   } catch (error) {
@@ -51,7 +57,7 @@ const infos = computed(() => {
       value: data.spec.objective.type,
     },
     {
-      label: t('views.Dataset.tag'),
+      label: '被引用任务',
       value: data.metadata.labels,
       slotId: 'tag',
     },
@@ -69,70 +75,71 @@ const parameters = computed(() => {
   if (!params) return [];
 
   return [
-    {
-      label: 'BatchSize',
-      value: params.batchSize,
-    },
-    {
-      label: 'LearningRate',
-      value: params.learningRate,
-    },
-    {
-      label: 'BlockSize',
-      value: params?.blockSize,
-    },
-    {
-      label: 'Epochs',
-      value: params?.epochs,
-    },
-    {
-      label: 'Scheduler',
-      value: params?.scheduler,
-    },
-    {
-      label: 'Optimizer',
-      value: params?.optimizer,
-    },
-    {
-      label: 'int4',
-      value: `${params?.int4}`,
-    },
-    {
-      label: 'int8',
-      value: `${params?.int8}`,
-    },
-    {
-      label: 'LoRA_R',
-      value: params?.loRA_R,
-    },
-    {
-      label: 'LoRA_Alpha',
-      value: params?.loRA_Alpha,
-    },
-    {
-      label: 'LoRA_Dropout',
-      value: params?.loRA_Dropout,
-    },
-    {
-      label: 'WarmupRatio',
-      value: params?.warmupRatio,
-    },
-    {
-      label: 'WeightDecay',
-      value: params?.weightDecay,
-    },
-    {
-      label: 'GradAccSteps',
-      value: params?.gradAccSteps,
-    },
-    {
-      label: 'TrainerType',
-      value: params?.trainerType,
-    },
-    {
-      label: 'FP16',
-      value: `${params?.FP16}`,
-    },
+    [
+      {
+        label: 'Scheduler',
+        value: params?.scheduler,
+      },
+      {
+        label: 'Optimizer',
+        value: params?.optimizer,
+      },
+      {
+        label: 'FP16',
+        value: `${params?.FP16}`,
+      },
+      {
+        label: 'LoRA_Alpha',
+        value: params?.loRA_Alpha,
+      },
+      {
+        label: 'LoRA_R',
+        value: params?.loRA_R,
+      },
+      {
+        label: 'LoRA_Dropout',
+        value: params?.loRA_Dropout,
+      },
+      {
+        label: 'int4/8',
+        value: retrieveQuantization(params),
+      },
+    ],
+    [
+      {
+        label: 'LearningRate',
+        value: params.learningRate,
+      },
+
+      {
+        label: 'Epochs',
+        value: params?.epochs,
+      },
+      {
+        label: 'BlockSize',
+        value: params?.blockSize,
+      },
+      {
+        label: 'BatchSize',
+        value: params.batchSize,
+      },
+      {
+        label: 'WarmupRatio',
+        value: params?.warmupRatio,
+      },
+      {
+        label: 'WeightDecay',
+        value: params?.weightDecay,
+      },
+      {
+        label: 'GradAccSteps',
+        value: params?.gradAccSteps,
+      },
+      {
+        label: 'TrainerType',
+        value: params?.trainerType,
+      },
+    ],
   ];
 });
 
@@ -198,18 +205,37 @@ const onEdit = () => {
       </dao-card-item>
     </dao-card>
 
-    <dao-card
-      type="simple"
-      :title="t('views.Hyperparameter.parameterDetail')"
-      class="mt-[16px]"
-    >
-      <dao-card-item>
-        <dao-key-value-layout
-          direction="vertical"
-          :column="4"
-          :data="parameters"
-        />
-      </dao-card-item>
-    </dao-card>
+    <div class="flex">
+      <div class="flex-1 w-0">
+        <dao-card
+          type="simple"
+          :title="t('views.Hyperparameter.parameterDetail')"
+          class="mt-[16px]"
+        >
+          <dao-card-item>
+            <dao-key-value-layout
+              direction="vertical"
+              :column="2"
+              :data="parameters[0]"
+            />
+          </dao-card-item>
+        </dao-card>
+      </div>
+      <div class="flex-1 ml-[20px]">
+        <dao-card
+          type="simple"
+          title=""
+          class="mt-[16px]"
+        >
+          <dao-card-item>
+            <dao-key-value-layout
+              direction="vertical"
+              :column="2"
+              :data="parameters[1]"
+            />
+          </dao-card-item>
+        </dao-card>
+      </div>
+    </div>
   </div>
 </template>
