@@ -27,16 +27,16 @@ const search = ref<{ fuzzy?: string[] }>({});
 const columns = defineColumns([
   {
     id: 'name',
-    header: t('views.hyperparameter.name'),
+    header: t('views.Hyperparameter.name'),
     sortable: true,
   },
   {
     id: 'fineTuningType',
-    header: t('views.hyperparameter.fineTuningType'),
+    header: t('views.Hyperparameter.fineTuningType'),
   },
   {
     id: 'parameters',
-    header: t('views.hyperparameter.parameters'),
+    header: t('views.Hyperparameter.parameters'),
   },
   {
     id: 'createAt',
@@ -122,7 +122,7 @@ const confirmDelete = () => {
   <div class="hyperparameter-list console-main-container">
     <dao-header
       type="2nd"
-      :title="t('views.hyperparameter.hyperparameterGroup')"
+      :title="t('views.Hyperparameter.hyperparameterGroup')"
     />
 
     <dao-table
@@ -196,7 +196,7 @@ const confirmDelete = () => {
   >
     <div class="body">
       <div class="content">
-        {{ $t('views.hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
+        {{ $t('views.Hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
       </div>
     </div>
     <template #footer>

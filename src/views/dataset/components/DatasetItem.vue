@@ -45,11 +45,11 @@ const infos = computed(() => {
 
   const items = [
     {
-      label: t('views.dataset.taskType'),
+      label: t('views.Dataset.taskType'),
       value: task?.name,
     },
     {
-      label: t('views.dataset.trainingData'),
+      label: t('views.Dataset.trainingData'),
       value: splits?.train?.file,
     },
     {
@@ -57,16 +57,16 @@ const infos = computed(() => {
       value: useDateFormat(creationTimestamp),
     },
     {
-      label: t('views.dataset.testingData'),
+      label: t('views.Dataset.testingData'),
       value: splits?.test?.file,
     },
     {
-      label: t('views.dataset.tag'),
+      label: t('views.Dataset.tag'),
       value: tags?.join(','),
       slotId: 'tag',
     },
     {
-      label: t('views.dataset.validationData'),
+      label: t('views.Dataset.validationData'),
       value: splits?.validate?.file,
     },
   ];
@@ -77,7 +77,7 @@ const infos = computed(() => {
 const languages = computed(() => {
   const langs = props.data.spec?.datasetMetadata.languages;
 
-  return langs?.map((lang) => t(`views.dataset.${lang}`)).join(',') ?? '-';
+  return langs?.map((lang) => t(`views.Dataset.${lang}`)).join(',') ?? '-';
 });
 </script>
 
@@ -100,11 +100,11 @@ const languages = computed(() => {
       </router-link>
 
       <dao-state-icon :type="'success'">
-        {{ t('views.dataset.available') }}
+        {{ t('views.Dataset.available') }}
       </dao-state-icon>
 
       <dao-state-icon :type="'error'">
-        {{ t('views.dataset.noAvailable') }}
+        {{ t('views.Dataset.noAvailable') }}
       </dao-state-icon>
     </template>
 
@@ -152,7 +152,7 @@ const languages = computed(() => {
         class="flex flex-nowrap flex-grow items-center"
       >
         <dao-key-value-layout-item
-          :label="t('views.dataset.licenseInformation')"
+          :label="t('views.Dataset.licenseInformation')"
           class="text-center"
         >
           <span class="dataset-item__text">
@@ -162,7 +162,7 @@ const languages = computed(() => {
 
         <dao-key-value-layout-item
           class="text-center"
-          :label="t('views.dataset.datasetSize')"
+          :label="t('views.Dataset.datasetSize')"
         >
           <span class="dataset-item__text dataset-item__size">
             {{ props.data.spec?.datasetMetadata.size ?? '-' }}
@@ -171,7 +171,7 @@ const languages = computed(() => {
 
         <dao-key-value-layout-item
           class="text-center"
-          :label="t('views.dataset.language')"
+          :label="t('views.Dataset.language')"
         >
           <span class="dataset-item__text">
             {{ languages }}

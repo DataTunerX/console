@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { noop } from '@vueuse/core';
 import { i18n } from '@/plugins';
 import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
 import Avatar from '@/assets/avatar.webp';
-import { computed } from 'vue';
-import { noop } from '@vueuse/core';
 import { useNamespaceStore } from '@/stores/namespace';
 
 const userOperation = computed(() => [
@@ -43,7 +43,7 @@ const namespace = computed({
     <!-- <div class="" /> -->
     <span class="ghippo-header__product"> DataTunerX </span>
 
-    <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.nameSpace') }} </span>
+    <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span>
     <dao-select
       v-model="namespace"
       search

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -24,38 +24,36 @@ fetchDataset();
 const name = computed(() => dataset.value?.metadata?.name);
 
 const infos = computed(() => {
-  const languages = dataset.value?.spec?.datasetMetadata.languages
-    ?.map((lang) => t(`views.dataset.${lang}`))
-    .join(', ') ?? '-';
+  const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.Dataset.${lang}`)).join(', ') ?? '-';
 
   const items = [
     {
-      label: t('views.dataset.language'),
+      label: t('views.Dataset.language'),
       value: languages,
     },
     {
-      label: t('views.dataset.license'),
+      label: t('views.Dataset.license'),
       value: dataset.value?.spec?.datasetMetadata.license,
     },
     {
-      label: t('views.dataset.size'),
+      label: t('views.Dataset.size'),
       value: dataset.value?.spec?.datasetMetadata.size,
     },
     {
-      label: t('views.dataset.taskType'),
+      label: t('views.Dataset.taskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.name,
     },
     {
-      label: t('views.dataset.tag'),
+      label: t('views.Dataset.tag'),
       value: dataset.value?.spec?.datasetMetadata.tags?.join(','),
       slotId: 'tag',
     },
     {
-      label: t('views.dataset.subtaskType'),
+      label: t('views.Dataset.subtaskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.subTasks?.map((sub) => sub.name).join(', '),
     },
     {
-      label: t('views.dataset.datasetFileSource'),
+      label: t('views.Dataset.datasetFileSource'),
       value: dataset.value?.spec?.datasetFiles?.source,
     },
   ];
@@ -66,19 +64,19 @@ const infos = computed(() => {
 const columns = computed(() => [
   {
     id: 'name',
-    header: t('views.dataset.subsetName'),
+    header: t('views.Dataset.subsetName'),
   },
   {
     id: 'train',
-    header: t('views.dataset.trainingDataFile'),
+    header: t('views.Dataset.trainingDataFile'),
   },
   {
     id: 'test',
-    header: t('views.dataset.testingDataFile'),
+    header: t('views.Dataset.testingDataFile'),
   },
   {
     id: 'validate',
-    header: t('views.dataset.validationDataFile'),
+    header: t('views.Dataset.validationDataFile'),
   },
 ]);
 
@@ -108,7 +106,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            :label="t('views.dataset.header')"
+            :label="t('views.Dataset.header')"
             :to="{ name: 'DatasetList' }"
           />
           <dao-breadcrumb-item :label="name" />
@@ -127,7 +125,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      :title="t('views.dataset.basicInformation')"
+      :title="t('views.Dataset.basicInformation')"
     >
       <dao-card-item>
         <dao-key-value-layout
@@ -146,7 +144,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      :title="t('views.dataset.datasetInfoConfig')"
+      :title="t('views.Dataset.datasetInfoConfig')"
       class="dataset-detail__subset-info"
     >
       <dao-card-item>

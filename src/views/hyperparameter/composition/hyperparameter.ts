@@ -61,10 +61,13 @@ export const useHyperparameter = () => {
 
       state.hyperparameter = res.data;
     } catch (error) {
-      nError(t('common.notyError', {
-        name: t('common.fetch'),
-        action: t('views.hyperparameter.hyperparameterGroup'),
-      }), error);
+      nError(
+        t('common.notyError', {
+          name: t('common.fetch'),
+          action: t('views.Hyperparameter.hyperparameterGroup'),
+        }),
+        error,
+      );
     }
   };
 
@@ -76,10 +79,13 @@ export const useHyperparameter = () => {
 
       state.hyperparameters = res.data.items;
     } catch (error) {
-      nError(t('common.notyError', {
-        name: t('common.fetch'),
-        action: t('views.hyperparameter.hyperparameterGroupList'),
-      }), error);
+      nError(
+        t('common.notyError', {
+          name: t('common.fetch'),
+          action: t('views.Hyperparameter.hyperparameterGroupList'),
+        }),
+        error,
+      );
     } finally {
       state.loading = false;
     }

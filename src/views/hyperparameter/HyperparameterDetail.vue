@@ -21,10 +21,13 @@ const fetchDataset = async () => {
 
     hyperparameter.value = res.data;
   } catch (error) {
-    nError(t('common.notyError', {
-      name: t('common.fetch'),
-      action: t('views.hyperparameter.hyperparameterGroup'),
-    }), error);
+    nError(
+      t('common.notyError', {
+        name: t('common.fetch'),
+        action: t('views.Hyperparameter.hyperparameterGroup'),
+      }),
+      error,
+    );
   }
 };
 
@@ -40,15 +43,15 @@ const infos = computed(() => {
 
   return [
     {
-      label: t('views.hyperparameter.name'),
+      label: t('views.Hyperparameter.name'),
       value: name.value,
     },
     {
-      label: t('views.hyperparameter.fineTuningType'),
+      label: t('views.Hyperparameter.fineTuningType'),
       value: data.spec.objective.type,
     },
     {
-      label: t('views.dataset.tag'),
+      label: t('views.Dataset.tag'),
       value: data.metadata.labels,
       slotId: 'tag',
     },
@@ -159,7 +162,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            :label="t('views.hyperparameter.parameterSet')"
+            :label="t('views.Hyperparameter.parameterSet')"
             :to="{ name: 'HyperparameterList' }"
           />
           <dao-breadcrumb-item :label="name" />
@@ -178,7 +181,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      :title="t('views.dataset.basicInformation')"
+      :title="t('views.Dataset.basicInformation')"
     >
       <dao-card-item>
         <dao-key-value-layout
@@ -197,7 +200,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      :title="t('views.hyperparameter.parameterDetail')"
+      :title="t('views.Hyperparameter.parameterDetail')"
       class="mt-[16px]"
     >
       <dao-card-item>

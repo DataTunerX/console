@@ -8,9 +8,9 @@ import {
 import { useForm } from 'vee-validate';
 import { storeToRefs } from 'pinia';
 import { DaoSelect } from '@dao-style/core';
-import { useI18n } from 'vue-i18n';
 import { object, string, number } from 'yup';
 import { cloneDeep } from 'lodash';
+import { useI18n } from 'vue-i18n';
 import {
   type Hyperparameter,
   type StringParameters,
@@ -30,13 +30,13 @@ const router = useRouter();
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
 const { t } = useI18n();
-const title = computed(() => (isUpdate.value ? t('views.hyperparameter.update') : t('views.hyperparameter.create')));
+const title = computed(() => (isUpdate.value ? t('views.Hyperparameter.update') : t('views.Hyperparameter.create')));
 
 // 定义表单验证模式
 const schema = markRaw(
   object({
     metadata: object({
-      name: string().required().RFC1123Label(253).label(t('views.dataset.datasetName')),
+      name: string().required().RFC1123Label(253).label(t('views.Dataset.datasetName')),
     }),
     spec: object({
       objective: object({
@@ -157,7 +157,7 @@ onMounted(async () => {
     <dao-form label-width="120px">
       <dao-form-group title="基本信息">
         <dao-form-item-validate
-          :label="t('views.hyperparameter.hyperparameterGroupName')"
+          :label="t('views.Hyperparameter.hyperparameterGroupName')"
           name="metadata.name"
           required
           :control-props="{
@@ -168,7 +168,7 @@ onMounted(async () => {
 
         <dao-form-item-validate
           :tag="DaoSelect"
-          :label="t('views.hyperparameter.fineTuningType')"
+          :label="t('views.Hyperparameter.fineTuningType')"
           name="spec.objective.type"
           required
           :control-props="{
@@ -190,7 +190,7 @@ onMounted(async () => {
       type="vertical"
       class="mt-[20px]"
     >
-      <dao-form-group :title="t('views.hyperparameter.configuration')">
+      <dao-form-group :title="t('views.Hyperparameter.configuration')">
         <div class="flex flex-wrap flex-col items-start">
           <div class="parameter-card mb-6">
             <div class="flex space-x-5">

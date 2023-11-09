@@ -109,7 +109,7 @@ watch(
   <div class="dataset-list console-main-container">
     <dao-header
       type="2nd"
-      :title="$t('views.dataset.header')"
+      :title="$t('views.Dataset.header')"
     />
 
     <dao-toolbar
@@ -121,7 +121,7 @@ watch(
     >
       <template #action>
         <dao-button @click="onCreate">
-          {{ $t('views.dataset.create') }}
+          {{ $t('views.Dataset.create') }}
         </dao-button>
       </template>
     </dao-toolbar>
@@ -151,7 +151,7 @@ watch(
   >
     <div class="body">
       <div class="content">
-        {{ $t('views.dataset.deleteConfirm', { datasetToDelete }) }}
+        {{ $t('views.Dataset.deleteConfirm', { datasetToDelete }) }}
       </div>
     </div>
     <template #footer>
