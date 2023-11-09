@@ -4,18 +4,20 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
-import { type Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
-import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
-import { nError, nSuccess } from '@/utils/useNoty';
 import { first } from 'lodash';
+import { nError, nSuccess } from '@/utils/useNoty';
+import { useNamespaceStore } from '@/stores/namespace';
+import { type Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
 import { generateQueryString } from '@/utils/queryString';
 import { useHyperparameter } from './composition/hyperparameter';
 
 const router = useRouter();
 const namespaceStore = useNamespaceStore();
 const { namespace } = storeToRefs(namespaceStore);
+const { t } = useI18n();
 
 const showData = ref<Hyperparameter[]>([]);
 const pageSize = ref(10);
@@ -25,20 +27,20 @@ const search = ref<{ fuzzy?: string[] }>({});
 const columns = defineColumns([
   {
     id: 'name',
-    header: '名称',
+    header: t('views.Hyperparameter.name'),
     sortable: true,
   },
   {
     id: 'fineTuningType',
-    header: '微调类型',
+    header: t('views.Hyperparameter.fineTuningType'),
   },
   {
     id: 'parameters',
-    header: '参数预览',
+    header: t('views.Hyperparameter.parameters'),
   },
   {
     id: 'createAt',
-    header: '创建时间',
+    header: t('common.createTime'),
   },
   {
     id: 'action',
@@ -52,11 +54,15 @@ const { hyperparameters, fetchHyperparameters, loading } = useHyperparameter();
 const refresh = () => fetchHyperparameters(namespace.value);
 
 // 监听命名空间变化，重新加载数据集
-watch(() => namespaceStore.namespace, () => {
-  refresh();
-}, {
-  immediate: true,
-});
+watch(
+  () => namespaceStore.namespace,
+  () => {
+    refresh();
+  },
+  {
+    immediate: true,
+  },
+);
 
 const onSearch = () => {
   currentPage.value = 1;
@@ -99,14 +105,15 @@ const showDialog = (hyperparameter: string) => {
 };
 
 const confirmDelete = () => {
-  hyperparameterClient.delete(namespace.value, hyperparameterToDelete)
+  hyperparameterClient
+    .delete(namespace.value, hyperparameterToDelete)
     .then(() => {
       hideDialog();
       refresh();
-      nSuccess('删除成功');
+      nSuccess(t('common.notySuccess', { name: t('common.delete') }));
     })
     .catch((err) => {
-      nError('删除失败', err);
+      nError(t('common.notyError', { name: t('common.delete') }), err);
     });
 };
 </script>
@@ -115,7 +122,7 @@ const confirmDelete = () => {
   <div class="hyperparameter-list console-main-container">
     <dao-header
       type="2nd"
-      :title="'超参组'"
+      :title="t('views.Hyperparameter.hyperparameterGroup')"
     />
 
     <dao-table
@@ -163,19 +170,19 @@ const confirmDelete = () => {
 
       <template #td-action-menu="{ row }">
         <dao-dropdown-item @click="onUpdate(row.metadata.name as string)">
-          编辑
+          {{ t('common.edit') }}
         </dao-dropdown-item>
         <dao-dropdown-item
           color="red"
           @click="showDialog(row.metadata.name as string)"
         >
-          删除
+          {{ t('common.delete') }}
         </dao-dropdown-item>
       </template>
 
       <template #action>
         <dao-button @click="onCreate">
-          创建
+          {{ t('common.create') }}
         </dao-button>
       </template>
     </dao-table>
@@ -189,13 +196,13 @@ const confirmDelete = () => {
   >
     <div class="body">
       <div class="content">
-        确认删除超参组 {{ hyperparameterToDelete }} 吗？
+        {{ $t('views.Hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
       </div>
     </div>
     <template #footer>
       <dao-confirm-dialog-footer
         :text="hyperparameterToDelete"
-        confirm-text="删除"
+        :confirm-text="t('common.delete')"
       />
     </template>
   </dao-dialog>

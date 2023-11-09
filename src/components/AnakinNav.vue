@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { i18n } from '@/plugins';
 import { getActiveRouteFold } from '@/lib/util';
 import { NavRoute } from '@/types/common';
 
@@ -7,17 +8,17 @@ const routes = computed<NavRoute[]>(() => {
   const items = [
     {
       to: { name: 'FinetuneExperimentList' },
-      display: '微调实验',
+      display: i18n.t('components.AnakinHeader.menu.fineTuningExperiment'),
       icon: 'icon-registry',
     },
     {
       to: { name: 'DatasetList' },
-      display: '数据集',
+      display: i18n.t('components.AnakinHeader.menu.dataset'),
       icon: 'icon-apps',
     },
     {
       to: { name: 'HyperparameterList' },
-      display: '超参组',
+      display: i18n.t('components.AnakinHeader.menu.hyperparameterGroup'),
       icon: 'icon-config-file',
     },
   ] as NavRoute[];
@@ -26,7 +27,6 @@ const routes = computed<NavRoute[]>(() => {
 });
 
 const activeOpened = computed(() => getActiveRouteFold(routes.value));
-
 </script>
 
 <template>
@@ -91,45 +91,45 @@ $ghippo-header-aside-button-padding: 2px;
     flex: none;
     padding-top: 10px;
 
-  //   .dao-icon.icon-new-tab {
-  //     color: var(--dao-gray-blue-040);
-  //   }
+    //   .dao-icon.icon-new-tab {
+    //     color: var(--dao-gray-blue-040);
+    //   }
 
-  //   &-title-wrap {
-  //     display: flex;
-  //     align-items: center;
-  //     justify-content: space-between;
-  //     height: 30px;
-  //     margin-right: 12px;
-  //     margin-left: 12px;
-  //     line-height: 30px;
-  //   }
+    //   &-title-wrap {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: space-between;
+    //     height: 30px;
+    //     margin-right: 12px;
+    //     margin-left: 12px;
+    //     line-height: 30px;
+    //   }
 
-  //   &-title {
-  //     overflow: hidden;
-  //     font-size: 15px;
-  //     font-weight: 600;
-  //     text-overflow: ellipsis;
-  //     white-space: nowrap;
-  //   }
+    //   &-title {
+    //     overflow: hidden;
+    //     font-size: 15px;
+    //     font-weight: 600;
+    //     text-overflow: ellipsis;
+    //     white-space: nowrap;
+    //   }
 
-  //   &-exchange {
-  //     margin-left: 4px;
-  //     font-size: 16px;
-  //     font-weight: 400;
-  //     cursor: pointer;
-  //   }
+    //   &-exchange {
+    //     margin-left: 4px;
+    //     font-size: 16px;
+    //     font-weight: 400;
+    //     cursor: pointer;
+    //   }
 
-  //   &__menu {
-  //     width: 250px !important;
-  //     margin-left: 41px !important;
-  //   }
-  // }
+    //   &__menu {
+    //     width: 250px !important;
+    //     margin-left: 41px !important;
+    //   }
+    // }
 
-  // &__content {
-  //   flex: 1 1 0;
-  //   height: 100%;
-  //   overflow: auto;
+    // &__content {
+    //   flex: 1 1 0;
+    //   height: 100%;
+    //   overflow: auto;
   }
 }
 </style>

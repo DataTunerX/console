@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -24,38 +24,36 @@ fetchDataset();
 const name = computed(() => dataset.value?.metadata?.name);
 
 const infos = computed(() => {
-  const languages = dataset.value?.spec?.datasetMetadata.languages
-    ?.map((lang) => t(`views.dataset.${lang}`))
-    .join(', ') ?? '-';
+  const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.Dataset.${lang}`)).join(', ') ?? '-';
 
   const items = [
     {
-      label: '语言',
+      label: t('views.Dataset.language'),
       value: languages,
     },
     {
-      label: '许可证',
+      label: t('views.Dataset.license'),
       value: dataset.value?.spec?.datasetMetadata.license,
     },
     {
-      label: '词条数目',
+      label: t('views.Dataset.size'),
       value: dataset.value?.spec?.datasetMetadata.size,
     },
     {
-      label: '任务类型',
+      label: t('views.Dataset.taskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.name,
     },
     {
-      label: '标签',
+      label: t('views.Dataset.tag'),
       value: dataset.value?.spec?.datasetMetadata.tags?.join(','),
       slotId: 'tag',
     },
     {
-      label: '子任务类型',
+      label: t('views.Dataset.subtaskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.subTasks?.map((sub) => sub.name).join(', '),
     },
     {
-      label: '数据集文件源',
+      label: t('views.Dataset.datasetFileSource'),
       value: dataset.value?.spec?.datasetFiles?.source,
     },
   ];
@@ -66,19 +64,19 @@ const infos = computed(() => {
 const columns = computed(() => [
   {
     id: 'name',
-    header: '子数据集名称',
+    header: t('views.Dataset.subsetName'),
   },
   {
     id: 'train',
-    header: '训练数据集地址',
+    header: t('views.Dataset.trainingDataFile'),
   },
   {
     id: 'test',
-    header: '测试数据集地址',
+    header: t('views.Dataset.testingDataFile'),
   },
   {
     id: 'validate',
-    header: '验证数据集地址',
+    header: t('views.Dataset.validationDataFile'),
   },
 ]);
 
@@ -108,7 +106,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            label="数据集"
+            :label="t('views.Dataset.header')"
             :to="{ name: 'DatasetList' }"
           />
           <dao-breadcrumb-item :label="name" />
@@ -120,14 +118,14 @@ const onEdit = () => {
           type="tertiary"
           @click="onEdit"
         >
-          编辑
+          {{ t('common.edit') }}
         </dao-button>
       </template>
     </dao-header>
 
     <dao-card
       type="simple"
-      title="基本信息"
+      :title="t('views.Dataset.basicInformation')"
     >
       <dao-card-item>
         <dao-key-value-layout
@@ -146,7 +144,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      title="数据集信息配置"
+      :title="t('views.Dataset.datasetInfoConfig')"
       class="dataset-detail__subset-info"
     >
       <dao-card-item>

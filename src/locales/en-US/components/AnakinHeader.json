@@ -5,8 +5,14 @@
     "setting": "Settings",
     "logout": "Logout"
   },
+  "menu": {
+    "fineTuningExperiment": "Fine Tuning Experiment",
+    "dataset": "Dataset",
+    "hyperparameterGroup": "Hyperparameter Group"
+  },
   "feedback": "Feedback",
   "help": "Help",
   "messages": "Messages",
-  "count": "Message count"
+  "count": "Message count",
+  "namespace":"namespace"
 }

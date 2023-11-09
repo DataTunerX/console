@@ -1,4 +1,5 @@
 import { reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import {
   Hyperparameter,
   FineTuningType,
@@ -8,6 +9,7 @@ import {
   Quantization,
   hyperparameterClient,
 } from '@/api/hyperparameter';
+
 import { nError } from '@/utils/useNoty';
 
 // 定义默认的超参数对象
@@ -45,6 +47,7 @@ const defaultHyperparameter: Hyperparameter = {
 };
 
 export const useHyperparameter = () => {
+  const { t } = useI18n();
   const state = reactive({
     hyperparameter: { ...defaultHyperparameter }, // 使用对象复制以防止修改默认对象
     hyperparameters: [] as Hyperparameter[],
@@ -58,7 +61,13 @@ export const useHyperparameter = () => {
 
       state.hyperparameter = res.data;
     } catch (error) {
-      nError('获取超参数失败', error);
+      nError(
+        t('common.notyError', {
+          name: t('common.fetch'),
+          action: t('views.Hyperparameter.hyperparameterGroup'),
+        }),
+        error,
+      );
     }
   };
 
@@ -70,7 +79,13 @@ export const useHyperparameter = () => {
 
       state.hyperparameters = res.data.items;
     } catch (error) {
-      nError('获取超参数列表失败', error);
+      nError(
+        t('common.notyError', {
+          name: t('common.fetch'),
+          action: t('views.Hyperparameter.hyperparameterGroupList'),
+        }),
+        error,
+      );
     } finally {
       state.loading = false;
     }
