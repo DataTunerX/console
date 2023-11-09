@@ -3,7 +3,7 @@
   "loading": "Loading",
   "copy": "Copy",
   "copied": "Copied",
-  "confirm": "Confirm",
+  "confirm": "Confirm ",
   "cancel": "Cancel",
   "comma": ", ",
   "save": "save",
@@ -16,13 +16,21 @@
   "reverted": "reverted",
   "export": "export",
   "exported": "exported",
+  "edit": "edit",
+  "editd": "editd",
   "create": "create",
   "created": "created",
   "add": "add",
-  "delete": "delete",
+  "delete": "delete ",
   "deleted": "deleted",
   "remove": "remove",
   "removed": "removed",
+  "fail":"fail",
+  "faild":"faild",
   "notySuccess": "Successfully {action} {name}",
-  "notyError": "Failed to {action} {name}"
+  "notyError": "Failed to {action} {name}",
+  "error": "error",
+  "createTime": "Create Time",
+  "default":"default"
+
 }

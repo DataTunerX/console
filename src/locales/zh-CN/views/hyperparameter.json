@@ -1,0 +1,15 @@
+{
+  "create": "创建超参组",
+  "update": "更新超参组",
+  "deleteConfirm": "确认删除超参组 {hyperparameterToDelete} 吗？",
+
+  "name": "名称",
+  "fineTuningType": "微调类型",
+  "parameters": "参数预览",
+  "hyperparameterGroup": "超参组",
+  "configuration": "参数配置",
+  "hyperparameterGroupName": "超参组名称",
+  "parameterSet":"参数集",
+  "parameterDetail":"参数详情",
+  "hyperparameterGroupList": "超参组列表"
+}

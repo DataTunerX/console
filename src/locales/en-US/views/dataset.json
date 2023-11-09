@@ -14,16 +14,31 @@
   "size": "Size",
   "taskType": "Task Type",
   "subtaskType": "Subtask Type",
+  "duplicateSubtask": "duplicate Subtask",
   "addSubtaskType": "Add Subtask Type",
   "datasetInformation": "Dataset Information",
   "pluginConfiguration": "Plugin Configuration",
   "pluginName": "Plugin Name",
   "subsetName": "Subset Name",
+  "duplicateSubsetName":"duplicate SubsetName",
   "trainingDataFile": "Training Data File",
   "testingDataFile": "Testing Data File",
   "validationDataFile": "Validation Data File",
   "featureMapping": "Feature Mapping",
   "dataSourceInformation": "Data Source Information",
   "datasetNameExists": "A dataset with this name already exists",
-  "addDatasetInfoConfig": "Add Dataset Information Configuration"
+  "addDatasetInfoConfig": "Add Dataset Information Configuration",
+
+  "available": "available",
+  "noAvailable": "Not available",
+  "trainingData":"Training Data",
+  "testingData":"Testing Data",
+  "validationData":"Validation Data",
+  "licenseInformation":"License Information",
+  "datasetSize":"Dataset Size",
+
+  "license":"license",
+  "datasetFileSource":"Dataset File Source",
+  "basicInformation":"Basic Information",
+  "datasetInfoConfig": "Dataset InfoConfig"
 }

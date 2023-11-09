@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
-import { Dataset } from '@/api/dataset';
 import { useRouter } from 'vue-router';
 import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
+import { Dataset } from '@/api/dataset';
 
 const { t } = useI18n();
 
@@ -31,10 +31,7 @@ const onDelete = () => {
 };
 
 const infos = computed(() => {
-  const {
-    metadata,
-    spec,
-  } = props.data;
+  const { metadata, spec } = props.data;
 
   const creationTimestamp = metadata?.creationTimestamp;
 
@@ -48,28 +45,28 @@ const infos = computed(() => {
 
   const items = [
     {
-      label: '任务类型',
+      label: t('views.dataset.taskType'),
       value: task?.name,
     },
     {
-      label: '训练数据',
+      label: t('views.dataset.trainingData'),
       value: splits?.train?.file,
     },
     {
-      label: '创建时间',
+      label: t('common.createTime'),
       value: useDateFormat(creationTimestamp),
     },
     {
-      label: '测试数据',
+      label: t('views.dataset.testingData'),
       value: splits?.test?.file,
     },
     {
-      label: '标签',
+      label: t('views.dataset.tag'),
       value: tags?.join(','),
       slotId: 'tag',
     },
     {
-      label: '验证数据',
+      label: t('views.dataset.validationData'),
       value: splits?.validate?.file,
     },
   ];
@@ -103,11 +100,11 @@ const languages = computed(() => {
       </router-link>
 
       <dao-state-icon :type="'success'">
-        可用
+        {{ t('views.dataset.available') }}
       </dao-state-icon>
 
       <dao-state-icon :type="'error'">
-        不可用
+        {{ t('views.dataset.noAvailable') }}
       </dao-state-icon>
     </template>
 
@@ -122,14 +119,14 @@ const languages = computed(() => {
         <template #menu>
           <dao-dropdown-menu>
             <dao-dropdown-item @click="editDataset">
-              编辑
+              {{ t('common.edit') }}
             </dao-dropdown-item>
             <dao-dropdown-item type="divider" />
             <dao-dropdown-item
               color="red"
               @click="onDelete"
             >
-              删除
+              {{ t('common.delete') }}
             </dao-dropdown-item>
           </dao-dropdown-menu>
         </template>
@@ -155,26 +152,26 @@ const languages = computed(() => {
         class="flex flex-nowrap flex-grow items-center"
       >
         <dao-key-value-layout-item
-          label="许可证信息"
+          :label="t('views.dataset.licenseInformation')"
           class="text-center"
         >
           <span class="dataset-item__text">
-            {{ props.data.spec?.datasetMetadata.license ?? "-" }}
+            {{ props.data.spec?.datasetMetadata.license ?? '-' }}
           </span>
         </dao-key-value-layout-item>
 
         <dao-key-value-layout-item
           class="text-center"
-          label="数据集大小"
+          :label="t('views.dataset.datasetSize')"
         >
           <span class="dataset-item__text dataset-item__size">
-            {{ props.data.spec?.datasetMetadata.size ?? "-" }}
+            {{ props.data.spec?.datasetMetadata.size ?? '-' }}
           </span>
         </dao-key-value-layout-item>
 
         <dao-key-value-layout-item
           class="text-center"
-          label="语言"
+          :label="t('views.dataset.language')"
         >
           <span class="dataset-item__text">
             {{ languages }}

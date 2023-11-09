@@ -43,7 +43,7 @@ const namespace = computed({
     <!-- <div class="" /> -->
     <span class="ghippo-header__product"> DataTunerX </span>
 
-    <span class="ghippo-header__namespace"> 命名空间 </span>
+    <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.nameSpace') }} </span>
     <dao-select
       v-model="namespace"
       search

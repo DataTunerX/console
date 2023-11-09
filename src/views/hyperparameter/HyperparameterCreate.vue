@@ -6,10 +6,11 @@ import {
   computed, watch, onMounted, markRaw,
 } from 'vue';
 import { useForm } from 'vee-validate';
-import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
-import { nError, nSuccess } from '@/utils/useNoty';
 import { DaoSelect } from '@dao-style/core';
+import { useI18n } from 'vue-i18n';
+import { object, string, number } from 'yup';
+import { cloneDeep } from 'lodash';
 import {
   type Hyperparameter,
   type StringParameters,
@@ -20,21 +21,22 @@ import {
   Quantization,
   hyperparameterClient,
 } from '@/api/hyperparameter';
-import { object, string, number } from 'yup';
-import { cloneDeep } from 'lodash';
+import { nError, nSuccess } from '@/utils/useNoty';
+import { useNamespaceStore } from '@/stores/namespace';
 import { useHyperparameter } from './composition/hyperparameter';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const router = useRouter();
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
-const title = computed(() => (isUpdate.value ? '更新超参组' : '创建超参组'));
+const { t } = useI18n();
+const title = computed(() => (isUpdate.value ? t('views.hyperparameter.update') : t('views.hyperparameter.create')));
 
 // 定义表单验证模式
 const schema = markRaw(
   object({
     metadata: object({
-      name: string().required().RFC1123Label(253).label('数据集名称'),
+      name: string().required().RFC1123Label(253).label(t('views.dataset.datasetName')),
     }),
     spec: object({
       objective: object({
@@ -77,14 +79,7 @@ const toList = () => {
 const onSubmit = handleSubmit(async () => {
   const model: Hyperparameter = cloneDeep(formModel);
 
-  const keys: (keyof StringParameters)[] = [
-    'learningRate',
-    'loRA_Alpha',
-    'loRA_Dropout',
-    'loRA_R',
-    'warmupRatio',
-    'weightDecay',
-  ];
+  const keys: (keyof StringParameters)[] = ['learningRate', 'loRA_Alpha', 'loRA_Dropout', 'loRA_R', 'warmupRatio', 'weightDecay'];
 
   keys.forEach((key) => {
     model.spec.parameters[key] = `${model.spec.parameters[key]}`;
@@ -162,23 +157,23 @@ onMounted(async () => {
     <dao-form label-width="120px">
       <dao-form-group title="基本信息">
         <dao-form-item-validate
-          label="超参组名称"
+          :label="t('views.hyperparameter.hyperparameterGroupName')"
           name="metadata.name"
           required
           :control-props="{
             disabled: isUpdate,
-            class: 'input-form-width'
+            class: 'input-form-width',
           }"
         />
 
         <dao-form-item-validate
           :tag="DaoSelect"
-          label="微调类型"
+          :label="t('views.hyperparameter.fineTuningType')"
           name="spec.objective.type"
           required
           :control-props="{
             disabled: isUpdate,
-            class: 'select-form-width'
+            class: 'select-form-width',
           }"
         >
           <dao-option
@@ -195,7 +190,7 @@ onMounted(async () => {
       type="vertical"
       class="mt-[20px]"
     >
-      <dao-form-group title="参数配置">
+      <dao-form-group :title="t('views.hyperparameter.configuration')">
         <div class="flex flex-wrap flex-col items-start">
           <div class="parameter-card mb-6">
             <div class="flex space-x-5">
@@ -292,7 +287,7 @@ onMounted(async () => {
                 required
               >
                 <dao-option
-                  label="默认"
+                  :label="t('common.default')"
                   :value="Quantization.default"
                 />
                 <dao-option

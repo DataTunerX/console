@@ -3,12 +3,15 @@ import {
   ref, watch, watchEffect, computed,
 } from 'vue';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { first } from 'lodash';
+import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
 import { nSuccess, nError } from '@/utils/useNoty';
-import { storeToRefs } from 'pinia';
-import { first } from 'lodash';
 import DatasetItem from './components/DatasetItem.vue';
+
+const { t } = useI18n();
 
 // 常量定义
 const pageSize = ref(10);
@@ -45,7 +48,7 @@ const fetchDatasets = async () => {
       currentPage.value = 1;
     }
   } catch (error) {
-    nError('出错了', error);
+    nError(t('common.error'), error);
   } finally {
     loading.value = false;
   }
@@ -78,14 +81,15 @@ const hideDialog = () => {
 
 // 确认删除数据集
 const confirmDelete = () => {
-  datasetClient.delete(namespace.value, datasetToDelete.value)
+  datasetClient
+    .delete(namespace.value, datasetToDelete.value)
     .then(() => {
       hideDialog();
       fetchDatasets();
-      nSuccess('删除成功');
+      nSuccess(t('common.notySuccess', { name: t('common.delete') }));
     })
     .catch((err) => {
-      nError('删除失败', err);
+      nError(t('common.notyError', { name: t('common.delete') }), err);
     });
 };
 

@@ -1,0 +1,16 @@
+{
+  "create": "Create Hyperparameter Group",
+  "update": "Update Hyperparameter Group",
+  "deleteConfirm": "Confirm deletion of Hyperparameter Group {hyperparameterToDelete}?",
+
+  "name": "name",
+  "fineTuningType": "Fine Tuning Type",
+  "parameters": "Parameters Preview",
+  "hyperparameterGroup": "Hyperparameter Group ",
+  "configuration": "configuration",
+  "hyperparameterGroupName": "Hyperparameter Group Name",
+  "parameterSet":"Parameter Set",
+  "parameterDetail":"Parameter Detail",
+  "hyperparameterGroupList": "Hyperparameter Group List"
+
+}

@@ -9,24 +9,17 @@ import {
   computed, markRaw, reactive, onMounted,
 } from 'vue';
 import {
-  LicenseType,
-  SizeType,
-  type Dataset,
-  LanguageOptions,
-  datasetClient,
-  SubTask,
-  Subset,
-  taskCategories,
-} from '@/api/dataset';
-import {
   object, array, string, addMethod,
 } from 'yup';
+import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import {
+  LicenseType, SizeType, type Dataset, LanguageOptions, datasetClient, SubTask, Subset, taskCategories,
+} from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
-import { useRoute, useRouter } from 'vue-router';
-import { nError } from '@/utils/useNoty';
+import { nError, nSuccess } from '@/utils/useNoty';
 import { KubernetesError, HttpStatusCode } from '@/plugins/axios';
-import { useI18n } from 'vue-i18n';
 import { useDataset } from './composition/create';
 
 const { t } = useI18n();
@@ -114,7 +107,7 @@ const schema = markRaw(
                 }),
               }),
             )
-            .unique('子数据集名称重复', (obj: { name: string }) => obj.name),
+            .unique(t('views.dataset.duplicateSubsetName'), (obj: { name: string }) => obj.name),
         }),
 
         plugin: object({
@@ -153,36 +146,22 @@ onMounted(() => {
   }
 });
 
-const {
-  remove: removeFromTags,
-  push: pushToTags,
-  fields: tags,
-} = useFieldArray<string>('spec.datasetMetadata.tags');
+const { remove: removeFromTags, push: pushToTags, fields: tags } = useFieldArray<string>('spec.datasetMetadata.tags');
 
 const addTag = async () => pushToTags('');
 const removeTag = (index: number) => removeFromTags(index);
 
-const {
-  remove: removeFromSubtasks,
-  push: pushToSubtasks,
-  fields: subTasks,
-} = useFieldArray<SubTask>('spec.datasetMetadata.task.subTasks');
+const { remove: removeFromSubtasks, push: pushToSubtasks, fields: subTasks } = useFieldArray<SubTask>('spec.datasetMetadata.task.subTasks');
 const addSubtask = () => pushToSubtasks({ name: '' });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
-const {
-  remove: removeFromRules,
-  push: pushToRules,
-  fields: subsets,
-} = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
+const { remove: removeFromRules, push: pushToRules, fields: subsets } = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
 const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
 
-const canRemove = computed(
-  () => (formModel.spec?.datasetMetadata.datasetInfo?.subsets?.length ?? 0) > 1,
-);
+const canRemove = computed(() => (formModel.spec?.datasetMetadata.datasetInfo?.subsets?.length ?? 0) > 1);
 
 const toList = () => {
   router.push({
@@ -203,14 +182,24 @@ const onSubmit = handleSubmit(async (values) => {
     } else {
       await datasetClient.create(namespaceStore.namespace, values);
     }
+    nSuccess(
+      t('common.notyError', {
+        name: !isUpdate.value ? t('common.create') : t('common.update'),
+      }),
+    );
     toList();
   } catch (error) {
     const err = error as KubernetesError;
 
     if (err.code === HttpStatusCode.Conflict) {
-      setFieldError('metadata.name', '该名称的数据集已存在');
+      setFieldError('metadata.name', t('views.dataset.datasetNameExists'));
     } else {
-      nError('创建失败', error);
+      nError(
+        t('common.notyError', {
+          name: t('common.fail'),
+        }),
+        error,
+      );
     }
   }
 });

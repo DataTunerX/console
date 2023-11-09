@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
+import { useDateFormat } from '@dao-style/extend';
+import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
-import { useDateFormat } from '@dao-style/extend';
 import { nError } from '@/utils/useNoty';
 
 const router = useRouter();
 const route = useRoute();
 const namespaceStore = useNamespaceStore();
+const { t } = useI18n();
 
 const hyperparameter = ref<Hyperparameter | null>(null);
 
@@ -19,7 +21,10 @@ const fetchDataset = async () => {
 
     hyperparameter.value = res.data;
   } catch (error) {
-    nError('获取超参数失败', error);
+    nError(t('common.notyError', {
+      name: t('common.fetch'),
+      action: t('views.hyperparameter.hyperparameterGroup'),
+    }), error);
   }
 };
 
@@ -35,20 +40,20 @@ const infos = computed(() => {
 
   return [
     {
-      label: '名称',
+      label: t('views.hyperparameter.name'),
       value: name.value,
     },
     {
-      label: '微调类型',
+      label: t('views.hyperparameter.fineTuningType'),
       value: data.spec.objective.type,
     },
     {
-      label: '标签',
+      label: t('views.dataset.tag'),
       value: data.metadata.labels,
       slotId: 'tag',
     },
     {
-      label: '创建时间',
+      label: t('common.createTime'),
       value: useDateFormat(data.metadata.creationTimestamp),
     },
   ];
@@ -154,7 +159,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            label="参数集"
+            :label="t('views.hyperparameter.parameterSet')"
             :to="{ name: 'HyperparameterList' }"
           />
           <dao-breadcrumb-item :label="name" />
@@ -166,14 +171,14 @@ const onEdit = () => {
           type="tertiary"
           @click="onEdit"
         >
-          编辑
+          {{ t('common.edit') }}
         </dao-button>
       </template>
     </dao-header>
 
     <dao-card
       type="simple"
-      title="基本信息"
+      :title="t('views.dataset.basicInformation')"
     >
       <dao-card-item>
         <dao-key-value-layout
@@ -192,7 +197,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      title="参数详情"
+      :title="t('views.hyperparameter.parameterDetail')"
       class="mt-[16px]"
     >
       <dao-card-item>

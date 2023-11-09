@@ -20,12 +20,26 @@
   "pluginConfiguration": "插件配置",
   "pluginName": "插件名称",
   "subsetName": "子数据集名称",
+  "duplicateSubsetName":"子数据集名称重复",
   "trainingDataFile": "训练数据集地址",
   "testingDataFile": "测试数据集地址",
   "validationDataFile": "验证数据集地址",
   "featureMapping": "特征映射",
   "dataSourceInformation": "数据源信息",
   "datasetNameExists": "该名称的数据集已存在",
-  "addDatasetInfoConfig": "添加数据集信息配置"
+  "addDatasetInfoConfig": "添加数据集信息配置",
+
+  "available": "可用",
+  "noAvailable": "不可用",
+  "trainingData":"训练数据",
+  "testingData":"测试数据",
+  "validationData":"验证数据",
+  "licenseInformation":"许可证信息",
+  "datasetSize":"数据集大小",
+
+  "license":"许可证",
+  "datasetFileSource":"数据集文件源",
+  "basicInformation":"基本信息",
+  "datasetInfoConfig": "数据集信息配置"
 
 }

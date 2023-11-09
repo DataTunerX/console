@@ -30,32 +30,32 @@ const infos = computed(() => {
 
   const items = [
     {
-      label: '语言',
+      label: t('views.dataset.language'),
       value: languages,
     },
     {
-      label: '许可证',
+      label: t('views.dataset.license'),
       value: dataset.value?.spec?.datasetMetadata.license,
     },
     {
-      label: '词条数目',
+      label: t('views.dataset.size'),
       value: dataset.value?.spec?.datasetMetadata.size,
     },
     {
-      label: '任务类型',
+      label: t('views.dataset.taskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.name,
     },
     {
-      label: '标签',
+      label: t('views.dataset.tag'),
       value: dataset.value?.spec?.datasetMetadata.tags?.join(','),
       slotId: 'tag',
     },
     {
-      label: '子任务类型',
+      label: t('views.dataset.subtaskType'),
       value: dataset.value?.spec?.datasetMetadata.task?.subTasks?.map((sub) => sub.name).join(', '),
     },
     {
-      label: '数据集文件源',
+      label: t('views.dataset.datasetFileSource'),
       value: dataset.value?.spec?.datasetFiles?.source,
     },
   ];
@@ -66,19 +66,19 @@ const infos = computed(() => {
 const columns = computed(() => [
   {
     id: 'name',
-    header: '子数据集名称',
+    header: t('views.dataset.subsetName'),
   },
   {
     id: 'train',
-    header: '训练数据集地址',
+    header: t('views.dataset.trainingDataFile'),
   },
   {
     id: 'test',
-    header: '测试数据集地址',
+    header: t('views.dataset.testingDataFile'),
   },
   {
     id: 'validate',
-    header: '验证数据集地址',
+    header: t('views.dataset.validationDataFile'),
   },
 ]);
 
@@ -108,7 +108,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            label="数据集"
+            :label="t('views.dataset.header')"
             :to="{ name: 'DatasetList' }"
           />
           <dao-breadcrumb-item :label="name" />
@@ -120,14 +120,14 @@ const onEdit = () => {
           type="tertiary"
           @click="onEdit"
         >
-          编辑
+          {{ t('common.edit') }}
         </dao-button>
       </template>
     </dao-header>
 
     <dao-card
       type="simple"
-      title="基本信息"
+      :title="t('views.dataset.basicInformation')"
     >
       <dao-card-item>
         <dao-key-value-layout
@@ -146,7 +146,7 @@ const onEdit = () => {
 
     <dao-card
       type="simple"
-      title="数据集信息配置"
+      :title="t('views.dataset.datasetInfoConfig')"
       class="dataset-detail__subset-info"
     >
       <dao-card-item>
