@@ -33,7 +33,7 @@ const infos = computed(() => {
   const creationTimestamp = metadata?.creationTimestamp;
   const llms = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.llm).filter((i) => i);
   const datasets = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.dataset);
-  const hyperparameters = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.hyperparameter);
+  const hyperparameters = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef);
 
   const items = [
     {

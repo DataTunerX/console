@@ -9,7 +9,6 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
-import { cloneDeep } from 'lodash';
 import { ElementRefType } from '@/types/common';
 import FinetuneJobComponent from './components/FinetuneJob.vue';
 import {
@@ -67,7 +66,7 @@ const { values, validate } = useForm({
 const { push, remove, fields: jobs } = useFieldArray<FinetuneJob>('spec.finetuneJobs');
 
 const onAdd = () => {
-  push(cloneDeep(finetuneJob.value));
+  push(finetuneJob.value);
 };
 
 const toList = () => {
@@ -118,11 +117,17 @@ const onSubmit = async () => {
           label="实验名称"
           name="metadata.name"
           required
+          :control-props="{
+            class: 'input-form-width'
+          }"
         />
         <dao-form-item-validate
           label="评估方式"
           name="spec.scoringConfig.name"
           :tag="DaoSelect"
+          :control-props="{
+            class: 'select-form-width'
+          }"
         >
           <dao-option
             v-for="scoringConfig in scoringConfigs"
@@ -140,8 +145,7 @@ const onSubmit = async () => {
             :key="job.key"
             class="job-item relative"
             :name="`${job.key}`"
-            title="this is a title"
-            description="this is description"
+            :title="job.value.metadata?.name"
           >
             <FinetuneJobComponent
               :ref="($e: ElementRefType<ComponentRef>) => jobsRef[idx] = $e"
@@ -202,5 +206,13 @@ const onSubmit = async () => {
   &__remove-btn {
     color: var(--dao-gray-blue-040);
   }
+}
+</style>
+<style lang="scss" scoped>
+$form-width: 400px;
+
+:deep(.input-form-width.dao-input),
+:deep(.select-form-width.dao-select) {
+  width: $form-width;
 }
 </style>

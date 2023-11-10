@@ -31,13 +31,5 @@
   "notyError": "{name}{action}失败",
   "error": "出错了",
   "createTime": "创建时间",
-  "default":"默认",
-
-  "deleteSucceed": "删除成功",
-  "deleteFailed": "删除失败，原因：",
-  "createSucceed": "创建成功",
-  "createFailed": "创建失败，原因：",
-  "updateSucceed": "更新成功",
-  "updateFailed": "更新失败，原因：",
-  "fetchFailed": "获取数据失败，原因："
+  "default":"默认"
 }

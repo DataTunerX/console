@@ -2,12 +2,16 @@
 import { DaoSelect } from '@dao-style/core';
 import { useForm } from 'vee-validate';
 import { string, object } from 'yup';
-import { PropType, markRaw, watch } from 'vue';
+import {
+  PropType, markRaw, watch, onBeforeMount,
+} from 'vue';
 import { Dataset } from '@/api/dataset';
 import { LargeLanguageModel } from '@/api/large-language-model';
 import { Hyperparameter } from '@/api/hyperparameter';
 import { FinetuneJob } from '@/api/finetune-job';
 import { isEqual } from 'lodash';
+import { randomStr } from '@/utils/uid';
+import HyperParameterOverride from './HyperparameterOverride.vue';
 
 const props = defineProps({
   llms: {
@@ -29,6 +33,13 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['update:modelValue']);
+
+const hyperparametersMap = new Map();
+
+// eslint-disable-next-line no-restricted-syntax
+for (const hp of props.hyperparameters) {
+  hyperparametersMap.set(hp.metadata.name, hp);
+}
 
 const validationSchema = markRaw(
   object({
@@ -52,6 +63,14 @@ const validationSchema = markRaw(
 const { values, validate, setValues } = useForm<FinetuneJob>({
   initialValues: props.modelValue,
   validationSchema,
+});
+
+onBeforeMount(() => {
+  setValues({
+    metadata: {
+      name: `finetune-job-${randomStr(5)}`,
+    },
+  });
 });
 
 watch(() => values, (newV) => {
@@ -136,6 +155,17 @@ defineExpose({
         :value="params.metadata.name"
       />
     </dao-form-item-validate>
+
+    <dao-form-item v-if="values.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef">
+      <HyperParameterOverride
+        :origin="hyperparametersMap.get(values.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef)"
+      />
+      <template #helper>
+        <dao-helper-text>
+          修改超参组后，将会覆盖原有超参组的超参值。
+        </dao-helper-text>
+      </template>
+    </dao-form-item>
   </dao-form>
 </template>
 
@@ -146,5 +176,4 @@ $form-width: 400px;
 :deep(.select-form-width.dao-select) {
   width: $form-width;
 }
-
 </style>

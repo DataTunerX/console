@@ -3,7 +3,6 @@ import {
   apiVersion, kind, FinetuneExperiment, finetuneExperimentClient,
 } from '@/api/finetune-experiment';
 import { FinetuneJob } from '@/api/finetune-job';
-import uniqueID from '@/utils/uid';
 import { ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
 import { ImagePullPolicy } from '@/api/finetune';
@@ -44,7 +43,7 @@ export const useFinetuneJob = () => {
   const finetuneJob = ref<FinetuneJob>(
     {
       metadata: {
-        name: `finetune-job-${uniqueID()}`,
+        name: '',
       },
       valid: true,
       spec: {
