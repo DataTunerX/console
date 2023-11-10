@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
+import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
 /**
  * FinetuneJob is the Schema for the finetunejobs API
  */
@@ -27,6 +28,7 @@ export interface FinetuneJob {
    * FinetuneJobStatus defines the observed state of FinetuneJob
    */
   status?: Status;
+  valid?: boolean
 }
 
 /**
@@ -52,74 +54,10 @@ export interface Spec {
 */
 export interface Finetune {
   /**
-   * Dataset specifies the dataset CR used for fine-tuning.
+   * FinetuneSpec defines the desired state of Finetune
    */
-  dataset: string;
-  /**
-   * Hyperparameter specifies the hyperparameter CR used for fine-tuning.
-   */
-  hyperparameter: string;
-  /**
-   * LLM specifies the large model CR used for fine-tuning.
-   */
-  llm: string;
+  finetuneSpec: FinetuneSpec;
   name?: string;
-  /**
-   * Resource specifies the resource configuration for fine-tuning.
-   */
-  resource?: Resource;
-}
-
-/**
-* Resource specifies the resource configuration for fine-tuning.
-*/
-export interface Resource {
-  /**
-   * Limits specifies the resource limits.
-   */
-  limits: Limits;
-  /**
-   * ResourceLimits represents the resource limits for a task.
-   */
-  requests: Requests;
-}
-
-/**
-* Limits specifies the resource limits.
-*/
-export interface Limits {
-  /**
-   * CPU specifies the CPU resource limit.
-   */
-  cpu: CPU;
-  /**
-   * GPU specifies the GPU resource limit.
-   */
-  gpu: string;
-  /**
-   * Memory specifies the memory resource limit.
-   */
-  memory: CPU;
-}
-
-export type CPU = number | string;
-
-/**
-* ResourceLimits represents the resource limits for a task.
-*/
-export interface Requests {
-  /**
-   * CPU specifies the CPU resource limit.
-   */
-  cpu: CPU;
-  /**
-   * GPU specifies the GPU resource limit.
-   */
-  gpu: string;
-  /**
-   * Memory specifies the memory resource limit.
-   */
-  memory: CPU;
 }
 
 /**
@@ -150,13 +88,11 @@ export interface ServeConfig {
 * FinetuneJobStatus defines the observed state of FinetuneJob
 */
 export interface Status {
-  conditions: Condition[];
-  result: Result;
+  conditions?: Condition[];
+  finetuneState?: FinetuneState;
+  result?: Result;
   state: State;
-  /**
-   * todo FinetuneState
-   */
-  stats: string;
+  stats?: string;
 }
 
 export interface Result {

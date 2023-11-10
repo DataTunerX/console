@@ -4,15 +4,17 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
+import {
+  type Hyperparameter, hyperparameterClient, Parameters,
+} from '@/api/hyperparameter';
+import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
-import { first } from 'lodash';
+import { first, omit } from 'lodash';
 import { nError, nSuccess } from '@/utils/useNoty';
-import { useNamespaceStore } from '@/stores/namespace';
-import { type Hyperparameter, hyperparameterClient } from '@/api/hyperparameter';
 import { generateQueryString } from '@/utils/queryString';
-import { useHyperparameter } from './composition/hyperparameter';
+import { retrieveQuantization, useHyperparameter } from './composition/hyperparameter';
 
 const router = useRouter();
 const namespaceStore = useNamespaceStore();
@@ -63,6 +65,15 @@ watch(
     immediate: true,
   },
 );
+
+const regroupParameters = (parameters: Parameters) => {
+  const params = {
+    ...omit(parameters, ['int4', 'int8', 'PEFT']),
+    'int4/8': retrieveQuantization(parameters),
+  };
+
+  return generateQueryString(params);
+};
 
 const onSearch = () => {
   currentPage.value = 1;
@@ -165,7 +176,7 @@ const confirmDelete = () => {
       </template>
 
       <template #td-parameters="{ row }">
-        <dao-hover-card :data="generateQueryString(row.spec.parameters)" />
+        <dao-hover-card :data="regroupParameters(row.spec.parameters)" />
       </template>
 
       <template #td-action-menu="{ row }">

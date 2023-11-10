@@ -99,13 +99,13 @@ const languages = computed(() => {
         {{ props.data.metadata?.name }}
       </router-link>
 
-      <dao-state-icon :type="'success'">
+      <!-- <dao-state-icon :type="'success'">
         {{ t('views.Dataset.available') }}
       </dao-state-icon>
 
       <dao-state-icon :type="'error'">
         {{ t('views.Dataset.noAvailable') }}
-      </dao-state-icon>
+      </dao-state-icon> -->
     </template>
 
     <template #action>

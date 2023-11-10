@@ -79,7 +79,6 @@ const schema = markRaw(
       datasetMetadata: object().shape({
         tags: array().of(string().required()).unique(t('views.Dataset.duplicateTags')),
         languages: array().min(1),
-        license: string().required(),
         size: string().required(),
         task: object({
           name: string().max(63).required(),
@@ -294,7 +293,6 @@ const onSubmit = handleSubmit(async (values) => {
         :label="$t('views.Dataset.licenseType')"
         name="spec.datasetMetadata.license"
         :tag="DaoSelect"
-        required
         :control-props="{
           class: 'select-form-width',
         }"

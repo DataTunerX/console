@@ -41,13 +41,18 @@ const namespace = computed({
 <template>
   <header class="ghippo-header">
     <!-- <div class="" /> -->
-    <span class="ghippo-header__product"> DataTunerX </span>
+    <div class="ghippo-header-logo">
+      <img
+        class="ghippo-header-logo-img"
+        src="@/assets/logo.png"
+      >
+    </div>
 
-    <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span>
+    <!-- <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span> -->
     <dao-select
       v-model="namespace"
       search
-      class="ml-[20px]"
+      class="ml-[30px]"
     >
       <dao-option
         v-for="ns in namespaceStore.namespaces"
@@ -65,7 +70,7 @@ const namespace = computed({
         >
           <anakin-header-button class="ghippo-user-trigger">
             <img
-              class="ghippo-user-avatar ghippo-header-logo-img"
+              class="ghippo-user-avatar"
               :src="Avatar"
               alt="user.username"
             >
@@ -128,12 +133,14 @@ $ghippo-header-color: var(--dao-navigation-090);
 }
 
 .ghippo-header-logo {
-  margin-left: 20px;
+  width: 210px;
+  text-align: center;
 }
 
 .ghippo-header-logo-img {
   height: 36px;
   vertical-align: bottom;
+  transform: scale(1.7);
 }
 
 .ghippo-toolbox {
@@ -185,7 +192,9 @@ $ghippo-header-color: var(--dao-navigation-090);
   }
 
   .ghippo-user-avatar {
+    height: 36px;
     margin-right: 8px;
+    vertical-align: middle;
   }
 
   .ghippo-user-default-avatar {

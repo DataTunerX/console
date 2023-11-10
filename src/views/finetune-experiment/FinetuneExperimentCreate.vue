@@ -2,25 +2,48 @@
 import { DaoSelect } from '@dao-style/core';
 import { useFieldArray, useForm } from 'vee-validate';
 import { string, object } from 'yup';
-import { computed, markRaw } from 'vue';
+import { markRaw, onMounted, ref } from 'vue';
 import { FinetuneJob } from '@/api/finetune-job';
 import { finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
+import { ElementRefType } from '@/types/common';
 import FinetuneJobComponent from './components/FinetuneJob.vue';
-import { useFinetuneExperiment, useScoringConfig } from './composition/finetune';
+import {
+  useFinetuneExperiment,
+  useFinetuneJob,
+  useLargeLanguageModel,
+  useScoringConfig,
+} from './composition/finetune';
+import { useDataset } from '../dataset/composition/create';
+import { useHyperparameter } from '../hyperparameter/composition/hyperparameter';
 
 const router = useRouter();
 
 const { namespace } = storeToRefs(useNamespaceStore());
 
+const { datasets, fetchDatasets } = useDataset();
+
+const { largeLanguageModels, fetchLargeLanguageModels } = useLargeLanguageModel();
+
+const { hyperparameters, fetchHyperparameters } = useHyperparameter();
+
 const { finetuneExperiment } = useFinetuneExperiment();
 
 const { scoringConfigs, fetchScoringConfigs } = useScoringConfig();
 
-fetchScoringConfigs(namespace.value);
+const { finetuneJob } = useFinetuneJob();
+
+onMounted(() => {
+  Promise.all([
+    fetchLargeLanguageModels(namespace.value),
+    fetchDatasets(namespace.value),
+    fetchHyperparameters(namespace.value),
+    fetchScoringConfigs(namespace.value),
+  ]);
+});
 
 const validationSchema = markRaw(
   object({
@@ -35,56 +58,16 @@ const validationSchema = markRaw(
   }),
 );
 
-const { values, handleSubmit } = useForm({
+const { values, validate } = useForm({
   initialValues: finetuneExperiment,
   validationSchema,
 });
 
-const { push, remove } = useFieldArray<FinetuneJob>('spec.finetuneJobs');
+const { push, remove, fields: jobs } = useFieldArray<FinetuneJob>('spec.finetuneJobs');
 
-const onAdd = (val: FinetuneJob) => {
-  push(val);
+const onAdd = () => {
+  push(finetuneJob.value);
 };
-
-const jobs = computed(() => values.spec?.finetuneJobs.map((job) => {
-  const { metadata, spec } = job;
-  const name = metadata?.name;
-  const finetune = spec?.finetune;
-  const llm = finetune?.llm;
-  const dataset = finetune?.dataset;
-  const hyperparameter = finetune?.hyperparameter;
-
-  return {
-    name,
-    llm,
-    dataset,
-    hyperparameter,
-  };
-}));
-
-const columns = computed(() => [
-  {
-    id: 'name',
-    header: '任务名称',
-  },
-  {
-    id: 'llm',
-    header: '基础大模型',
-  },
-  {
-    id: 'dataset',
-    header: '数据集',
-  },
-  {
-    id: 'hyperparameter',
-    header: '超参组',
-  },
-  {
-    id: 'action',
-    header: '',
-    defaultWidth: '60px',
-  },
-]);
 
 const toList = () => {
   router.push({
@@ -92,15 +75,34 @@ const toList = () => {
   });
 };
 
-const onSubmit = handleSubmit(async () => {
-  try {
-    await finetuneExperimentClient.create(namespace.value, values);
-    toList();
-  } catch (error) {
-    nError('失败了', error);
-  }
-});
+type ComponentRef = {
+  validateEdit: () => Promise<boolean>;
+} | null;
 
+const jobsRef = ref<ElementRefType<ComponentRef>[]>([]);
+
+const validateEdit = async () => {
+  const jobsRes = await Promise.all(jobsRef.value.map((item) => (item as ComponentRef)?.validateEdit() ?? Promise.resolve(true)));
+
+  return jobsRes.every((item) => item);
+};
+
+const onSubmit = async () => {
+  const v = await validateEdit();
+
+  if (v) {
+    const valid = await validate();
+
+    if (valid.valid) {
+      try {
+        await finetuneExperimentClient.create(namespace.value, values);
+        toList();
+      } catch (error) {
+        nError('失败了', error);
+      }
+    }
+  }
+};
 </script>
 
 <template>
@@ -111,52 +113,106 @@ const onSubmit = handleSubmit(async () => {
   >
     <dao-form label-width="120px">
       <dao-form-group title="基本信息">
-        <div class="flex">
-          <dao-form-item-validate
-            label="实验名称"
-            name="metadata.name"
-            required
+        <dao-form-item-validate
+          label="实验名称"
+          name="metadata.name"
+          required
+          :control-props="{
+            class: 'input-form-width'
+          }"
+        />
+        <dao-form-item-validate
+          label="评估方式"
+          name="spec.scoringConfig.name"
+          :tag="DaoSelect"
+          :control-props="{
+            class: 'select-form-width'
+          }"
+        >
+          <dao-option
+            v-for="scoringConfig in scoringConfigs"
+            :key="scoringConfig.metadata?.name"
+            :label="scoringConfig.metadata?.name"
+            :value="scoringConfig.metadata?.name"
           />
-          <dao-form-item-validate
-            label="评估方式"
-            name="spec.scoringConfig.name"
-            :tag="DaoSelect"
-          >
-            <dao-option
-              v-for="scoringConfig in scoringConfigs"
-              :key="scoringConfig.metadata?.name"
-              :label="scoringConfig.metadata?.name"
-              :value="scoringConfig.metadata?.name"
-            />
-          </dao-form-item-validate>
-        </div>
+        </dao-form-item-validate>
       </dao-form-group>
 
-      <dao-form-group title="任务">
-        <div class="flex space-x-6">
-          <div class="flex-1">
-            <FinetuneJobComponent @add="onAdd">
-              <dao-table
-                class="flex-1"
-                :data="jobs"
-                :columns="columns"
-                hide-setting
-              >
-                <template #td-action="{ rowIndex }">
-                  <dao-text-button
-                    :prop="{
-                      type: 'default',
-                      icon: 'icon-close',
-                    }"
-                    class="text-button__delete"
-                    @click="remove(rowIndex)"
-                  />
-                </template>
-              </dao-table>
-            </FinetuneJobComponent>
-          </div>
-        </div>
+      <dao-form-group title="配置">
+        <dao-expansion type="box">
+          <dao-expansion-item
+            v-for="(job, idx) in jobs"
+            :key="job.key"
+            class="job-item relative"
+            :name="`${job.key}`"
+            :title="job.value.metadata?.name"
+          >
+            <FinetuneJobComponent
+              :ref="($e: ElementRefType<ComponentRef>) => jobsRef[idx] = $e"
+              v-model="job.value"
+              :llms="largeLanguageModels"
+              :datasets="datasets"
+              :hyperparameters="hyperparameters"
+            />
+            <template #action>
+              <dao-icon
+                v-if="!job.value.valid"
+                class="job-item-icon--error text-[18px] mr-[23px]"
+                name="icon-sys-warning"
+                use-font
+              />
+              <dao-icon
+                class="mr-[3px] job-item__remove-btn"
+                name="icon-close"
+                use-font
+                @click="remove(idx)"
+              />
+            </template>
+          </dao-expansion-item>
+        </dao-expansion>
+        <dao-text-button
+          class="mt-[20px]"
+          :prop="{
+            type:'action',
+            iconLeft:'icon-add',
+          }"
+          @click="onAdd"
+        >
+          {{ $t('common.add') }}
+        </dao-text-button>
       </dao-form-group>
     </dao-form>
   </dao-modal-layout>
 </template>
+
+<style lang="scss" scoped>
+.job-item {
+  &-icon--error {
+    color: var(--dao-red-050);
+    vertical-align: middle;
+  }
+
+  &-title {
+    padding: 21px 0 11px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #363a42;
+
+    &.port-title {
+      padding-top: 11px;
+    }
+  }
+
+  &__remove-btn {
+    color: var(--dao-gray-blue-040);
+  }
+}
+</style>
+<style lang="scss" scoped>
+$form-width: 400px;
+
+:deep(.input-form-width.dao-input),
+:deep(.select-form-width.dao-select) {
+  width: $form-width;
+}
+</style>

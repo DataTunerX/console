@@ -1,29 +1,45 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
-import { useField, useForm } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { string, object } from 'yup';
-import { markRaw, onMounted } from 'vue';
+import {
+  PropType, markRaw, watch, onBeforeMount,
+} from 'vue';
+import { Dataset } from '@/api/dataset';
+import { LargeLanguageModel } from '@/api/large-language-model';
+import { Hyperparameter } from '@/api/hyperparameter';
 import { FinetuneJob } from '@/api/finetune-job';
-import { useNamespaceStore } from '@/stores/namespace';
-import { useDataset } from '@/views/dataset/composition/create';
-import { storeToRefs } from 'pinia';
-import { useFinetuneJob, useLargeLanguageModel } from '../composition/finetune';
-import HyperparameterCreate from './HyperparameterCreate.vue';
+import { isEqual } from 'lodash';
+import { randomStr } from '@/utils/uid';
+import HyperParameterOverride from './HyperparameterOverride.vue';
 
-const { namespace } = storeToRefs(useNamespaceStore());
-
-const { datasets, fetchDatasets } = useDataset();
-
-const { largeLanguageModels, fetchLargeLanguageModels } = useLargeLanguageModel();
-
-onMounted(() => {
-  Promise.all([
-    fetchDatasets(namespace.value),
-    fetchLargeLanguageModels(namespace.value),
-  ]);
+const props = defineProps({
+  llms: {
+    type: Array as PropType<Array<LargeLanguageModel>>,
+    required: true,
+  },
+  datasets: {
+    type: Array as PropType<Array<Dataset>>,
+    required: true,
+  },
+  hyperparameters: {
+    type: Array as PropType<Array<Hyperparameter>>,
+    required: true,
+  },
+  modelValue: {
+    type: Object as PropType<FinetuneJob>,
+    required: true,
+  },
 });
 
-const { finetuneJob } = useFinetuneJob();
+const emits = defineEmits(['update:modelValue']);
+
+const hyperparametersMap = new Map();
+
+// eslint-disable-next-line no-restricted-syntax
+for (const hp of props.hyperparameters) {
+  hyperparametersMap.set(hp.metadata.name, hp);
+}
 
 const validationSchema = markRaw(
   object({
@@ -32,94 +48,132 @@ const validationSchema = markRaw(
     }),
     spec: object({
       finetune: object({
-        dataset: string().required('请输入数据集'),
-        hyperparameter: string().required('请输入超参组'),
-        llm: string().required('请输入大模型'),
-      }),
-      serveConfig: object({
-        nodeSelector: string().required('请输入节点选择器'),
+        finetuneSpec: object({
+          llm: string().required(),
+          hyperparameter: object({
+            hyperparameterRef: string().required(),
+          }),
+          dataset: string().required(),
+        }),
       }),
     }),
   }),
 );
 
-const { values, handleSubmit, handleReset } = useForm({
-  initialValues: finetuneJob,
+const { values, validate, setValues } = useForm<FinetuneJob>({
+  initialValues: props.modelValue,
   validationSchema,
 });
 
-const hyperparameter = useField<string>('spec.finetune.hyperparameter');
+onBeforeMount(() => {
+  setValues({
+    metadata: {
+      name: `finetune-job-${randomStr(5)}`,
+    },
+  });
+});
 
-const emit = defineEmits<{(e: 'add', value: FinetuneJob): void }>();
+watch(() => values, (newV) => {
+  if (!isEqual(newV, props.modelValue)) {
+    emits('update:modelValue', newV);
+  }
+}, {
+  deep: true,
+});
 
-const addJob = handleSubmit(() => {
-  emit('add', values);
-  handleReset();
+const validateEdit = async () => {
+  const valid = await validate();
+
+  setValues({
+    valid: valid.valid,
+  });
+
+  return valid.valid;
+};
+
+defineExpose({
+  validateEdit,
 });
 </script>
 
 <template>
-  <div class="fine-tune-job flex space-x-6">
-    <dao-form class="flex-1">
-      <div class="form-item__card mb-[20px]">
-        <dao-form-item-validate
-          label="基础大模型"
-          label-width="100px"
-          name="spec.finetune.llm"
-          :tag="DaoSelect"
-          required
-          :control-props="{
-            class: '!w-full',
-          }"
-        >
-          <dao-option
-            v-for="largeLanguageModel in largeLanguageModels"
-            :key="largeLanguageModel.metadata?.name"
-            :label="largeLanguageModel.metadata?.name"
-            :value="largeLanguageModel.metadata?.name"
-          />
-        </dao-form-item-validate>
-      </div>
+  <dao-form>
+    <dao-form-item-validate
+      label="任务名称"
+      name="metadata.name"
+      required
+      :control-props="{
+        class: 'input-form-width'
+      }"
+    />
+    <dao-form-item-validate
+      label="基础大模型"
+      name="spec.finetune.finetuneSpec.llm"
+      :tag="DaoSelect"
+      required
+      :control-props="{
+        class: 'select-form-width'
+      }"
+    >
+      <dao-option
+        v-for="largeLanguageModel in props.llms"
+        :key="largeLanguageModel.metadata?.name"
+        :label="largeLanguageModel.metadata?.name"
+        :value="largeLanguageModel.metadata?.name"
+      />
+    </dao-form-item-validate>
+    <dao-form-item-validate
+      label="数据集"
+      name="spec.finetune.finetuneSpec.dataset"
+      :tag="DaoSelect"
+      required
+      :control-props="{
+        class: 'select-form-width'
+      }"
+    >
+      <dao-option
+        v-for="dataset in props.datasets"
+        :key="dataset.metadata?.name"
+        :label="dataset.metadata?.name"
+        :value="dataset.metadata?.name"
+      />
+    </dao-form-item-validate>
 
-      <div class="form-item__card flex flex-col mb-[20px]">
-        <HyperparameterCreate v-model="hyperparameter.value.value" />
-      </div>
+    <dao-form-item-validate
+      label="超参组"
+      name="spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef"
+      :tag="DaoSelect"
+      required
+      :control-props="{
+        class: 'select-form-width'
+      }"
+    >
+      <dao-option
+        v-for="params in props.hyperparameters"
+        :key="params.metadata.name"
+        :label="params.metadata.name"
+        :value="params.metadata.name"
+      />
+    </dao-form-item-validate>
 
-      <dao-button
-        block
-        @click="addJob"
-      >
-        添加任务
-      </dao-button>
-    </dao-form>
-    <div class="flex-1 flex flex-col">
-      <div class="form-item__card mb-[20px]">
-        <dao-form-item-validate
-          label="数据集"
-          label-width="80px"
-          name="spec.finetune.dataset"
-          :tag="DaoSelect"
-          required
-          :control-props="{
-            class: '!w-full',
-          }"
-        >
-          <dao-option
-            v-for="dataset in datasets"
-            :key="dataset.metadata?.name"
-            :label="dataset.metadata?.name"
-            :value="dataset.metadata?.name"
-          />
-        </dao-form-item-validate>
-      </div>
-
-      <slot />
-    </div>
-  </div>
+    <dao-form-item v-if="values.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef">
+      <HyperParameterOverride
+        :origin="hyperparametersMap.get(values.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef)"
+      />
+      <template #helper>
+        <dao-helper-text>
+          修改超参组后，将会覆盖原有超参组的超参值。
+        </dao-helper-text>
+      </template>
+    </dao-form-item>
+  </dao-form>
 </template>
 
 <style lang="scss" scoped>
-.fine-tune-job {
-  // max-width: 1000px;
+$form-width: 400px;
+
+:deep(.input-form-width.dao-input),
+:deep(.select-form-width.dao-select) {
+  width: $form-width;
 }
 </style>

@@ -3,9 +3,9 @@ import {
   apiVersion, kind, FinetuneExperiment, finetuneExperimentClient,
 } from '@/api/finetune-experiment';
 import { FinetuneJob } from '@/api/finetune-job';
-import uniqueID from '@/utils/uid';
 import { ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
+import { ImagePullPolicy } from '@/api/finetune';
 
 const defaultFinetuneExperiment: FinetuneExperiment = {
   apiVersion,
@@ -43,16 +43,40 @@ export const useFinetuneJob = () => {
   const finetuneJob = ref<FinetuneJob>(
     {
       metadata: {
-        name: `finetune-job-${uniqueID()}`,
+        name: '',
       },
+      valid: true,
       spec: {
         finetune: {
-          dataset: '',
-          hyperparameter: '',
-          llm: '',
+          finetuneSpec: {
+            image: {
+              name: '',
+              imagePullPolicy: ImagePullPolicy.IfNotPresent,
+            },
+            resource: {
+              limits: {
+                cpu: '2',
+                gpu: '1',
+                memory: '4Gi',
+              },
+              requests: {
+                cpu: '2',
+                gpu: '1',
+                memory: '4Gi',
+              },
+            },
+            dataset: '',
+            llm: '',
+            hyperparameter: {
+              hyperparameterRef: '',
+            },
+          },
+        },
+        scoringConfig: {
+          name: '',
         },
         serveConfig: {
-          nodeSelector: 'asdf',
+          nodeSelector: 'arch=arm64',
         },
       },
     },

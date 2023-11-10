@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
+import {
+  reactive, ref, onMounted, computed,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useNamespaceStore } from '@/stores/namespace';
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
+import { finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useFinetuneExperiment } from './composition/finetune';
 import FinetuneExperimentItem from './components/FinetuneExperimentItem.vue';
 
@@ -43,9 +47,36 @@ const onCreate = () => {
 
 const { finetuneExperiments, fetchFinetuneExperiments } = useFinetuneExperiment();
 
+const refresh = () => fetchFinetuneExperiments(namespace.value);
+
 onMounted(() => {
-  fetchFinetuneExperiments(namespace.value);
+  refresh();
 });
+
+const experimentToDelete = ref('');
+const dialogVisible = ref(false);
+
+const deleteFn = (name:string) => finetuneExperimentClient.delete(namespace.value, name);
+
+const confirmProps = computed(() => ({
+  header: '删除微调实验',
+  content: `确定删除微调实验 ${experimentToDelete.value} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。`,
+  name: experimentToDelete.value,
+  deleteFn,
+}));
+
+const onConfirmDelete = (name:string) => {
+  experimentToDelete.value = name;
+  dialogVisible.value = true;
+};
+const closeDialog = () => {
+  dialogVisible.value = false;
+};
+
+const onDeleteSuccess = () => {
+  refresh();
+  closeDialog();
+};
 </script>
 
 <template>
@@ -56,9 +87,9 @@ onMounted(() => {
     />
     <dao-toolbar
       v-model:search="search"
-      class="mt-[20px]"
       :search-options="searchOptions"
       :fuzzy="{ key: 'fuzzy', single: true }"
+      @refresh="refresh"
     >
       <template #action>
         <dao-button
@@ -74,8 +105,16 @@ onMounted(() => {
       v-for="experiment in finetuneExperiments"
       :key="experiment.metadata?.name"
       :data="experiment"
+      @on-delete="onConfirmDelete"
     />
   </div>
+
+  <ConfirmDeleteDialog
+    v-model="dialogVisible"
+    v-bind="confirmProps"
+    @reject="closeDialog"
+    @resolve="onDeleteSuccess"
+  />
 </template>
 
 <style lang="scss" scoped>

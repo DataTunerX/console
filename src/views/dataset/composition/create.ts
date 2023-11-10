@@ -3,7 +3,6 @@ import {
   FeatureName,
   datasetClient,
   SizeType,
-  LicenseType,
   LanguageOptions,
   TEXT_GENERATION,
 } from '@/api/dataset';
@@ -54,7 +53,6 @@ const initialValue: Dataset = {
         ],
       },
       languages: [LanguageOptions.zh],
-      license: LicenseType.CCBY,
       plugin: {
         loadPlugin: false,
         name: '',

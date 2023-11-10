@@ -4,24 +4,24 @@
   "metadata": {
     "annotations": {
       "controller-gen.kubebuilder.io/version": "v0.11.1",
-      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apiextensions.k8s.io/v1\",\"kind\":\"CustomResourceDefinition\",\"metadata\":{\"annotations\":{\"controller-gen.kubebuilder.io/version\":\"v0.11.1\"},\"creationTimestamp\":null,\"name\":\"datasets.extension.datatunerx.io\"},\"spec\":{\"group\":\"extension.datatunerx.io\",\"names\":{\"kind\":\"Dataset\",\"listKind\":\"DatasetList\",\"plural\":\"datasets\",\"singular\":\"dataset\"},\"scope\":\"Namespaced\",\"versions\":[{\"name\":\"v1beta1\",\"schema\":{\"openAPIV3Schema\":{\"description\":\"Dataset is the Schema for the datasets API\",\"properties\":{\"apiVersion\":{\"description\":\"APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\",\"type\":\"string\"},\"kind\":{\"description\":\"Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\",\"type\":\"string\"},\"metadata\":{\"type\":\"object\"},\"spec\":{\"description\":\"DatasetSpec defines the desired state of Dataset\",\"properties\":{\"datasetCard\":{\"description\":\"DatasetCard contains a dataset's README reference.\",\"properties\":{\"datasetCardRef\":{\"type\":\"string\"}},\"type\":\"object\"},\"datasetFiles\":{\"description\":\"DatasetFiles describes a dataset source address.\",\"properties\":{\"source\":{\"type\":\"string\"}},\"type\":\"object\"},\"datasetMetadata\":{\"description\":\"INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run \\\"make\\\" to regenerate code after modifying this file DatasetMetadata contains a dataset's Language, Tags, Size, License, Task, Plugin, and baseinfo\",\"properties\":{\"datasetInfo\":{\"description\":\"DatasetInfo describes a dataset's subsets and Features.\",\"properties\":{\"features\":{\"items\":{\"description\":\"Feature defines a dataset's column name as a feature and its data type and relationship to finetune feature fields\",\"properties\":{\"dataType\":{\"default\":\"string\",\"type\":\"string\"},\"mapTo\":{\"description\":\"MapTo describes the dataste feature field mapping to instruction or response.\",\"maxLength\":63,\"type\":\"string\"},\"name\":{\"enum\":[\"instruction\",\"response\"],\"type\":\"string\"}},\"required\":[\"mapTo\",\"name\"],\"type\":\"object\"},\"type\":\"array\"},\"subsets\":{\"items\":{\"description\":\"Subset defines a dataset‘s subset\",\"properties\":{\"name\":{\"description\":\"Subset e.g. Random Sample Subset, Balanced Class Subset, Time Window Subset, Feature Subset, Cross-Validation Subset, Outlier Detection Subset etc.\",\"maxLength\":63,\"type\":\"string\"},\"splits\":{\"description\":\"Splits describes subsets of training and testing and validation data splits\",\"properties\":{\"test\":{\"description\":\"Test defines a dataset's subsets' test-splits file address\",\"properties\":{\"file\":{\"type\":\"string\"}},\"type\":\"object\"},\"train\":{\"description\":\"Train defines a dataset's subsets' train-splits file address\",\"properties\":{\"file\":{\"type\":\"string\"}},\"required\":[\"file\"],\"type\":\"object\"},\"validate\":{\"description\":\"Validate defines a dataset's subsets' validate-splits file address\",\"properties\":{\"file\":{\"type\":\"string\"}},\"required\":[\"file\"],\"type\":\"object\"}},\"type\":\"object\"}},\"type\":\"object\"},\"type\":\"array\"}},\"type\":\"object\"},\"languages\":{\"description\":\"Languages includes Chinese and English and etc.\",\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"license\":{\"description\":\"License includes CC BY, CC BY-SA, CC BY-ND, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND, CC0, ODC-PDDL, ODC-BY ODC-ODbl, CDLA-Permissive-2.0, CDLA-Sharing-1.0\",\"type\":\"string\"},\"plugin\":{\"description\":\"Plugin describes the plugin including parameters and whether uses a plugin.\",\"properties\":{\"loadPlugin\":{\"default\":false,\"description\":\"LoadPlugin describes a Scoring CR whether uses plugin to do evaluation, if true then Plugin data will be needed,\",\"type\":\"boolean\"},\"name\":{\"maxLength\":63,\"type\":\"string\"},\"parameters\":{\"type\":\"string\"}},\"required\":[\"loadPlugin\"],\"type\":\"object\"},\"size\":{\"description\":\"Size describes dataset's entries number\",\"type\":\"string\"},\"tags\":{\"description\":\"Tags describes a dataset, it's customized.\",\"items\":{\"type\":\"string\"},\"type\":\"array\"},\"task\":{\"description\":\"Task describes the main task that the dataset can do, including Text Generation, Question Answering, Translation, Conversational etc.\",\"enum\":[\"Text Generation\",\"Question Answering\",\"Text Classification\",\"Summarization\"],\"properties\":{\"name\":{\"maxLength\":63,\"type\":\"string\"},\"subTasks\":{\"description\":\"SubTask defines a dataset task's subtask e.g. language-modeling of Text Generation, open-domain-qa of Question Answering etc. It is corresponding to Task.\",\"enum\":[\"language-modeling\",\"masked-language-modeling\",\"natural-language-inference\",\"extractive-qa\",\"open-domain-qa\",\"multi-choice-qa\",\"closed-domain-qa\",\"multi-class-classification\",\"sentiment-classification\",\"topic-classification\",\"multi-label-classification\",\"news-articles-summarization\"],\"items\":{\"description\":\"EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized. SubTask defines a dataset task's subtask\",\"properties\":{\"name\":{\"maxLength\":63,\"type\":\"string\"}},\"required\":[\"name\"],\"type\":\"object\"},\"type\":\"array\"}},\"required\":[\"name\"],\"type\":\"object\"}},\"required\":[\"languages\",\"license\",\"size\",\"task\"],\"type\":\"object\"}},\"required\":[\"datasetMetadata\"],\"type\":\"object\"},\"status\":{\"description\":\"DatasetStatus defines the observed state of Dataset\",\"properties\":{\"state\":{\"description\":\"INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run \\\"make\\\" to regenerate code after modifying this file\",\"type\":\"string\"}},\"type\":\"object\"}},\"type\":\"object\"}},\"served\":true,\"storage\":true,\"subresources\":{\"status\":{}}}]}}\n"
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apiextensions.k8s.io/v1\",\"kind\":\"CustomResourceDefinition\",\"metadata\":{\"annotations\":{\"controller-gen.kubebuilder.io/version\":\"v0.11.1\"},\"creationTimestamp\":null,\"name\":\"finetunejobs.finetune.datatunerx.io\"},\"spec\":{\"group\":\"finetune.datatunerx.io\",\"names\":{\"kind\":\"FinetuneJob\",\"listKind\":\"FinetuneJobList\",\"plural\":\"finetunejobs\",\"singular\":\"finetunejob\"},\"scope\":\"Namespaced\",\"versions\":[{\"name\":\"v1beta1\",\"schema\":{\"openAPIV3Schema\":{\"description\":\"FinetuneJob is the Schema for the finetunejobs API\",\"properties\":{\"apiVersion\":{\"description\":\"APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\",\"type\":\"string\"},\"kind\":{\"description\":\"Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\",\"type\":\"string\"},\"metadata\":{\"type\":\"object\"},\"spec\":{\"description\":\"FinetuneJobSpec defines the desired state of FinetuneJob\",\"properties\":{\"finetune\":{\"description\":\"Finetune cr config.\",\"properties\":{\"finetuneSpec\":{\"description\":\"FinetuneSpec defines the desired state of Finetune\",\"properties\":{\"dataset\":{\"description\":\"Dataset specifies the dataset CR used for fine-tuning.\",\"type\":\"string\"},\"hyperparameter\":{\"description\":\"Hyperparameter specifies the hyperparameter CR used for fine-tuning.\",\"type\":\"string\"},\"image\":{\"properties\":{\"imagePullPolicy\":{\"default\":\"IfNotPresent\",\"description\":\"ImagePullPolicy describes a policy for if/when to pull a container image.\",\"enum\":[\"Always\",\"IfNotPresent\",\"Never\"],\"type\":\"string\"},\"name\":{\"description\":\"Name describe the image name.\",\"type\":\"string\"},\"path\":{\"description\":\"Path description of the model file path.\",\"type\":\"string\"}},\"required\":[\"name\"],\"type\":\"object\"},\"llm\":{\"description\":\"LLM specifies the large model CR used for fine-tuning.\",\"type\":\"string\"},\"node\":{\"type\":\"integer\"},\"resource\":{\"description\":\"Resource specifies the resource configuration for fine-tuning.\",\"properties\":{\"limits\":{\"description\":\"Limits specifies the resource limits.\",\"properties\":{\"cpu\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"2\",\"description\":\"CPU specifies the CPU resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true},\"gpu\":{\"default\":\"1\",\"description\":\"GPU specifies the GPU resource limit.\",\"type\":\"string\"},\"memory\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"4Gi\",\"description\":\"Memory specifies the memory resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true}},\"required\":[\"cpu\",\"gpu\",\"memory\"],\"type\":\"object\"},\"requests\":{\"description\":\"ResourceLimits represents the resource limits for a task.\",\"properties\":{\"cpu\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"2\",\"description\":\"CPU specifies the CPU resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true},\"gpu\":{\"default\":\"1\",\"description\":\"GPU specifies the GPU resource limit.\",\"type\":\"string\"},\"memory\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"4Gi\",\"description\":\"Memory specifies the memory resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true}},\"required\":[\"cpu\",\"gpu\",\"memory\"],\"type\":\"object\"}},\"required\":[\"limits\",\"requests\"],\"type\":\"object\"}},\"required\":[\"dataset\",\"hyperparameter\",\"llm\"],\"type\":\"object\"},\"name\":{\"type\":\"string\"}},\"required\":[\"finetuneSpec\"],\"type\":\"object\"},\"scoringConfig\":{\"description\":\"Score plugin config.\",\"properties\":{\"name\":{\"description\":\"Name specifies the name of the scoring CR.\",\"type\":\"string\"}},\"required\":[\"name\"],\"type\":\"object\"},\"serveConfig\":{\"description\":\"Serve config.\",\"properties\":{\"nodeSelector\":{\"description\":\"NodeSelector specifies the node where service will be deployed.\",\"type\":\"string\"},\"tolerations\":{\"description\":\"Tolerations specifies the tolerations for service.\",\"type\":\"string\"}},\"required\":[\"nodeSelector\"],\"type\":\"object\"}},\"required\":[\"finetune\",\"serveConfig\"],\"type\":\"object\"},\"status\":{\"description\":\"FinetuneJobStatus defines the observed state of FinetuneJob\",\"properties\":{\"conditions\":{\"items\":{\"description\":\"Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \\n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \\\"Available\\\", \\\"Progressing\\\", and \\\"Degraded\\\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\\\"conditions,omitempty\\\" patchStrategy:\\\"merge\\\" patchMergeKey:\\\"type\\\" protobuf:\\\"bytes,1,rep,name=conditions\\\"` \\n // other fields }\",\"properties\":{\"lastTransitionTime\":{\"description\":\"lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.\",\"format\":\"date-time\",\"type\":\"string\"},\"message\":{\"description\":\"message is a human readable message indicating details about the transition. This may be an empty string.\",\"maxLength\":32768,\"type\":\"string\"},\"observedGeneration\":{\"description\":\"observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.\",\"format\":\"int64\",\"minimum\":0,\"type\":\"integer\"},\"reason\":{\"description\":\"reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.\",\"maxLength\":1024,\"minLength\":1,\"pattern\":\"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$\",\"type\":\"string\"},\"status\":{\"description\":\"status of the condition, one of True, False, Unknown.\",\"enum\":[\"True\",\"False\",\"Unknown\"],\"type\":\"string\"},\"type\":{\"description\":\"type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)\",\"maxLength\":316,\"pattern\":\"^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$\",\"type\":\"string\"}},\"required\":[\"lastTransitionTime\",\"message\",\"reason\",\"status\",\"type\"],\"type\":\"object\"},\"type\":\"array\"},\"finetuneState\":{\"enum\":[\"INIT\",\"PENDING\",\"RUNNING\",\"FAILED\",\"SUCCESSFUL\"],\"type\":\"string\"},\"result\":{\"properties\":{\"dashboard\":{\"type\":\"string\"},\"image\":{\"type\":\"string\"},\"modelExportResult\":{\"type\":\"boolean\"},\"serve\":{\"type\":\"string\"}},\"required\":[\"dashboard\",\"image\",\"modelExportResult\",\"serve\"],\"type\":\"object\"},\"state\":{\"enum\":[\"INIT\",\"FAILED\",\"SUCCESSFUL\",\"BUILDIMAGE\",\"FINETUNE\",\"SERVE\"],\"type\":\"string\"},\"stats\":{\"type\":\"string\"}},\"required\":[\"state\"],\"type\":\"object\"}},\"type\":\"object\"}},\"served\":true,\"storage\":true,\"subresources\":{\"status\":{}}}]}}\n"
     },
-    "creationTimestamp": "2023-11-02T02:13:27Z",
-    "generation": 2,
-    "name": "datasets.extension.datatunerx.io",
-    "resourceVersion": "1881955",
-    "uid": "ea68de29-b63c-4f52-a94c-da3de94a21d5"
+    "creationTimestamp": "2023-11-01T09:52:08Z",
+    "generation": 10,
+    "name": "finetunejobs.finetune.datatunerx.io",
+    "resourceVersion": "2343556",
+    "uid": "5b33e1fc-1842-44f7-8364-9bed5365f8f2"
   },
   "spec": {
     "conversion": {
       "strategy": "None"
     },
-    "group": "extension.datatunerx.io",
+    "group": "finetune.datatunerx.io",
     "names": {
-      "kind": "Dataset",
-      "listKind": "DatasetList",
-      "plural": "datasets",
-      "singular": "dataset"
+      "kind": "FinetuneJob",
+      "listKind": "FinetuneJobList",
+      "plural": "finetunejobs",
+      "singular": "finetunejob"
     },
     "scope": "Namespaced",
     "versions": [
@@ -29,7 +29,7 @@
         "name": "v1beta1",
         "schema": {
           "openAPIV3Schema": {
-            "description": "Dataset is the Schema for the datasets API",
+            "description": "FinetuneJob is the Schema for the finetunejobs API",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -43,233 +43,315 @@
                 "type": "object"
               },
               "spec": {
-                "description": "DatasetSpec defines the desired state of Dataset",
+                "description": "FinetuneJobSpec defines the desired state of FinetuneJob",
                 "properties": {
-                  "datasetCard": {
-                    "description": "DatasetCard contains a dataset's README reference.",
+                  "finetune": {
+                    "description": "Finetune cr config.",
                     "properties": {
-                      "datasetCardRef": {
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "datasetFiles": {
-                    "description": "DatasetFiles describes a dataset source address.",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "datasetMetadata": {
-                    "description": "INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run \"make\" to regenerate code after modifying this file DatasetMetadata contains a dataset's Language, Tags, Size, License, Task, Plugin, and baseinfo",
-                    "properties": {
-                      "datasetInfo": {
-                        "description": "DatasetInfo describes a dataset's subsets and Features.",
+                      "finetuneSpec": {
+                        "description": "FinetuneSpec defines the desired state of Finetune",
                         "properties": {
-                          "features": {
-                            "items": {
-                              "description": "Feature defines a dataset's column name as a feature and its data type and relationship to finetune feature fields",
-                              "properties": {
-                                "dataType": {
-                                  "default": "string",
-                                  "type": "string"
-                                },
-                                "mapTo": {
-                                  "description": "MapTo describes the dataste feature field mapping to instruction or response.",
-                                  "maxLength": 63,
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "enum": [
-                                    "instruction",
-                                    "response"
-                                  ],
-                                  "type": "string"
-                                }
+                          "dataset": {
+                            "description": "Dataset specifies the dataset CR used for fine-tuning.",
+                            "type": "string"
+                          },
+                          "hyperparameter": {
+                            "description": "Hyperparameter specifies the hyperparameter CR used for fine-tuning.",
+                            "type": "string"
+                          },
+                          "image": {
+                            "properties": {
+                              "imagePullPolicy": {
+                                "default": "IfNotPresent",
+                                "description": "ImagePullPolicy describes a policy for if/when to pull a container image.",
+                                "enum": [
+                                  "Always",
+                                  "IfNotPresent",
+                                  "Never"
+                                ],
+                                "type": "string"
                               },
-                              "required": [
-                                "mapTo",
-                                "name"
-                              ],
-                              "type": "object"
-                            },
-                            "type": "array"
-                          },
-                          "subsets": {
-                            "items": {
-                              "description": "Subset defines a dataset‘s subset",
-                              "properties": {
-                                "name": {
-                                  "description": "Subset e.g. Random Sample Subset, Balanced Class Subset, Time Window Subset, Feature Subset, Cross-Validation Subset, Outlier Detection Subset etc.",
-                                  "maxLength": 63,
-                                  "type": "string"
-                                },
-                                "splits": {
-                                  "description": "Splits describes subsets of training and testing and validation data splits",
-                                  "properties": {
-                                    "test": {
-                                      "description": "Test defines a dataset's subsets' test-splits file address",
-                                      "properties": {
-                                        "file": {
-                                          "type": "string"
-                                        }
-                                      },
-                                      "type": "object"
-                                    },
-                                    "train": {
-                                      "description": "Train defines a dataset's subsets' train-splits file address",
-                                      "properties": {
-                                        "file": {
-                                          "type": "string"
-                                        }
-                                      },
-                                      "required": [
-                                        "file"
-                                      ],
-                                      "type": "object"
-                                    },
-                                    "validate": {
-                                      "description": "Validate defines a dataset's subsets' validate-splits file address",
-                                      "properties": {
-                                        "file": {
-                                          "type": "string"
-                                        }
-                                      },
-                                      "required": [
-                                        "file"
-                                      ],
-                                      "type": "object"
-                                    }
-                                  },
-                                  "type": "object"
-                                }
+                              "name": {
+                                "description": "Name describe the image name.",
+                                "type": "string"
                               },
-                              "type": "object"
+                              "path": {
+                                "description": "Path description of the model file path.",
+                                "type": "string"
+                              }
                             },
-                            "type": "array"
-                          }
-                        },
-                        "type": "object"
-                      },
-                      "languages": {
-                        "description": "Languages includes Chinese and English and etc.",
-                        "items": {
-                          "type": "string"
-                        },
-                        "type": "array"
-                      },
-                      "license": {
-                        "description": "License includes CC BY, CC BY-SA, CC BY-ND, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND, CC0, ODC-PDDL, ODC-BY ODC-ODbl, CDLA-Permissive-2.0, CDLA-Sharing-1.0",
-                        "type": "string"
-                      },
-                      "plugin": {
-                        "description": "Plugin describes the plugin including parameters and whether uses a plugin.",
-                        "properties": {
-                          "loadPlugin": {
-                            "default": false,
-                            "description": "LoadPlugin describes a Scoring CR whether uses plugin to do evaluation, if true then Plugin data will be needed,",
-                            "type": "boolean"
-                          },
-                          "name": {
-                            "maxLength": 63,
-                            "type": "string"
-                          },
-                          "parameters": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "loadPlugin"
-                        ],
-                        "type": "object"
-                      },
-                      "size": {
-                        "description": "Size describes dataset's entries number",
-                        "type": "string"
-                      },
-                      "tags": {
-                        "description": "Tags describes a dataset, it's customized.",
-                        "items": {
-                          "type": "string"
-                        },
-                        "type": "array"
-                      },
-                      "task": {
-                        "description": "Task describes the main task that the dataset can do, including Text Generation, Question Answering, Translation, Conversational etc.",
-                        "enum": [
-                          "Text Generation",
-                          "Question Answering",
-                          "Text Classification",
-                          "Summarization"
-                        ],
-                        "properties": {
-                          "name": {
-                            "maxLength": 63,
-                            "type": "string"
-                          },
-                          "subTasks": {
-                            "description": "SubTask defines a dataset task's subtask e.g. language-modeling of Text Generation, open-domain-qa of Question Answering etc. It is corresponding to Task.",
-                            "enum": [
-                              "language-modeling",
-                              "masked-language-modeling",
-                              "natural-language-inference",
-                              "extractive-qa",
-                              "open-domain-qa",
-                              "multi-choice-qa",
-                              "closed-domain-qa",
-                              "multi-class-classification",
-                              "sentiment-classification",
-                              "topic-classification",
-                              "multi-label-classification",
-                              "news-articles-summarization"
+                            "required": [
+                              "name"
                             ],
-                            "items": {
-                              "description": "EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized. SubTask defines a dataset task's subtask",
-                              "properties": {
-                                "name": {
-                                  "maxLength": 63,
-                                  "type": "string"
-                                }
+                            "type": "object"
+                          },
+                          "llm": {
+                            "description": "LLM specifies the large model CR used for fine-tuning.",
+                            "type": "string"
+                          },
+                          "node": {
+                            "type": "integer"
+                          },
+                          "resource": {
+                            "description": "Resource specifies the resource configuration for fine-tuning.",
+                            "properties": {
+                              "limits": {
+                                "description": "Limits specifies the resource limits.",
+                                "properties": {
+                                  "cpu": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ],
+                                    "default": "2",
+                                    "description": "CPU specifies the CPU resource limit.",
+                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                                    "x-kubernetes-int-or-string": true
+                                  },
+                                  "gpu": {
+                                    "default": "1",
+                                    "description": "GPU specifies the GPU resource limit.",
+                                    "type": "string"
+                                  },
+                                  "memory": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ],
+                                    "default": "4Gi",
+                                    "description": "Memory specifies the memory resource limit.",
+                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                                    "x-kubernetes-int-or-string": true
+                                  }
+                                },
+                                "required": [
+                                  "cpu",
+                                  "gpu",
+                                  "memory"
+                                ],
+                                "type": "object"
                               },
-                              "required": [
-                                "name"
-                              ],
-                              "type": "object"
+                              "requests": {
+                                "description": "ResourceLimits represents the resource limits for a task.",
+                                "properties": {
+                                  "cpu": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ],
+                                    "default": "2",
+                                    "description": "CPU specifies the CPU resource limit.",
+                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                                    "x-kubernetes-int-or-string": true
+                                  },
+                                  "gpu": {
+                                    "default": "1",
+                                    "description": "GPU specifies the GPU resource limit.",
+                                    "type": "string"
+                                  },
+                                  "memory": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ],
+                                    "default": "4Gi",
+                                    "description": "Memory specifies the memory resource limit.",
+                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                                    "x-kubernetes-int-or-string": true
+                                  }
+                                },
+                                "required": [
+                                  "cpu",
+                                  "gpu",
+                                  "memory"
+                                ],
+                                "type": "object"
+                              }
                             },
-                            "type": "array"
+                            "required": [
+                              "limits",
+                              "requests"
+                            ],
+                            "type": "object"
                           }
                         },
                         "required": [
-                          "name"
+                          "dataset",
+                          "hyperparameter",
+                          "llm"
                         ],
                         "type": "object"
+                      },
+                      "name": {
+                        "type": "string"
                       }
                     },
                     "required": [
-                      "languages",
-                      "license",
-                      "size",
-                      "task"
+                      "finetuneSpec"
+                    ],
+                    "type": "object"
+                  },
+                  "scoringConfig": {
+                    "description": "Score plugin config.",
+                    "properties": {
+                      "name": {
+                        "description": "Name specifies the name of the scoring CR.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "serveConfig": {
+                    "description": "Serve config.",
+                    "properties": {
+                      "nodeSelector": {
+                        "description": "NodeSelector specifies the node where service will be deployed.",
+                        "type": "string"
+                      },
+                      "tolerations": {
+                        "description": "Tolerations specifies the tolerations for service.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "nodeSelector"
                     ],
                     "type": "object"
                   }
                 },
                 "required": [
-                  "datasetMetadata"
+                  "finetune",
+                  "serveConfig"
                 ],
                 "type": "object"
               },
               "status": {
-                "description": "DatasetStatus defines the observed state of Dataset",
+                "description": "FinetuneJobStatus defines the observed state of FinetuneJob",
                 "properties": {
+                  "conditions": {
+                    "items": {
+                      "description": "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }",
+                      "properties": {
+                        "lastTransitionTime": {
+                          "description": "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "message": {
+                          "description": "message is a human readable message indicating details about the transition. This may be an empty string.",
+                          "maxLength": 32768,
+                          "type": "string"
+                        },
+                        "observedGeneration": {
+                          "description": "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.",
+                          "format": "int64",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "reason": {
+                          "description": "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
+                          "maxLength": 1024,
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "status of the condition, one of True, False, Unknown.",
+                          "enum": [
+                            "True",
+                            "False",
+                            "Unknown"
+                          ],
+                          "type": "string"
+                        },
+                        "type": {
+                          "description": "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)",
+                          "maxLength": 316,
+                          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "lastTransitionTime",
+                        "message",
+                        "reason",
+                        "status",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "finetuneState": {
+                    "enum": [
+                      "INIT",
+                      "PENDING",
+                      "RUNNING",
+                      "FAILED",
+                      "SUCCESSFUL"
+                    ],
+                    "type": "string"
+                  },
+                  "result": {
+                    "properties": {
+                      "dashboard": {
+                        "type": "string"
+                      },
+                      "image": {
+                        "type": "string"
+                      },
+                      "modelExportResult": {
+                        "type": "boolean"
+                      },
+                      "serve": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "dashboard",
+                      "image",
+                      "modelExportResult",
+                      "serve"
+                    ],
+                    "type": "object"
+                  },
                   "state": {
-                    "description": "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run \"make\" to regenerate code after modifying this file",
+                    "enum": [
+                      "INIT",
+                      "FAILED",
+                      "SUCCESSFUL",
+                      "BUILDIMAGE",
+                      "FINETUNE",
+                      "SERVE"
+                    ],
+                    "type": "string"
+                  },
+                  "stats": {
                     "type": "string"
                   }
                 },
+                "required": [
+                  "state"
+                ],
                 "type": "object"
               }
             },
@@ -286,21 +368,21 @@
   },
   "status": {
     "acceptedNames": {
-      "kind": "Dataset",
-      "listKind": "DatasetList",
-      "plural": "datasets",
-      "singular": "dataset"
+      "kind": "FinetuneJob",
+      "listKind": "FinetuneJobList",
+      "plural": "finetunejobs",
+      "singular": "finetunejob"
     },
     "conditions": [
       {
-        "lastTransitionTime": "2023-11-02T02:13:27Z",
+        "lastTransitionTime": "2023-11-01T09:52:08Z",
         "message": "no conflicts found",
         "reason": "NoConflicts",
         "status": "True",
         "type": "NamesAccepted"
       },
       {
-        "lastTransitionTime": "2023-11-02T02:13:27Z",
+        "lastTransitionTime": "2023-11-01T09:52:08Z",
         "message": "the initial names have been accepted",
         "reason": "InitialNamesAccepted",
         "status": "True",

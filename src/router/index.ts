@@ -15,7 +15,6 @@ import HyperparameterDetail from '@/views/hyperparameter/HyperparameterDetail.vu
 import FinetuneExperimentList from '@/views/finetune-experiment/FinetuneExperimentList.vue';
 import FinetuneExperimentDetail from '@/views/finetune-experiment/FinetuneExperimentDetail.vue';
 import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperimentCreate.vue';
-import FinetuneExperimentCreateCopy from '@/views/finetune-experiment/FinetuneExperimentCreateCopy.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -79,7 +78,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: 'create',
             name: 'FinetuneExperimentCreate',
-            component: FinetuneExperimentCreateCopy,
+            component: FinetuneExperimentCreate,
           },
           {
             path: ':name',

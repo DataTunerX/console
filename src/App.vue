@@ -3,9 +3,7 @@
 
   <div id="container">
     <anakin-nav />
-    <div class="console-content">
-      <router-view />
-    </div>
+    <router-view class="console-content" />
   </div>
 </template>
 
