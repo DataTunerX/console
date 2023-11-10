@@ -8,7 +8,7 @@
   "menu": {
     "fineTuningExperiment": "Fine Tuning Experiment",
     "dataset": "Dataset",
-    "hyperparameterGroup": "Hyperparameter Group"
+    "hyperparameterGroup": "Hyperparameter"
   },
   "feedback": "Feedback",
   "help": "Help",
