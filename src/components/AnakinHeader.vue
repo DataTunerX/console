@@ -74,7 +74,7 @@ const namespace = computed({
               :src="Avatar"
               alt="user.username"
             >
-            <span class="ghippo-user-avatar ghippo-user-username"> Max </span>
+            <span class="ghippo-user-username"> Max </span>
             <dao-icon
               use-font
               name="icon-dropdown-line"
