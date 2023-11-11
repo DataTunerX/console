@@ -1,11 +1,12 @@
 import {
   type Dataset,
   FeatureName,
-  datasetClient,
   SizeType,
   LanguageOptions,
   TEXT_GENERATION,
+  datasetClient,
 } from '@/api/dataset';
+import { convertDatasetFromBackendFormat } from '@/api/dataset-for-backend';
 import { reactive, ref, toRefs } from 'vue';
 
 const initialValue: Dataset = {
@@ -78,13 +79,13 @@ export function useDataset() {
 
   const fetchDataset = async (namespace: string, name: string) => {
     await datasetClient.read(namespace, name).then((res) => {
-      state.dataset = res.data;
+      state.dataset = convertDatasetFromBackendFormat(res.data);
     });
   };
 
   const fetchDatasets = async (namespace: string) => {
     await datasetClient.list(namespace).then((res) => {
-      state.datasets = res.data.items;
+      state.datasets = res.data.items.map((item) => convertDatasetFromBackendFormat(item));
     });
   };
 

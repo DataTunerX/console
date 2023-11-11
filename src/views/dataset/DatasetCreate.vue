@@ -14,13 +14,14 @@ import {
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
-  LicenseType, SizeType, type Dataset, LanguageOptions, datasetClient, SubTask, Subset, taskCategories,
+  LicenseType, SizeType, type Dataset, LanguageOptions, SubTask, Subset, taskCategories, datasetClient,
 } from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { nError, nSuccess } from '@/utils/useNoty';
-import { KubernetesError, HttpStatusCode } from '@/plugins/axios';
+import { HttpStatusCode, KubernetesError } from '@/plugins/axios';
 import KeyValueForm from '@/components/KeyValueForm.vue';
+import { convertDatasetToBackendFormat } from '@/api/dataset-for-backend';
 import { useDataset } from './composition/create';
 
 const { t } = useI18n();
@@ -203,9 +204,9 @@ const onSubmit = handleSubmit(async (values) => {
 
   try {
     if (isUpdate.value && values.metadata?.name) {
-      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, values);
+      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, convertDatasetToBackendFormat(values));
     } else {
-      await datasetClient.create(namespaceStore.namespace, values);
+      await datasetClient.create(namespaceStore.namespace, convertDatasetToBackendFormat(values));
     }
     nSuccess(
       t('common.notyError', {

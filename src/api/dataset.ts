@@ -1,7 +1,8 @@
 /* eslint-disable no-use-before-define */
-import { K8sClient } from '@/plugins/axios/client';
 import { KeyValue } from '@/types/common';
 import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
+
+import { K8sClient } from '@/plugins/axios/client';
 
 export enum LicenseType {
   CCBY = 'CC BY',
@@ -263,7 +264,19 @@ export interface Status {
   state?: string;
 }
 
+export type PluginForBackend = Omit<Plugin, 'parameters'> & { parameters?: string };
+
+export type DatasetMetadataForBackend = Omit<DatasetMetadata, 'plugin'> & {
+  plugin: PluginForBackend;
+};
+
+export type SpecWithModifiedDatasetMetadata = Omit<Spec, 'datasetMetadata'> & {
+  datasetMetadata: DatasetMetadataForBackend;
+};
+
+export type DatasetForBackend = Omit<Dataset, 'spec'> & { spec: SpecWithModifiedDatasetMetadata };
+
 const apiVersion = 'extension.datatunerx.io/v1beta1';
 const kind = 'Dataset';
 
-export const datasetClient = new K8sClient<Dataset>(apiVersion, kind);
+export const datasetClient = new K8sClient<DatasetForBackend>(apiVersion, kind);
