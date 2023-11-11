@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { K8sClient } from '@/plugins/axios/client';
+import { KeyValue } from '@/types/common';
 import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
 
 export enum LicenseType {
@@ -231,7 +232,7 @@ export interface Validate {
 export interface Plugin {
   loadPlugin: boolean;
   name?: string;
-  parameters?: string;
+  parameters?: KeyValue;
 }
 
 /**

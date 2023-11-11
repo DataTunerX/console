@@ -53,12 +53,6 @@ interface ListFormType {
   searchKey: string;
 }
 
-type LabelType = Record<'key' | 'value', string>;
-
-interface KeyValue {
-  [key: string]: string,
-}
-
 type ErrorType = {
   message: string;
   code: number;

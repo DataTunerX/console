@@ -6,7 +6,7 @@ import {
 import { DaoFormItemValidate } from '@dao-style/extend';
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
 import {
-  computed, markRaw, reactive, onMounted,
+  computed, markRaw, reactive, onMounted, ref,
 } from 'vue';
 import {
   object, array, string, addMethod,
@@ -20,6 +20,7 @@ import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { KubernetesError, HttpStatusCode } from '@/plugins/axios';
+import KeyValueForm from '@/components/KeyValueForm.vue';
 import { useDataset } from './composition/create';
 
 const { t } = useI18n();
@@ -69,13 +70,15 @@ addMethod(array, 'unique', function unique(message, mapper = (a: string) => a) {
 //   });
 // });
 
+const componentRef = ref<typeof KeyValueForm>();
+
 const schema = markRaw(
   object({
     metadata: object({
       name: string().required().RFC1123Label(253).max(64)
         .label(t('views.Dataset.datasetName')),
     }),
-    spec: object().shape({
+    spec: object({
       datasetMetadata: object().shape({
         tags: array().of(string().required()).unique(t('views.Dataset.duplicateTags')),
         languages: array().min(1),
@@ -115,6 +118,15 @@ const schema = markRaw(
             then: (schema) => schema.required(),
             otherwise: (schema) => schema.notRequired(),
           }),
+          parameters: object().test('labels', 'labels is required', async () => {
+            if (componentRef.value) {
+              const valid = await componentRef.value?.validate();
+
+              return valid.valid;
+            }
+
+            return true;
+          }),
         }),
       }),
     }),
@@ -128,9 +140,14 @@ const {
   handleSubmit,
   resetForm,
   setFieldError,
+  defineComponentBinds,
 } = useForm<Dataset>({
   initialValues: dataset,
   validationSchema: schema,
+});
+
+const parameters = defineComponentBinds('spec.datasetMetadata.plugin.parameters', {
+  validateOnModelUpdate: false,
 });
 
 const duplicateTag = useFieldError('spec.datasetMetadata.tags');
@@ -170,11 +187,20 @@ const toList = () => {
 
 // const onSubmit = () => {
 //   validate().then((valid) => {
-//     console.log(valid);
+//     console.log('valid', valid);
 //   });
 // };
 
 const onSubmit = handleSubmit(async (values) => {
+  // const newValues = cloneDeep(values);
+
+  // 将parameters对象转换为字符串
+  // const parametersAsString = JSON.stringify(values.spec?.datasetMetadata?.plugin?.parameters);
+
+  // if (newValues.spec?.datasetMetadata?.plugin) {
+  //   newValues.spec.datasetMetadata.plugin.parameters = parametersAsString;
+  // }
+
   try {
     if (isUpdate.value && values.metadata?.name) {
       await datasetClient.update(namespaceStore.namespace, values.metadata?.name, values);
@@ -222,6 +248,7 @@ const onSubmit = handleSubmit(async (values) => {
           class: 'input-form-width',
         }"
       />
+
       <dao-form-item
         :label="$t('views.Dataset.tag')"
         class="multi-row-block"
@@ -431,6 +458,17 @@ const onSubmit = handleSubmit(async (values) => {
               :value="plugin.metadata.name"
             />
           </dao-form-item-validate>
+
+          <dao-form-item
+            label="运行参数"
+            label-width="80px"
+          >
+            <key-value-form
+              ref="componentRef"
+              name="spec.datasetMetadata.plugin.parameters"
+              v-bind="parameters"
+            />
+          </dao-form-item>
 
           <div
             v-for="(field, index) in subsets"

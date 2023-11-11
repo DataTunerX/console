@@ -1,6 +1,6 @@
 import { getCurrentInstance } from 'vue';
 import { useRoute } from 'vue-router';
-import type { NavRoute } from '@/types/common';
+import type { KeyValue, LabelType, NavRoute } from '@/types/common';
 
 export const capitalizeString = (
   str: string,
