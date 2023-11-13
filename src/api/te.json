@@ -4,24 +4,24 @@
   "metadata": {
     "annotations": {
       "controller-gen.kubebuilder.io/version": "v0.11.1",
-      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apiextensions.k8s.io/v1\",\"kind\":\"CustomResourceDefinition\",\"metadata\":{\"annotations\":{\"controller-gen.kubebuilder.io/version\":\"v0.11.1\"},\"creationTimestamp\":null,\"name\":\"finetunejobs.finetune.datatunerx.io\"},\"spec\":{\"group\":\"finetune.datatunerx.io\",\"names\":{\"kind\":\"FinetuneJob\",\"listKind\":\"FinetuneJobList\",\"plural\":\"finetunejobs\",\"singular\":\"finetunejob\"},\"scope\":\"Namespaced\",\"versions\":[{\"name\":\"v1beta1\",\"schema\":{\"openAPIV3Schema\":{\"description\":\"FinetuneJob is the Schema for the finetunejobs API\",\"properties\":{\"apiVersion\":{\"description\":\"APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\",\"type\":\"string\"},\"kind\":{\"description\":\"Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\",\"type\":\"string\"},\"metadata\":{\"type\":\"object\"},\"spec\":{\"description\":\"FinetuneJobSpec defines the desired state of FinetuneJob\",\"properties\":{\"finetune\":{\"description\":\"Finetune cr config.\",\"properties\":{\"finetuneSpec\":{\"description\":\"FinetuneSpec defines the desired state of Finetune\",\"properties\":{\"dataset\":{\"description\":\"Dataset specifies the dataset CR used for fine-tuning.\",\"type\":\"string\"},\"hyperparameter\":{\"description\":\"Hyperparameter specifies the hyperparameter CR used for fine-tuning.\",\"type\":\"string\"},\"image\":{\"properties\":{\"imagePullPolicy\":{\"default\":\"IfNotPresent\",\"description\":\"ImagePullPolicy describes a policy for if/when to pull a container image.\",\"enum\":[\"Always\",\"IfNotPresent\",\"Never\"],\"type\":\"string\"},\"name\":{\"description\":\"Name describe the image name.\",\"type\":\"string\"},\"path\":{\"description\":\"Path description of the model file path.\",\"type\":\"string\"}},\"required\":[\"name\"],\"type\":\"object\"},\"llm\":{\"description\":\"LLM specifies the large model CR used for fine-tuning.\",\"type\":\"string\"},\"node\":{\"type\":\"integer\"},\"resource\":{\"description\":\"Resource specifies the resource configuration for fine-tuning.\",\"properties\":{\"limits\":{\"description\":\"Limits specifies the resource limits.\",\"properties\":{\"cpu\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"2\",\"description\":\"CPU specifies the CPU resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true},\"gpu\":{\"default\":\"1\",\"description\":\"GPU specifies the GPU resource limit.\",\"type\":\"string\"},\"memory\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"4Gi\",\"description\":\"Memory specifies the memory resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true}},\"required\":[\"cpu\",\"gpu\",\"memory\"],\"type\":\"object\"},\"requests\":{\"description\":\"ResourceLimits represents the resource limits for a task.\",\"properties\":{\"cpu\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"2\",\"description\":\"CPU specifies the CPU resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true},\"gpu\":{\"default\":\"1\",\"description\":\"GPU specifies the GPU resource limit.\",\"type\":\"string\"},\"memory\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"string\"}],\"default\":\"4Gi\",\"description\":\"Memory specifies the memory resource limit.\",\"pattern\":\"^(\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\\+|-)?(([0-9]+(\\\\.[0-9]*)?)|(\\\\.[0-9]+))))?$\",\"x-kubernetes-int-or-string\":true}},\"required\":[\"cpu\",\"gpu\",\"memory\"],\"type\":\"object\"}},\"required\":[\"limits\",\"requests\"],\"type\":\"object\"}},\"required\":[\"dataset\",\"hyperparameter\",\"llm\"],\"type\":\"object\"},\"name\":{\"type\":\"string\"}},\"required\":[\"finetuneSpec\"],\"type\":\"object\"},\"scoringConfig\":{\"description\":\"Score plugin config.\",\"properties\":{\"name\":{\"description\":\"Name specifies the name of the scoring CR.\",\"type\":\"string\"}},\"required\":[\"name\"],\"type\":\"object\"},\"serveConfig\":{\"description\":\"Serve config.\",\"properties\":{\"nodeSelector\":{\"description\":\"NodeSelector specifies the node where service will be deployed.\",\"type\":\"string\"},\"tolerations\":{\"description\":\"Tolerations specifies the tolerations for service.\",\"type\":\"string\"}},\"required\":[\"nodeSelector\"],\"type\":\"object\"}},\"required\":[\"finetune\",\"serveConfig\"],\"type\":\"object\"},\"status\":{\"description\":\"FinetuneJobStatus defines the observed state of FinetuneJob\",\"properties\":{\"conditions\":{\"items\":{\"description\":\"Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \\n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \\\"Available\\\", \\\"Progressing\\\", and \\\"Degraded\\\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\\\"conditions,omitempty\\\" patchStrategy:\\\"merge\\\" patchMergeKey:\\\"type\\\" protobuf:\\\"bytes,1,rep,name=conditions\\\"` \\n // other fields }\",\"properties\":{\"lastTransitionTime\":{\"description\":\"lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.\",\"format\":\"date-time\",\"type\":\"string\"},\"message\":{\"description\":\"message is a human readable message indicating details about the transition. This may be an empty string.\",\"maxLength\":32768,\"type\":\"string\"},\"observedGeneration\":{\"description\":\"observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.\",\"format\":\"int64\",\"minimum\":0,\"type\":\"integer\"},\"reason\":{\"description\":\"reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.\",\"maxLength\":1024,\"minLength\":1,\"pattern\":\"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$\",\"type\":\"string\"},\"status\":{\"description\":\"status of the condition, one of True, False, Unknown.\",\"enum\":[\"True\",\"False\",\"Unknown\"],\"type\":\"string\"},\"type\":{\"description\":\"type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)\",\"maxLength\":316,\"pattern\":\"^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$\",\"type\":\"string\"}},\"required\":[\"lastTransitionTime\",\"message\",\"reason\",\"status\",\"type\"],\"type\":\"object\"},\"type\":\"array\"},\"finetuneState\":{\"enum\":[\"INIT\",\"PENDING\",\"RUNNING\",\"FAILED\",\"SUCCESSFUL\"],\"type\":\"string\"},\"result\":{\"properties\":{\"dashboard\":{\"type\":\"string\"},\"image\":{\"type\":\"string\"},\"modelExportResult\":{\"type\":\"boolean\"},\"serve\":{\"type\":\"string\"}},\"required\":[\"dashboard\",\"image\",\"modelExportResult\",\"serve\"],\"type\":\"object\"},\"state\":{\"enum\":[\"INIT\",\"FAILED\",\"SUCCESSFUL\",\"BUILDIMAGE\",\"FINETUNE\",\"SERVE\"],\"type\":\"string\"},\"stats\":{\"type\":\"string\"}},\"required\":[\"state\"],\"type\":\"object\"}},\"type\":\"object\"}},\"served\":true,\"storage\":true,\"subresources\":{\"status\":{}}}]}}\n"
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apiextensions.k8s.io/v1\",\"kind\":\"CustomResourceDefinition\",\"metadata\":{\"annotations\":{\"controller-gen.kubebuilder.io/version\":\"v0.11.1\"},\"creationTimestamp\":null,\"name\":\"hyperparameters.core.datatunerx.io\"},\"spec\":{\"group\":\"core.datatunerx.io\",\"names\":{\"kind\":\"Hyperparameter\",\"listKind\":\"HyperparameterList\",\"plural\":\"hyperparameters\",\"singular\":\"hyperparameter\"},\"scope\":\"Namespaced\",\"versions\":[{\"name\":\"v1beta1\",\"schema\":{\"openAPIV3Schema\":{\"description\":\"Hyperparameter is the Schema for the hyperparameters API\",\"properties\":{\"apiVersion\":{\"description\":\"APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\",\"type\":\"string\"},\"kind\":{\"description\":\"Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\",\"type\":\"string\"},\"metadata\":{\"type\":\"object\"},\"spec\":{\"description\":\"HyperparameterSpec defines the desired state of Hyperparameter\",\"properties\":{\"objective\":{\"description\":\"Over-senator adjustments to achieve targets.\",\"properties\":{\"type\":{\"default\":\"SFT\",\"description\":\"The type (Type) of fine-tuning may refer to a specific method or strategy of hyperparameter tuning. Common hyperparameter tuning methods include: 1. SFT\",\"type\":\"string\"}},\"required\":[\"type\"],\"type\":\"object\"},\"parameters\":{\"description\":\"Finetune paramenter config.\",\"properties\":{\"FP16\":{\"default\":false,\"description\":\"FP16 indicates whether to use 16-bit floating point precision.\",\"type\":\"boolean\"},\"PEFT\":{\"default\":true,\"description\":\"PEFT indicates whether to enable Performance Evaluation and Forecasting Tool.\",\"type\":\"boolean\"},\"batchSize\":{\"default\":32,\"description\":\"BatchSize specifies the size of mini-batches.\",\"type\":\"integer\"},\"blockSize\":{\"default\":512,\"description\":\"BlockSize specifies the block size.\",\"type\":\"integer\"},\"epochs\":{\"default\":10,\"description\":\"Epochs specifies the number of training epochs.\",\"type\":\"integer\"},\"gradAccSteps\":{\"default\":1,\"description\":\"GradAccSteps specifies the number of gradient accumulation steps.\",\"type\":\"integer\"},\"int4\":{\"default\":false,\"description\":\"Int4 indicates whether to use 4-bit integer quantization.\",\"type\":\"boolean\"},\"int8\":{\"default\":false,\"description\":\"Int8 indicates whether to use 8-bit integer quantization.\",\"type\":\"boolean\"},\"learningRate\":{\"default\":\"0.001\",\"description\":\"LearningRate specifies the initial learning rate.\",\"type\":\"string\"},\"loRA_Alpha\":{\"default\":\"32.0\",\"description\":\"LoRA_Alpha represents the alpha parameter for Localized Receptive Attention.\",\"type\":\"string\"},\"loRA_Dropout\":{\"default\":\"0.1\",\"description\":\"LoRA_Dropout specifies the dropout rate for Localized Receptive Attention.\",\"type\":\"string\"},\"loRA_R\":{\"default\":\"4\",\"description\":\"LoRA_R represents the radius parameter for Localized Receptive Attention.\",\"type\":\"string\"},\"optimizer\":{\"default\":\"Adam\",\"description\":\"Optimizer specifies the optimization algorithm.\",\"enum\":[\"AdamW\",\"Adam\",\"SGD\"],\"type\":\"string\"},\"scheduler\":{\"default\":\"Cosine\",\"description\":\"Scheduler specifies the learning rate scheduler.\",\"enum\":[\"Cosine\",\"Linear\",\"Constant\"],\"type\":\"string\"},\"trainerType\":{\"default\":\"Standard\",\"description\":\"TrainerType specifies the type of trainer to use.\",\"enum\":[\"Standard\"],\"type\":\"string\"},\"warmupRatio\":{\"default\":\"0.1\",\"description\":\"WarmupRatio specifies the ratio of warmup steps.\",\"type\":\"string\"},\"weightDecay\":{\"default\":\"0.0001\",\"description\":\"WeightDecay specifies the weight decay factor.\",\"type\":\"string\"}},\"required\":[\"FP16\",\"batchSize\",\"blockSize\",\"epochs\",\"gradAccSteps\",\"int4\",\"int8\",\"learningRate\",\"loRA_Alpha\",\"loRA_Dropout\",\"loRA_R\",\"optimizer\",\"scheduler\",\"trainerType\",\"warmupRatio\",\"weightDecay\"],\"type\":\"object\"}},\"required\":[\"objective\",\"parameters\"],\"type\":\"object\"},\"status\":{\"description\":\"HyperparameterStatus defines the observed state of Hyperparameter\",\"type\":\"object\"}},\"type\":\"object\"}},\"served\":true,\"storage\":true,\"subresources\":{\"status\":{}}}]}}\n"
     },
-    "creationTimestamp": "2023-11-01T09:52:08Z",
-    "generation": 10,
-    "name": "finetunejobs.finetune.datatunerx.io",
-    "resourceVersion": "2343556",
-    "uid": "5b33e1fc-1842-44f7-8364-9bed5365f8f2"
+    "creationTimestamp": "2023-11-01T09:54:06Z",
+    "generation": 4,
+    "name": "hyperparameters.core.datatunerx.io",
+    "resourceVersion": "2378294",
+    "uid": "356323c8-7955-420a-8277-0bbc5af1bb53"
   },
   "spec": {
     "conversion": {
       "strategy": "None"
     },
-    "group": "finetune.datatunerx.io",
+    "group": "core.datatunerx.io",
     "names": {
-      "kind": "FinetuneJob",
-      "listKind": "FinetuneJobList",
-      "plural": "finetunejobs",
-      "singular": "finetunejob"
+      "kind": "Hyperparameter",
+      "listKind": "HyperparameterList",
+      "plural": "hyperparameters",
+      "singular": "hyperparameter"
     },
     "scope": "Namespaced",
     "versions": [
@@ -29,7 +29,7 @@
         "name": "v1beta1",
         "schema": {
           "openAPIV3Schema": {
-            "description": "FinetuneJob is the Schema for the finetunejobs API",
+            "description": "Hyperparameter is the Schema for the hyperparameters API",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -43,315 +43,153 @@
                 "type": "object"
               },
               "spec": {
-                "description": "FinetuneJobSpec defines the desired state of FinetuneJob",
+                "description": "HyperparameterSpec defines the desired state of Hyperparameter",
                 "properties": {
-                  "finetune": {
-                    "description": "Finetune cr config.",
+                  "objective": {
+                    "description": "Over-senator adjustments to achieve targets.",
                     "properties": {
-                      "finetuneSpec": {
-                        "description": "FinetuneSpec defines the desired state of Finetune",
-                        "properties": {
-                          "dataset": {
-                            "description": "Dataset specifies the dataset CR used for fine-tuning.",
-                            "type": "string"
-                          },
-                          "hyperparameter": {
-                            "description": "Hyperparameter specifies the hyperparameter CR used for fine-tuning.",
-                            "type": "string"
-                          },
-                          "image": {
-                            "properties": {
-                              "imagePullPolicy": {
-                                "default": "IfNotPresent",
-                                "description": "ImagePullPolicy describes a policy for if/when to pull a container image.",
-                                "enum": [
-                                  "Always",
-                                  "IfNotPresent",
-                                  "Never"
-                                ],
-                                "type": "string"
-                              },
-                              "name": {
-                                "description": "Name describe the image name.",
-                                "type": "string"
-                              },
-                              "path": {
-                                "description": "Path description of the model file path.",
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "name"
-                            ],
-                            "type": "object"
-                          },
-                          "llm": {
-                            "description": "LLM specifies the large model CR used for fine-tuning.",
-                            "type": "string"
-                          },
-                          "node": {
-                            "type": "integer"
-                          },
-                          "resource": {
-                            "description": "Resource specifies the resource configuration for fine-tuning.",
-                            "properties": {
-                              "limits": {
-                                "description": "Limits specifies the resource limits.",
-                                "properties": {
-                                  "cpu": {
-                                    "anyOf": [
-                                      {
-                                        "type": "integer"
-                                      },
-                                      {
-                                        "type": "string"
-                                      }
-                                    ],
-                                    "default": "2",
-                                    "description": "CPU specifies the CPU resource limit.",
-                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
-                                    "x-kubernetes-int-or-string": true
-                                  },
-                                  "gpu": {
-                                    "default": "1",
-                                    "description": "GPU specifies the GPU resource limit.",
-                                    "type": "string"
-                                  },
-                                  "memory": {
-                                    "anyOf": [
-                                      {
-                                        "type": "integer"
-                                      },
-                                      {
-                                        "type": "string"
-                                      }
-                                    ],
-                                    "default": "4Gi",
-                                    "description": "Memory specifies the memory resource limit.",
-                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
-                                    "x-kubernetes-int-or-string": true
-                                  }
-                                },
-                                "required": [
-                                  "cpu",
-                                  "gpu",
-                                  "memory"
-                                ],
-                                "type": "object"
-                              },
-                              "requests": {
-                                "description": "ResourceLimits represents the resource limits for a task.",
-                                "properties": {
-                                  "cpu": {
-                                    "anyOf": [
-                                      {
-                                        "type": "integer"
-                                      },
-                                      {
-                                        "type": "string"
-                                      }
-                                    ],
-                                    "default": "2",
-                                    "description": "CPU specifies the CPU resource limit.",
-                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
-                                    "x-kubernetes-int-or-string": true
-                                  },
-                                  "gpu": {
-                                    "default": "1",
-                                    "description": "GPU specifies the GPU resource limit.",
-                                    "type": "string"
-                                  },
-                                  "memory": {
-                                    "anyOf": [
-                                      {
-                                        "type": "integer"
-                                      },
-                                      {
-                                        "type": "string"
-                                      }
-                                    ],
-                                    "default": "4Gi",
-                                    "description": "Memory specifies the memory resource limit.",
-                                    "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
-                                    "x-kubernetes-int-or-string": true
-                                  }
-                                },
-                                "required": [
-                                  "cpu",
-                                  "gpu",
-                                  "memory"
-                                ],
-                                "type": "object"
-                              }
-                            },
-                            "required": [
-                              "limits",
-                              "requests"
-                            ],
-                            "type": "object"
-                          }
-                        },
-                        "required": [
-                          "dataset",
-                          "hyperparameter",
-                          "llm"
+                      "type": {
+                        "default": "SFT",
+                        "description": "The type (Type) of fine-tuning may refer to a specific method or strategy of hyperparameter tuning. Common hyperparameter tuning methods include: 1. SFT",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "type": "object"
+                  },
+                  "parameters": {
+                    "description": "Finetune paramenter config.",
+                    "properties": {
+                      "FP16": {
+                        "default": false,
+                        "description": "FP16 indicates whether to use 16-bit floating point precision.",
+                        "type": "boolean"
+                      },
+                      "PEFT": {
+                        "default": true,
+                        "description": "PEFT indicates whether to enable Performance Evaluation and Forecasting Tool.",
+                        "type": "boolean"
+                      },
+                      "batchSize": {
+                        "default": 32,
+                        "description": "BatchSize specifies the size of mini-batches.",
+                        "type": "integer"
+                      },
+                      "blockSize": {
+                        "default": 512,
+                        "description": "BlockSize specifies the block size.",
+                        "type": "integer"
+                      },
+                      "epochs": {
+                        "default": 10,
+                        "description": "Epochs specifies the number of training epochs.",
+                        "type": "integer"
+                      },
+                      "gradAccSteps": {
+                        "default": 1,
+                        "description": "GradAccSteps specifies the number of gradient accumulation steps.",
+                        "type": "integer"
+                      },
+                      "int4": {
+                        "default": false,
+                        "description": "Int4 indicates whether to use 4-bit integer quantization.",
+                        "type": "boolean"
+                      },
+                      "int8": {
+                        "default": false,
+                        "description": "Int8 indicates whether to use 8-bit integer quantization.",
+                        "type": "boolean"
+                      },
+                      "learningRate": {
+                        "default": "0.001",
+                        "description": "LearningRate specifies the initial learning rate.",
+                        "type": "string"
+                      },
+                      "loRA_Alpha": {
+                        "default": "32.0",
+                        "description": "LoRA_Alpha represents the alpha parameter for Localized Receptive Attention.",
+                        "type": "string"
+                      },
+                      "loRA_Dropout": {
+                        "default": "0.1",
+                        "description": "LoRA_Dropout specifies the dropout rate for Localized Receptive Attention.",
+                        "type": "string"
+                      },
+                      "loRA_R": {
+                        "default": "4",
+                        "description": "LoRA_R represents the radius parameter for Localized Receptive Attention.",
+                        "type": "string"
+                      },
+                      "optimizer": {
+                        "default": "Adam",
+                        "description": "Optimizer specifies the optimization algorithm.",
+                        "enum": [
+                          "AdamW",
+                          "Adam",
+                          "SGD"
                         ],
-                        "type": "object"
-                      },
-                      "name": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "finetuneSpec"
-                    ],
-                    "type": "object"
-                  },
-                  "scoringConfig": {
-                    "description": "Score plugin config.",
-                    "properties": {
-                      "name": {
-                        "description": "Name specifies the name of the scoring CR.",
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "name"
-                    ],
-                    "type": "object"
-                  },
-                  "serveConfig": {
-                    "description": "Serve config.",
-                    "properties": {
-                      "nodeSelector": {
-                        "description": "NodeSelector specifies the node where service will be deployed.",
                         "type": "string"
                       },
-                      "tolerations": {
-                        "description": "Tolerations specifies the tolerations for service.",
+                      "scheduler": {
+                        "default": "Cosine",
+                        "description": "Scheduler specifies the learning rate scheduler.",
+                        "enum": [
+                          "Cosine",
+                          "Linear",
+                          "Constant"
+                        ],
+                        "type": "string"
+                      },
+                      "trainerType": {
+                        "default": "Standard",
+                        "description": "TrainerType specifies the type of trainer to use.",
+                        "enum": [
+                          "Standard"
+                        ],
+                        "type": "string"
+                      },
+                      "warmupRatio": {
+                        "default": "0.1",
+                        "description": "WarmupRatio specifies the ratio of warmup steps.",
+                        "type": "string"
+                      },
+                      "weightDecay": {
+                        "default": "0.0001",
+                        "description": "WeightDecay specifies the weight decay factor.",
                         "type": "string"
                       }
                     },
                     "required": [
-                      "nodeSelector"
+                      "FP16",
+                      "batchSize",
+                      "blockSize",
+                      "epochs",
+                      "gradAccSteps",
+                      "int4",
+                      "int8",
+                      "learningRate",
+                      "loRA_Alpha",
+                      "loRA_Dropout",
+                      "loRA_R",
+                      "optimizer",
+                      "scheduler",
+                      "trainerType",
+                      "warmupRatio",
+                      "weightDecay"
                     ],
                     "type": "object"
                   }
                 },
                 "required": [
-                  "finetune",
-                  "serveConfig"
+                  "objective",
+                  "parameters"
                 ],
                 "type": "object"
               },
               "status": {
-                "description": "FinetuneJobStatus defines the observed state of FinetuneJob",
-                "properties": {
-                  "conditions": {
-                    "items": {
-                      "description": "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }",
-                      "properties": {
-                        "lastTransitionTime": {
-                          "description": "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
-                          "format": "date-time",
-                          "type": "string"
-                        },
-                        "message": {
-                          "description": "message is a human readable message indicating details about the transition. This may be an empty string.",
-                          "maxLength": 32768,
-                          "type": "string"
-                        },
-                        "observedGeneration": {
-                          "description": "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.",
-                          "format": "int64",
-                          "minimum": 0,
-                          "type": "integer"
-                        },
-                        "reason": {
-                          "description": "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.",
-                          "maxLength": 1024,
-                          "minLength": 1,
-                          "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
-                          "type": "string"
-                        },
-                        "status": {
-                          "description": "status of the condition, one of True, False, Unknown.",
-                          "enum": [
-                            "True",
-                            "False",
-                            "Unknown"
-                          ],
-                          "type": "string"
-                        },
-                        "type": {
-                          "description": "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)",
-                          "maxLength": 316,
-                          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "lastTransitionTime",
-                        "message",
-                        "reason",
-                        "status",
-                        "type"
-                      ],
-                      "type": "object"
-                    },
-                    "type": "array"
-                  },
-                  "finetuneState": {
-                    "enum": [
-                      "INIT",
-                      "PENDING",
-                      "RUNNING",
-                      "FAILED",
-                      "SUCCESSFUL"
-                    ],
-                    "type": "string"
-                  },
-                  "result": {
-                    "properties": {
-                      "dashboard": {
-                        "type": "string"
-                      },
-                      "image": {
-                        "type": "string"
-                      },
-                      "modelExportResult": {
-                        "type": "boolean"
-                      },
-                      "serve": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "dashboard",
-                      "image",
-                      "modelExportResult",
-                      "serve"
-                    ],
-                    "type": "object"
-                  },
-                  "state": {
-                    "enum": [
-                      "INIT",
-                      "FAILED",
-                      "SUCCESSFUL",
-                      "BUILDIMAGE",
-                      "FINETUNE",
-                      "SERVE"
-                    ],
-                    "type": "string"
-                  },
-                  "stats": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "state"
-                ],
+                "description": "HyperparameterStatus defines the observed state of Hyperparameter",
                 "type": "object"
               }
             },
@@ -368,21 +206,21 @@
   },
   "status": {
     "acceptedNames": {
-      "kind": "FinetuneJob",
-      "listKind": "FinetuneJobList",
-      "plural": "finetunejobs",
-      "singular": "finetunejob"
+      "kind": "Hyperparameter",
+      "listKind": "HyperparameterList",
+      "plural": "hyperparameters",
+      "singular": "hyperparameter"
     },
     "conditions": [
       {
-        "lastTransitionTime": "2023-11-01T09:52:08Z",
+        "lastTransitionTime": "2023-11-01T09:54:06Z",
         "message": "no conflicts found",
         "reason": "NoConflicts",
         "status": "True",
         "type": "NamesAccepted"
       },
       {
-        "lastTransitionTime": "2023-11-01T09:52:08Z",
+        "lastTransitionTime": "2023-11-01T09:54:06Z",
         "message": "the initial names have been accepted",
         "reason": "InitialNamesAccepted",
         "status": "True",

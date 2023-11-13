@@ -1,101 +1,60 @@
 <script setup lang="ts">
-import { watch, markRaw, PropType } from 'vue';
-import { useForm } from 'vee-validate';
+import { watch, PropType, ref } from 'vue';
 import { DaoSelect } from '@dao-style/core';
 import {
   type Hyperparameter,
+  type Parameters,
   Scheduler,
   Optimizer,
   TrainerType,
   Quantization,
+  StringParameters,
 } from '@/api/hyperparameter';
-import { object, string, number } from 'yup';
+import { useField } from 'vee-validate';
+import { retrieveQuantization } from '@/views/hyperparameter/composition/hyperparameter';
+import { diff } from '@/utils/diff';
 
 const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+
   origin: {
     type: Object as PropType<Hyperparameter>,
     required: true,
   },
+
+  overrides: {
+    type: Object as PropType<Partial<Parameters>>,
+    required: true,
+  },
 });
 
-// const emits = defineEmits<{(e: 'update:modelValue', value: string): void }>();
+const { resetField, value } = useField<Parameters>(() => props.name);
 
-// 定义表单验证模式
-const schema = markRaw(
-  object({
-    metadata: object({
-      name: string().required().RFC1123Label(253).label('数据集名称'),
-    }),
-    spec: object({
-      objective: object({
-        type: string().required(),
-      }),
-      parameters: object({
-        loRA_Alpha: number().required().moreThan(0),
-        loRA_R: number().required().integer().moreThan(2),
-        loRA_Dropout: number().required().moreThan(0).lessThan(1),
-        learningRate: number().required().moreThan(0).lessThan(1),
-        epochs: number().required().integer().moreThan(1),
-        blockSize: number().required().integer().moreThan(8),
-        batchSize: number().required().integer().moreThan(1),
-        warmupRatio: number().required().moreThan(0).lessThan(1),
-        weightDecay: number().required().moreThan(0).lessThan(1),
-        gradAccSteps: number().required().integer().min(1),
-      }),
-    }),
-  }),
-);
+const { setValue: setInt4Value } = useField(() => `${props.name}.int4`);
+const { setValue: setInt8Value } = useField(() => `${props.name}.int8`);
 
-// 获取超参数相关信息
-// 表单处理
-const { values, setValues } = useForm<Hyperparameter>({
-  initialValues: props.origin,
-  validationSchema: schema,
-});
+// const { meta } = useField(() => `${props.name}.scheduler`);
+const schedulerRef = ref();
 
-const updateQuantization = (val?: string) => {
-  const valuesToUpdate = {
-    spec: {
-      parameters: {
-        int4: val === Quantization.int4,
-        int8: val === Quantization.int8,
-      },
-    },
-  };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateQuantization = (val: any) => {
+  const q = val as Quantization;
 
-  setValues(valuesToUpdate);
+  setInt4Value(q === Quantization.int4);
+  setInt8Value(q === Quantization.int8);
 };
-
-const retrieveQuantization = () => {
-  const { parameters } = props.origin.spec;
-  let quantizationValue = Quantization.default;
-
-  if (parameters.int4) {
-    quantizationValue = Quantization.int4;
-  } else if (parameters.int8) {
-    quantizationValue = Quantization.int8;
-  }
-
-  setValues({
-    spec: {
-      parameters: {
-        quantization: quantizationValue,
-      },
-    },
-  });
-};
-
-watch(
-  () => values.spec.parameters.quantization,
-  (val?: string) => updateQuantization(val),
-);
 
 watch(
   () => props.origin,
   (val) => {
-    retrieveQuantization();
-    setValues({
-      ...val,
+    resetField({
+      value: {
+        ...val.spec.parameters,
+        quantization: retrieveQuantization(val.spec.parameters),
+      },
     });
   },
   {
@@ -103,19 +62,54 @@ watch(
     immediate: true,
   },
 );
+
+const emits = defineEmits(['update:overrides']);
+
+watch(
+  () => value.value,
+  (newParams) => {
+    const overrides = diff(props.origin.spec.parameters, newParams);
+
+    const keys: (keyof StringParameters)[] = [
+      'learningRate',
+      'loRA_Alpha',
+      'loRA_Dropout',
+      'loRA_R',
+      'warmupRatio',
+      'weightDecay',
+    ];
+
+    keys
+      .filter((k) => overrides[k])
+      .forEach((key) => {
+        overrides[key] = `${overrides[key]}`;
+      });
+
+    emits('update:overrides', overrides);
+  },
+  {
+    deep: true,
+  },
+);
 </script>
 
 <template>
-  <dao-form
-    type="vertical"
-    label-width="180px"
-  >
+  <dao-form type="vertical">
     <div class="parameter-group">
       <dao-form-item-validate
+        ref="schedulerRef"
         :tag="DaoSelect"
         label="Scheduler"
-        name="spec.parameters.scheduler"
+        :name="`${name}.scheduler`"
       >
+        <template #helper="{ meta: { dirty } }">
+          <dao-icon
+            v-if="dirty"
+            use-font
+            :name="'icon-edit-pen'"
+          />
+        </template>
+
         <dao-option
           v-for="n in Scheduler"
           :key="n"
@@ -127,7 +121,7 @@ watch(
       <dao-form-item-validate
         :tag="DaoSelect"
         label="Optimizer"
-        name="spec.parameters.optimizer"
+        :name="`${name}.optimizer`"
       >
         <dao-option
           v-for="n in Optimizer"
@@ -139,7 +133,7 @@ watch(
 
       <dao-form-item-validate
         label="FP16"
-        name="spec.parameters.FP16"
+        :name="`${name}.FP16`"
         :tag="DaoSelect"
       >
         <dao-option
@@ -156,7 +150,7 @@ watch(
 
       <dao-form-item-validate
         label="LoRA_Alpha"
-        name="spec.parameters.loRA_Alpha"
+        :name="`${name}.loRA_Alpha`"
         :control-props="{
           type: 'number',
         }"
@@ -164,7 +158,7 @@ watch(
 
       <dao-form-item-validate
         label="LoRA_R"
-        name="spec.parameters.loRA_R"
+        :name="`${name}.loRA_R`"
         :control-props="{
           type: 'number',
         }"
@@ -172,7 +166,7 @@ watch(
 
       <dao-form-item-validate
         label="LoRA_Dropout"
-        name="spec.parameters.loRA_Dropout"
+        :name="`${name}.loRA_Dropout`"
         :control-props="{
           type: 'number',
           step: 0.01,
@@ -182,7 +176,8 @@ watch(
       <dao-form-item-validate
         :tag="DaoSelect"
         label="Int4/8"
-        name="spec.parameters.quantization"
+        :name="`${name}.quantization`"
+        @change="updateQuantization"
       >
         <dao-option
           label="默认"
@@ -201,8 +196,8 @@ watch(
 
     <div class="parameter-group mt-[15px]">
       <dao-form-item-validate
-        label="LearningRate"
-        name="spec.parameters.learningRate"
+        label="Learning Rate"
+        :name="`${name}.learningRate`"
         :control-props="{
           type: 'number',
           step: 0.01,
@@ -210,7 +205,7 @@ watch(
       />
       <dao-form-item-validate
         label="Epochs"
-        name="spec.parameters.epochs"
+        :name="`${name}.epochs`"
         :control-props="{
           type: 'number',
         }"
@@ -218,7 +213,7 @@ watch(
 
       <dao-form-item-validate
         label="BlockSize"
-        name="spec.parameters.blockSize"
+        :name="`${name}.blockSize`"
         :control-props="{
           type: 'number',
         }"
@@ -226,7 +221,7 @@ watch(
 
       <dao-form-item-validate
         label="BatchSize"
-        name="spec.parameters.batchSize"
+        :name="`${name}.batchSize`"
         :control-props="{
           type: 'number',
           step: 1,
@@ -234,7 +229,7 @@ watch(
       />
       <dao-form-item-validate
         label="WarmupRatio"
-        name="spec.parameters.warmupRatio"
+        :name="`${name}.warmupRatio`"
         :control-props="{
           type: 'number',
           step: 0.01,
@@ -243,7 +238,7 @@ watch(
 
       <dao-form-item-validate
         label="WeightDecay"
-        name="spec.parameters.weightDecay"
+        :name="`${name}.weightDecay`"
         :control-props="{
           type: 'number',
           step: 0.01,
@@ -252,7 +247,7 @@ watch(
 
       <dao-form-item-validate
         label="GradAccSteps"
-        name="spec.parameters.gradAccSteps"
+        :name="`${name}.gradAccSteps`"
         :control-props="{
           type: 'number',
         }"
@@ -261,7 +256,7 @@ watch(
       <dao-form-item-validate
         :tag="DaoSelect"
         label="TrainerType"
-        name="spec.parameters.trainerType"
+        :name="`${name}.trainerType`"
       >
         <dao-option
           v-for="n in TrainerType"

@@ -1,10 +1,10 @@
-import { Dataset, DatasetForBackend } from '@/api/dataset';
-import { convertDatasetFromBackendFormat, convertDatasetToBackendFormat } from '@/api/dataset-for-backend';
+import { Dataset } from '@/api/dataset';
+import { DatasetForRender, convertDatasetForPost, convertDatasetForRender } from '@/api/dataset-for-render';
 
-describe('convertDatasetToBackendFormat', () => {
-  it('should convert Dataset to DatasetForBackend', () => {
+describe('convertDatasetForPost', () => {
+  it('should convert DatasetForRender to Dataset', () => {
     // 创建一个 Dataset 对象
-    const dataset: Dataset = {
+    const datasetForRender: DatasetForRender = {
       spec: {
         datasetMetadata: {
           plugin: {
@@ -19,7 +19,7 @@ describe('convertDatasetToBackendFormat', () => {
     };
 
     // 调用函数
-    const result = convertDatasetToBackendFormat(dataset);
+    const result = convertDatasetForPost(datasetForRender);
 
     // 检查结果
     expect(result).toEqual({
@@ -38,10 +38,10 @@ describe('convertDatasetToBackendFormat', () => {
   });
 });
 
-describe('convertDatasetFromBackendFormat', () => {
-  it('should convert DatasetForBackend to Dataset', () => {
+describe('convertDatasetForRender', () => {
+  it('should convert Dataset to DatasetForRender', () => {
     // 创建一个 DatasetForBackend 对象
-    const datasetForBackend: DatasetForBackend = {
+    const dataset: Dataset = {
       spec: {
         datasetMetadata: {
           plugin: {
@@ -56,7 +56,7 @@ describe('convertDatasetFromBackendFormat', () => {
     };
 
     // 调用函数
-    const result = convertDatasetFromBackendFormat(datasetForBackend);
+    const result = convertDatasetForRender(dataset);
 
     // 检查结果
     expect(result).toEqual({

@@ -36,3 +36,8 @@ export type LabelType = Record<'key' | 'value', string>;
 export interface KeyValue {
   [key: string]: string,
 }
+
+export enum BoolValue {
+  TrueValue = 'True',
+  FalseValue = 'False',
+}

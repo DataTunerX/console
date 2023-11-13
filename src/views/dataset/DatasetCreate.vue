@@ -14,14 +14,14 @@ import {
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
-  LicenseType, SizeType, type Dataset, LanguageOptions, SubTask, Subset, taskCategories, datasetClient,
+  LicenseType, SizeType, LanguageOptions, SubTask, Subset, taskCategories, datasetClient,
 } from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { HttpStatusCode, KubernetesError } from '@/plugins/axios';
 import KeyValueForm from '@/components/KeyValueForm.vue';
-import { convertDatasetToBackendFormat } from '@/api/dataset-for-backend';
+import { type DatasetForRender, convertDatasetForPost } from '@/api/dataset-for-render';
 import { useDataset } from './composition/create';
 
 const { t } = useI18n();
@@ -142,7 +142,7 @@ const {
   resetForm,
   setFieldError,
   defineComponentBinds,
-} = useForm<Dataset>({
+} = useForm<DatasetForRender>({
   initialValues: dataset,
   validationSchema: schema,
 });
@@ -204,9 +204,9 @@ const onSubmit = handleSubmit(async (values) => {
 
   try {
     if (isUpdate.value && values.metadata?.name) {
-      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, convertDatasetToBackendFormat(values));
+      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, convertDatasetForPost(values));
     } else {
-      await datasetClient.create(namespaceStore.namespace, convertDatasetToBackendFormat(values));
+      await datasetClient.create(namespaceStore.namespace, convertDatasetForPost(values));
     }
     nSuccess(
       t('common.notyError', {

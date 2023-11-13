@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { DatasetForBackend, datasetClient } from '@/api/dataset';
+import { Dataset, datasetClient } from '@/api/dataset';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -11,7 +11,7 @@ const route = useRoute();
 
 const namespaceStore = useNamespaceStore();
 
-const dataset = ref<DatasetForBackend>();
+const dataset = ref<Dataset>();
 
 const fetchDataset = () => {
   datasetClient.read(namespaceStore.namespace, route.params.name as string).then((res) => {
