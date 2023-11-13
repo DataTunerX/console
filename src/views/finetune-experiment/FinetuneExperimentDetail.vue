@@ -1,3 +1,3 @@
 <template>
-  Fine tuning
+  Finetune detail
 </template>

@@ -1,4 +1,5 @@
 import { DeleteOptions, ListMeta } from 'kubernetes-types/meta/v1';
+import { AxiosRequestConfig } from 'axios';
 import httpClient from './index';
 
 type HttpClient = typeof httpClient;
@@ -10,7 +11,8 @@ export interface List<T> {
   metadata: ListMeta;
 }
 
-export class K8sClient<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class K8sClient<T, D = any> {
   private pathTemplate: string;
 
   private httpClient: HttpClient = httpClient;
@@ -23,10 +25,10 @@ export class K8sClient<T> {
     return this.pathTemplate.replace('{namespace}', encodeURIComponent(namespace));
   }
 
-  list(namespace: string) {
+  list(namespace: string, config?: AxiosRequestConfig<D>) {
     const path = this.getPath(namespace);
 
-    return this.httpClient.get<List<T>>(path);
+    return this.httpClient.get<List<T>>(path, config);
   }
 
   create(namespace: string, data: T) {

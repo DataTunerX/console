@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
-import { K8sClient } from '@/plugins/axios/client';
 import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
+
+import { K8sClient } from '@/plugins/axios/client';
 
 export enum LicenseType {
   CCBY = 'CC BY',

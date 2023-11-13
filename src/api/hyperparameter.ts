@@ -9,9 +9,9 @@ export enum FineTuningType {
 
 // 定义 Quantization 常量
 export enum Quantization {
-  default= 'default',
-  int4= 'int4',
-  int8= 'int8'
+  default = 'default',
+  int4 = 'int4',
+  int8 = 'int8',
 }
 
 export interface HyperparameterList {
@@ -149,8 +149,8 @@ export interface Parameters {
 }
 
 /**
-* Optimizer specifies the optimization algorithm.
-*/
+ * Optimizer specifies the optimization algorithm.
+ */
 export enum Optimizer {
   Adam = 'Adam',
   AdamW = 'AdamW',
@@ -158,8 +158,8 @@ export enum Optimizer {
 }
 
 /**
-* Scheduler specifies the learning rate scheduler.
-*/
+ * Scheduler specifies the learning rate scheduler.
+ */
 export enum Scheduler {
   Constant = 'Constant',
   Cosine = 'Cosine',

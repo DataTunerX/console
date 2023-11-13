@@ -69,6 +69,8 @@ export const useFinetuneJob = () => {
             llm: '',
             hyperparameter: {
               hyperparameterRef: '',
+              overrides: {},
+              parameters: {},
             },
           },
         },

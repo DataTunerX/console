@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-import axios, { HttpStatusCode } from 'axios';
+import axios from 'axios';
 
 export interface KubernetesError {
   kind: string
@@ -9,6 +8,12 @@ export interface KubernetesError {
   reason: string
   code: number
 }
+
+const { HttpStatusCode } = axios;
+
+export {
+  HttpStatusCode,
+};
 
 const httpClient = axios.create({
   baseURL: '/',
@@ -21,5 +26,3 @@ httpClient.interceptors.response.use(
 );
 
 export default httpClient;
-
-export { HttpStatusCode };

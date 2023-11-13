@@ -1,5 +1,6 @@
 import { K8sClient } from '@/plugins/axios/client';
 import { ObjectMeta } from 'kubernetes-types/meta/v1';
+import { Parameters } from './hyperparameter';
 /* eslint-disable no-use-before-define */
 
 /**
@@ -60,7 +61,8 @@ export interface Spec {
  */
 export interface Hyperparameter {
   hyperparameterRef?: string;
-  overrides?: { [key: string]: string };
+  overrides?: Partial<Parameters>;
+  parameters?: Partial<Parameters>;
 }
 
 export interface Image {

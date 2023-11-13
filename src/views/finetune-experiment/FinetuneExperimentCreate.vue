@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
 import { useFieldArray, useForm } from 'vee-validate';
-import { string, object } from 'yup';
-import { markRaw, onMounted, ref } from 'vue';
+import {
+  string, object, array, number,
+} from 'yup';
+import { markRaw, onMounted } from 'vue';
 import { FinetuneJob } from '@/api/finetune-job';
 import { finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
-import { ElementRefType } from '@/types/common';
-import FinetuneJobComponent from './components/FinetuneJob.vue';
+import FinetuneJobComponent from './components/FinetuneJobComponent.vue';
+
 import {
   useFinetuneExperiment,
   useFinetuneJob,
@@ -51,6 +53,34 @@ const validationSchema = markRaw(
       name: string().RFC1123Label().required('请输入实验名称'),
     }),
     spec: object({
+      finetuneJobs: array().of(object({
+        metadata: object({
+          name: string().required('请输入名称'),
+        }),
+        spec: object({
+          finetune: object({
+            finetuneSpec: object({
+              llm: string().required('请选择语言模型'),
+              hyperparameter: object({
+                hyperparameterRef: string().required('请选择超参组'),
+                parameters: object({
+                  loRA_Alpha: number().moreThan(0),
+                  loRA_R: number().integer().moreThan(2),
+                  loRA_Dropout: number().moreThan(0).lessThan(1),
+                  learningRate: number().moreThan(0).lessThan(1),
+                  epochs: number().integer().moreThan(1),
+                  blockSize: number().integer().moreThan(8),
+                  batchSize: number().integer().moreThan(1),
+                  warmupRatio: number().moreThan(0).lessThan(1),
+                  weightDecay: number().moreThan(0).lessThan(1),
+                  gradAccSteps: number().integer().min(1),
+                }),
+              }),
+              dataset: string().required('请选择数据集'),
+            }),
+          }),
+        }),
+      })),
       scoringConfig: object({
         name: string().required('请输入评估方式'),
       }),
@@ -58,10 +88,12 @@ const validationSchema = markRaw(
   }),
 );
 
-const { values, validate } = useForm({
+const { validate, errorBag, values } = useForm({
   initialValues: finetuneExperiment,
   validationSchema,
 });
+
+const hasError = (index: number) => Object.keys(errorBag.value).some((key) => key.startsWith(`spec.finetuneJobs[${index}]`));
 
 const { push, remove, fields: jobs } = useFieldArray<FinetuneJob>('spec.finetuneJobs');
 
@@ -75,31 +107,15 @@ const toList = () => {
   });
 };
 
-type ComponentRef = {
-  validateEdit: () => Promise<boolean>;
-} | null;
-
-const jobsRef = ref<ElementRefType<ComponentRef>[]>([]);
-
-const validateEdit = async () => {
-  const jobsRes = await Promise.all(jobsRef.value.map((item) => (item as ComponentRef)?.validateEdit() ?? Promise.resolve(true)));
-
-  return jobsRes.every((item) => item);
-};
-
 const onSubmit = async () => {
-  const v = await validateEdit();
+  const { valid } = await validate();
 
-  if (v) {
-    const valid = await validate();
-
-    if (valid.valid) {
-      try {
-        await finetuneExperimentClient.create(namespace.value, values);
-        toList();
-      } catch (error) {
-        nError('失败了', error);
-      }
+  if (valid) {
+    try {
+      await finetuneExperimentClient.create(namespace.value, values);
+      toList();
+    } catch (error) {
+      nError('失败了', error);
     }
   }
 };
@@ -147,16 +163,17 @@ const onSubmit = async () => {
             :name="`${job.key}`"
             :title="job.value.metadata?.name"
           >
+            <legend>User #{{ idx }}</legend>
             <FinetuneJobComponent
-              :ref="($e: ElementRefType<ComponentRef>) => jobsRef[idx] = $e"
               v-model="job.value"
               :llms="largeLanguageModels"
               :datasets="datasets"
               :hyperparameters="hyperparameters"
+              :name="`spec.finetuneJobs[${idx}]`"
             />
             <template #action>
               <dao-icon
-                v-if="!job.value.valid"
+                v-if="hasError(idx)"
                 class="job-item-icon--error text-[18px] mr-[23px]"
                 name="icon-sys-warning"
                 use-font

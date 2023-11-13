@@ -1,14 +1,15 @@
 import {
   type Dataset,
   FeatureName,
-  datasetClient,
   SizeType,
   LanguageOptions,
   TEXT_GENERATION,
+  datasetClient,
 } from '@/api/dataset';
 import { reactive, ref, toRefs } from 'vue';
+import { DatasetForRender, convertDatasetForRender } from '@/api/dataset-for-render';
 
-const initialValue: Dataset = {
+const initialValue: DatasetForRender = {
   apiVersion: 'extension.datatunerx.io/v1beta1',
   kind: 'Dataset',
   metadata: {
@@ -68,7 +69,7 @@ const initialValue: Dataset = {
 };
 
 export function useDataset() {
-  const dataset = ref<Dataset>(initialValue);
+  const dataset = ref<DatasetForRender>(initialValue);
 
   const state = reactive({
     dataset,
@@ -78,7 +79,7 @@ export function useDataset() {
 
   const fetchDataset = async (namespace: string, name: string) => {
     await datasetClient.read(namespace, name).then((res) => {
-      state.dataset = res.data;
+      state.dataset = convertDatasetForRender(res.data);
     });
   };
 

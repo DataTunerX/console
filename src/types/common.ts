@@ -30,3 +30,14 @@ export interface SchemaEnumItem {
 }
 
 export type ElementRefType<T> = ComponentPublicInstance | null | Element | T;
+
+export type LabelType = Record<'key' | 'value', string>;
+
+export interface KeyValue {
+  [key: string]: string,
+}
+
+export enum BoolValue {
+  TrueValue = 'True',
+  FalseValue = 'False',
+}
