@@ -1,0 +1,10 @@
+{
+  "finetuneExperiment": "微调实验",
+  "status": "状态",
+  "evaluationMethod": "评估方式",
+  "optimalresult": "最优结果",
+  "time": "用时",
+  "BasicLargeModel": "基础大模型",
+  "": "数据集",
+  "parameterGroup": "参数组"
+}

@@ -1,0 +1,9 @@
+{
+  "finetuneExperiment": "Finetune Experiment",
+  "status": "Status",
+  "evaluationMethod": "Evaluation Method",
+  "optimalResult": "Optimal Result",
+  "time": "Time",
+  "BasicLargeModel": "basic Large Model",
+  "parameterGroup": "Parameter Group"
+}
