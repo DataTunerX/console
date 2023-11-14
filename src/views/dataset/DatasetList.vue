@@ -162,10 +162,3 @@ watch(
     </template>
   </dao-dialog>
 </template>
-
-<style lang="scss" scoped>
-.dataset-list {
-  flex: auto;
-  overflow: auto;
-}
-</style>

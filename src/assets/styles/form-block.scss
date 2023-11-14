@@ -35,3 +35,11 @@
     }
   }
 }
+
+.form-item--block {
+  display: inline-flex;
+  padding: 15px 30px 15px 0;
+  background: var(--dao-gray-blue-110);
+  border: 1px solid var(--dao-gray-blue-050);
+  border-radius: 8px;
+}

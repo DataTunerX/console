@@ -1,4 +1,19 @@
 {
+  "createFineTuningExperiment": "Create Fine-tuning Experiment",
+  "basicInformation": "Basic Information",
+  "experimentName": "Experiment Name",
+  "scoringConfig": "Scoring Config",
+  "buildInScoringPlugin": "System Default",
+  "parameters": "Running Parameters",
+  "configuration": "Configuration",
+  "add": "Add Task",
+
+  "taskName": "Task Name",
+  "baseLargeModel": "Large Language Model",
+  "dataset": "Dataset",
+  "hyperparameter": "Hyperparameter",
+  "modifyHyperparameterGroup": "Modifying the hyperparameter group will overwrite the hyperparameter values of the original group.",
+
   "finetuneExperiment": "Finetune Experiment",
   "status": "Status",
   "evaluationMethod": "Evaluation Method",

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
 import { Dataset } from '@/api/dataset';
-import { FinetuneJob } from '@/api/finetune-job';
 import { Hyperparameter, Parameters } from '@/api/hyperparameter';
 import { LargeLanguageModel } from '@/api/large-language-model';
 import { PropType } from 'vue';
@@ -11,10 +10,6 @@ import HyperParameterOverride from './HyperparameterOverride.vue';
 const props = defineProps({
   name: {
     type: String,
-    required: true,
-  },
-  modelValue: {
-    type: Object as PropType<FinetuneJob>,
     required: true,
   },
   llms: {
@@ -29,7 +24,6 @@ const props = defineProps({
     type: Array as PropType<Array<Hyperparameter>>,
     required: true,
   },
-
 });
 
 const hyperparametersMap = new Map();
@@ -39,13 +33,17 @@ for (const hp of props.hyperparameters) {
   hyperparametersMap.set(hp.metadata.name, hp);
 }
 
-const { value: overrides } = useField<Partial<Parameters>>(() => `${props.name}.spec.finetune.finetuneSpec.hyperparameter.overrides`);
-
+const { value: overrides } = useField<Partial<Parameters>>(
+  () => `${props.name}.spec.finetune.finetuneSpec.hyperparameter.overrides`,
+);
+const { value: hyperparameterRef } = useField<string>(
+  () => `${props.name}.spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef`,
+);
 </script>
 
 <template>
   <dao-form-item-validate
-    label="任务名称"
+    :label="$t('views.FinetuneExperiment.taskName')"
     :name="`${name}.metadata.name`"
     required
     :control-props="{
@@ -53,7 +51,7 @@ const { value: overrides } = useField<Partial<Parameters>>(() => `${props.name}.
     }"
   />
   <dao-form-item-validate
-    label="基础大模型"
+    :label="$t('views.FinetuneExperiment.baseLargeModel')"
     :name="`${name}.spec.finetune.finetuneSpec.llm`"
     :tag="DaoSelect"
     required
@@ -69,7 +67,7 @@ const { value: overrides } = useField<Partial<Parameters>>(() => `${props.name}.
     />
   </dao-form-item-validate>
   <dao-form-item-validate
-    label="数据集"
+    :label="$t('views.FinetuneExperiment.dataset')"
     :name="`${name}.spec.finetune.finetuneSpec.dataset`"
     :tag="DaoSelect"
     required
@@ -86,7 +84,7 @@ const { value: overrides } = useField<Partial<Parameters>>(() => `${props.name}.
   </dao-form-item-validate>
 
   <dao-form-item-validate
-    label="超参组"
+    :label="$t('views.FinetuneExperiment.hyperparameter')"
     :name="`${name}.spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef`"
     :tag="DaoSelect"
     required
@@ -102,18 +100,14 @@ const { value: overrides } = useField<Partial<Parameters>>(() => `${props.name}.
     />
   </dao-form-item-validate>
 
-  <dao-form-item v-if="props.modelValue.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef">
+  <dao-form-item v-if="hyperparameterRef">
     <HyperParameterOverride
       v-model:overrides="overrides"
       :name="`${name}.spec.finetune.finetuneSpec.hyperparameter.parameters`"
-      :origin="
-        hyperparametersMap.get(
-          props.modelValue.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef
-        )
-      "
+      :origin="hyperparametersMap.get(hyperparameterRef)"
     />
     <template #helper>
-      <dao-helper-text> 修改超参组后，将会覆盖原有超参组的超参值。 </dao-helper-text>
+      <dao-helper-text>{{ $t('views.FinetuneExperiment.modifyHyperparameterGroup') }}</dao-helper-text>
     </template>
   </dao-form-item>
 </template>

@@ -20,9 +20,31 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: {
-      name: 'DatasetList',
+      name: 'FinetuneExperimentList',
     },
     children: [
+      {
+        path: 'fine-tune',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'FinetuneExperimentList',
+            component: FinetuneExperimentList,
+          },
+          {
+            path: 'create',
+            name: 'FinetuneExperimentCreate',
+            component: FinetuneExperimentCreate,
+          },
+          {
+            path: ':name',
+            name: 'FinetuneExperimentDetail',
+            component: FinetuneExperimentDetail,
+          },
+        ],
+
+      },
       {
         path: 'datasets',
         component: RouterContent,
@@ -66,28 +88,7 @@ const routes: Array<RouteRecordRaw> = [
         ],
 
       },
-      {
-        path: 'fine-tune',
-        component: RouterContent,
-        children: [
-          {
-            path: '',
-            name: 'FinetuneExperimentList',
-            component: FinetuneExperimentList,
-          },
-          {
-            path: 'create',
-            name: 'FinetuneExperimentCreate',
-            component: FinetuneExperimentCreate,
-          },
-          {
-            path: ':name',
-            name: 'FinetuneExperimentDetail',
-            component: FinetuneExperimentDetail,
-          },
-        ],
 
-      },
     ],
   },
 ];
