@@ -19,6 +19,7 @@
   "datasetInformation": "Dataset Information",
   "pluginConfiguration": "Plugin Configuration",
   "pluginName": "Plugin Name",
+  "pluginParameters": "Runtime Parameters",
   "subsetName": "Subset Name",
   "duplicateSubsetName":"duplicate SubsetName",
   "trainingDataFile": "Training Data Address",

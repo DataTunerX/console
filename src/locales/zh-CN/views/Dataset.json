@@ -19,6 +19,7 @@
   "datasetInformation": "数据集信息",
   "pluginConfiguration": "插件配置",
   "pluginName": "插件名称",
+  "pluginParameters":"运行参数",
   "subsetName": "子数据集名称",
   "duplicateSubsetName":"子数据集名称重复",
   "trainingDataFile": "训练数据集地址",
