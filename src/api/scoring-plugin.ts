@@ -65,4 +65,6 @@ export interface Status {
 export const apiVersion = 'extension.datatunerx.io/v1beta1';
 export const kind = 'ScoringPlugin';
 
+export const BuildInScoringPlugin = 'BuildInScoringPlugin';
+
 export const scoringConfigClient = new K8sClient<ScoringPlugin>(apiVersion, kind);

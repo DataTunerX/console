@@ -1,5 +1,5 @@
-/* eslint-disable no-use-before-define */
 import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
+/* eslint-disable no-use-before-define */
 import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
 /**
  * FinetuneJob is the Schema for the finetunejobs API
@@ -68,6 +68,7 @@ export interface ScoringConfig {
    * Name specifies the name of the scoring CR.
    */
   name: string;
+  parameters?: string;
 }
 
 /**
@@ -110,3 +111,6 @@ export enum State {
   Serve = 'SERVE',
   Successful = 'SUCCESSFUL',
 }
+
+export const kind = 'FinetuneJob';
+export const apiVersion = 'finetune.datatunerx.io/v1beta1';

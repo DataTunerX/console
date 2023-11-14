@@ -116,12 +116,3 @@ const onDeleteSuccess = () => {
     @resolve="onDeleteSuccess"
   />
 </template>
-
-<style lang="scss" scoped>
-.finetune-experiment-list {
-  .dao-toolbar-container {
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
-  }
-
-}
-</style>

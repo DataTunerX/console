@@ -103,10 +103,9 @@ watch(
         :name="`${name}.scheduler`"
       >
         <template #helper="{ meta: { dirty } }">
-          <dao-icon
+          <dao-state-icon
             v-if="dirty"
-            use-font
-            :name="'icon-edit-pen'"
+            type="warning"
           />
         </template>
 
@@ -180,16 +179,10 @@ watch(
         @change="updateQuantization"
       >
         <dao-option
-          label="默认"
-          :value="Quantization.default"
-        />
-        <dao-option
-          label="int4"
-          :value="Quantization.int4"
-        />
-        <dao-option
-          label="int8"
-          :value="Quantization.int8"
+          v-for="q in Quantization"
+          :key="q"
+          :label="q"
+          :value="q"
         />
       </dao-form-item-validate>
     </div>

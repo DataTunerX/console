@@ -4,13 +4,19 @@ import { useFieldArray, useForm } from 'vee-validate';
 import {
   string, object, array, number,
 } from 'yup';
-import { markRaw, onMounted } from 'vue';
+import {
+  markRaw, onMounted, ref, computed,
+} from 'vue';
 import { FinetuneJob } from '@/api/finetune-job';
 import { finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
+import KeyValueForm from '@/components/KeyValueForm.vue';
+import { FinetuneExperimentForRender, convertFinetuneExperimentForPost } from '@/api/finetune-experiment-for-render';
+import { BuildInScoringPlugin } from '@/api/scoring-plugin';
+import { useI18n } from 'vue-i18n';
 import FinetuneJobComponent from './components/FinetuneJobComponent.vue';
 
 import {
@@ -21,6 +27,8 @@ import {
 } from './composition/finetune';
 import { useDataset } from '../dataset/composition/create';
 import { useHyperparameter } from '../hyperparameter/composition/hyperparameter';
+
+const { t } = useI18n();
 
 const router = useRouter();
 
@@ -47,51 +55,72 @@ onMounted(() => {
   ]);
 });
 
+const componentRef = ref<typeof KeyValueForm>();
+
 const validationSchema = markRaw(
   object({
     metadata: object({
-      name: string().RFC1123Label().required('请输入实验名称'),
+      name: string().RFC1123Label().required().label(t('views.FinetuneExperiment.experimentName')),
     }),
     spec: object({
-      finetuneJobs: array().of(object({
-        metadata: object({
-          name: string().required('请输入名称'),
-        }),
-        spec: object({
-          finetune: object({
-            finetuneSpec: object({
-              llm: string().required('请选择语言模型'),
-              hyperparameter: object({
-                hyperparameterRef: string().required('请选择超参组'),
-                parameters: object({
-                  loRA_Alpha: number().moreThan(0),
-                  loRA_R: number().integer().moreThan(2),
-                  loRA_Dropout: number().moreThan(0).lessThan(1),
-                  learningRate: number().moreThan(0).lessThan(1),
-                  epochs: number().integer().moreThan(1),
-                  blockSize: number().integer().moreThan(8),
-                  batchSize: number().integer().moreThan(1),
-                  warmupRatio: number().moreThan(0).lessThan(1),
-                  weightDecay: number().moreThan(0).lessThan(1),
-                  gradAccSteps: number().integer().min(1),
+      finetuneJobs: array().of(
+        object({
+          metadata: object({
+            name: string().required().label(t('views.FinetuneExperiment.taskName')),
+          }),
+          spec: object({
+            finetune: object({
+              finetuneSpec: object({
+                llm: string().required().label(t('views.FinetuneExperiment.baseLargeModel')),
+                dataset: string().required().label(t('views.FinetuneExperiment.dataset')),
+                hyperparameter: object({
+                  hyperparameterRef: string().required().label(t('views.FinetuneExperiment.hyperparameter')),
+                  parameters: object({
+                    loRA_Alpha: number().moreThan(0),
+                    loRA_R: number().integer().moreThan(2),
+                    loRA_Dropout: number().moreThan(0).lessThan(1),
+                    learningRate: number().moreThan(0).lessThan(1),
+                    epochs: number().integer().moreThan(1),
+                    blockSize: number().integer().moreThan(8),
+                    batchSize: number().integer().moreThan(1),
+                    warmupRatio: number().moreThan(0).lessThan(1),
+                    weightDecay: number().moreThan(0).lessThan(1),
+                    gradAccSteps: number().integer().min(1),
+                  }),
                 }),
               }),
-              dataset: string().required('请选择数据集'),
             }),
           }),
         }),
-      })),
+      ),
       scoringConfig: object({
-        name: string().required('请输入评估方式'),
+        name: string().required().label(t('views.FinetuneExperiment.scoringConfig')),
+        parameters: object().test('parameters', '', async () => {
+          if (componentRef.value) {
+            const valid = await componentRef.value?.validate();
+
+            return valid.valid;
+          }
+
+          return true;
+        }),
       }),
     }),
   }),
 );
 
-const { validate, errorBag, values } = useForm({
+const {
+  validate, errorBag, values, defineComponentBinds,
+} = useForm<FinetuneExperimentForRender>({
   initialValues: finetuneExperiment,
   validationSchema,
 });
+
+const parameters = defineComponentBinds('spec.scoringConfig.parameters', {
+  validateOnModelUpdate: false,
+});
+
+const useBuildInPlugin = computed(() => !values.spec.scoringConfig.name || values.spec.scoringConfig.name === BuildInScoringPlugin);
 
 const hasError = (index: number) => Object.keys(errorBag.value).some((key) => key.startsWith(`spec.finetuneJobs[${index}]`));
 
@@ -112,10 +141,10 @@ const onSubmit = async () => {
 
   if (valid) {
     try {
-      await finetuneExperimentClient.create(namespace.value, values);
+      await finetuneExperimentClient.create(namespace.value, convertFinetuneExperimentForPost(values));
       toList();
     } catch (error) {
-      nError('失败了', error);
+      nError(t('common.createFailed'), error);
     }
   }
 };
@@ -123,28 +152,33 @@ const onSubmit = async () => {
 
 <template>
   <dao-modal-layout
-    title="创建微调实验"
+    :title="$t('views.FinetuneExperiment.createFineTuningExperiment')"
     @cancel="$router.back"
     @confirm="onSubmit"
   >
-    <dao-form label-width="120px">
-      <dao-form-group title="基本信息">
+    <dao-form>
+      <dao-form-group :title="$t('common.basicInfo')">
         <dao-form-item-validate
-          label="实验名称"
+          :label="$t('views.FinetuneExperiment.experimentName')"
           name="metadata.name"
           required
           :control-props="{
-            class: 'input-form-width'
+            class: 'input-form-width',
           }"
         />
         <dao-form-item-validate
-          label="评估方式"
+          :label="$t('views.FinetuneExperiment.scoringConfig')"
           name="spec.scoringConfig.name"
           :tag="DaoSelect"
+          :padding-bottom="10"
           :control-props="{
-            class: 'select-form-width'
+            class: 'select-form-width',
           }"
         >
+          <dao-option
+            :label="$t('views.FinetuneExperiment.buildInScoringPlugin')"
+            :value="BuildInScoringPlugin"
+          />
           <dao-option
             v-for="scoringConfig in scoringConfigs"
             :key="scoringConfig.metadata?.name"
@@ -152,10 +186,29 @@ const onSubmit = async () => {
             :value="scoringConfig.metadata?.name"
           />
         </dao-form-item-validate>
+
+        <dao-form-item
+          v-if="!useBuildInPlugin"
+        >
+          <dao-form-item
+            padding-bottom="0"
+            :label="$t('views.FinetuneExperiment.parameters')"
+            class="form-item--block"
+          >
+            <key-value-form
+              ref="componentRef"
+              name="spec.datasetMetadata.plugin.parameters"
+              v-bind="parameters"
+            />
+          </dao-form-item>
+        </dao-form-item>
       </dao-form-group>
 
-      <dao-form-group title="配置">
-        <dao-expansion type="box">
+      <dao-form-group :title="$t('views.FinetuneExperiment.configuration')">
+        <dao-expansion
+          type="box"
+          class="mb-[20px]"
+        >
           <dao-expansion-item
             v-for="(job, idx) in jobs"
             :key="job.key"
@@ -163,9 +216,8 @@ const onSubmit = async () => {
             :name="`${job.key}`"
             :title="job.value.metadata?.name"
           >
-            <legend>User #{{ idx }}</legend>
             <FinetuneJobComponent
-              v-model="job.value"
+              :key="idx"
               :llms="largeLanguageModels"
               :datasets="datasets"
               :hyperparameters="hyperparameters"
@@ -188,14 +240,13 @@ const onSubmit = async () => {
           </dao-expansion-item>
         </dao-expansion>
         <dao-text-button
-          class="mt-[20px]"
           :prop="{
-            type:'action',
-            iconLeft:'icon-add',
+            type: 'action',
+            iconLeft: 'icon-add',
           }"
           @click="onAdd"
         >
-          {{ $t('common.add') }}
+          {{ $t("views.FinetuneExperiment.add") }}
         </dao-text-button>
       </dao-form-group>
     </dao-form>
@@ -224,8 +275,6 @@ const onSubmit = async () => {
     color: var(--dao-gray-blue-040);
   }
 }
-</style>
-<style lang="scss" scoped>
 $form-width: 400px;
 
 :deep(.input-form-width.dao-input),

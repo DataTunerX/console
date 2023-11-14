@@ -33,6 +33,20 @@
   "createTime": "Create Time",
   "default":"default",
   "stop":"Stop",
-  "run": "Running"
+  "run": "Running",
 
+  "selectSearchPlaceholder": "Search",
+  "succeed": "Success",
+  "failed": "Failed",
+  "reason": "Reason",
+  "basicInfo": "Basic Information",
+  "deleteSucceed": "Delete Successful",
+  "deleteFailed": "Delete Failed, Reason:",
+  "createSucceed": "Create Successful",
+  "createFailed": "Create Failed, Reason:",
+  "updateSucceed": "Update Successful",
+  "updateFailed": "Update Failed, Reason:",
+  "fetchFailed": "Fetch Data Failed, Reason:",
+  "fetchNotFound": "Requested Resource Not Found",
+  "dataSynced": "Data Syncing..."
 }

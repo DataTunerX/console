@@ -3,7 +3,7 @@
 import {
   useForm, useFieldArray, useFieldError, useField,
 } from 'vee-validate';
-import { DaoFormItemValidate } from '@dao-style/extend';
+
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
 import {
   computed, markRaw, reactive, onMounted, ref,
@@ -22,6 +22,7 @@ import { nError, nSuccess } from '@/utils/useNoty';
 import { HttpStatusCode, KubernetesError } from '@/plugins/axios';
 import KeyValueForm from '@/components/KeyValueForm.vue';
 import { type DatasetForRender, convertDatasetForPost } from '@/api/dataset-for-render';
+
 import { useDataset } from './composition/create';
 
 const { t } = useI18n();
@@ -193,15 +194,6 @@ const toList = () => {
 // };
 
 const onSubmit = handleSubmit(async (values) => {
-  // const newValues = cloneDeep(values);
-
-  // 将parameters对象转换为字符串
-  // const parametersAsString = JSON.stringify(values.spec?.datasetMetadata?.plugin?.parameters);
-
-  // if (newValues.spec?.datasetMetadata?.plugin) {
-  //   newValues.spec.datasetMetadata.plugin.parameters = parametersAsString;
-  // }
-
   try {
     if (isUpdate.value && values.metadata?.name) {
       await datasetClient.update(namespaceStore.namespace, values.metadata?.name, convertDatasetForPost(values));
@@ -610,9 +602,9 @@ $form-width: 500px;
   &.background {
     width: $form-width;
     padding: 20px;
-    background: #f8fafc;
-    border: 1px solid #aab0b8;
-    border-radius: 4px;
+    background: var(--dao-gray-blue-110);
+    border: 1px solid var(--dao-gray-blue-050);
+    border-radius: 10px;
   }
 
   &__item {

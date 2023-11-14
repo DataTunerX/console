@@ -1,13 +1,17 @@
 import { reactive, ref, toRefs } from 'vue';
 import {
-  apiVersion, kind, FinetuneExperiment, finetuneExperimentClient,
+  apiVersion,
+  kind,
+  FinetuneExperiment,
+  finetuneExperimentClient,
 } from '@/api/finetune-experiment';
 import { FinetuneJob } from '@/api/finetune-job';
-import { ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
+import { BuildInScoringPlugin, ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
 import { ImagePullPolicy } from '@/api/finetune';
+import { FinetuneExperimentForRender } from '@/api/finetune-experiment-for-render';
 
-const defaultFinetuneExperiment: FinetuneExperiment = {
+const defaultFinetuneExperiment: FinetuneExperimentForRender = {
   apiVersion,
   kind,
   metadata: {
@@ -16,7 +20,8 @@ const defaultFinetuneExperiment: FinetuneExperiment = {
   spec: {
     finetuneJobs: [],
     scoringConfig: {
-      name: '',
+      name: BuildInScoringPlugin,
+      parameters: {},
     },
   },
 };
@@ -40,50 +45,47 @@ export const useFinetuneExperiment = () => {
 };
 
 export const useFinetuneJob = () => {
-  const finetuneJob = ref<FinetuneJob>(
-    {
-      metadata: {
-        name: '',
-      },
-      valid: true,
-      spec: {
-        finetune: {
-          finetuneSpec: {
-            image: {
-              name: '',
-              imagePullPolicy: ImagePullPolicy.IfNotPresent,
+  const finetuneJob = ref<FinetuneJob>({
+    metadata: {
+      name: '',
+    },
+    valid: true,
+    spec: {
+      finetune: {
+        finetuneSpec: {
+          image: {
+            name: '',
+            imagePullPolicy: ImagePullPolicy.IfNotPresent,
+          },
+          resource: {
+            limits: {
+              cpu: '2',
+              gpu: '1',
+              memory: '4Gi',
             },
-            resource: {
-              limits: {
-                cpu: '2',
-                gpu: '1',
-                memory: '4Gi',
-              },
-              requests: {
-                cpu: '2',
-                gpu: '1',
-                memory: '4Gi',
-              },
-            },
-            dataset: '',
-            llm: '',
-            hyperparameter: {
-              hyperparameterRef: '',
-              overrides: {},
-              parameters: {},
+            requests: {
+              cpu: '2',
+              gpu: '1',
+              memory: '4Gi',
             },
           },
-        },
-        scoringConfig: {
-          name: '',
-        },
-        serveConfig: {
-          nodeSelector: 'arch=arm64',
+          dataset: '',
+          llm: '',
+          hyperparameter: {
+            hyperparameterRef: '',
+            overrides: {},
+            parameters: {},
+          },
         },
       },
+      scoringConfig: {
+        name: '',
+      },
+      serveConfig: {
+        nodeSelector: 'arch=arm64',
+      },
     },
-
-  );
+  });
 
   return { finetuneJob };
 };
