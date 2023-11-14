@@ -148,7 +148,7 @@ onMounted(async () => {
     @confirm="onSubmit"
   >
     <dao-form label-width="120px">
-      <dao-form-group title="基本信息">
+      <dao-form-group :title="t('views.Dataset.basicInformation')">
         <dao-form-item-validate
           :label="t('views.Hyperparameter.hyperparameterGroupName')"
           name="metadata.name"

@@ -31,5 +31,8 @@
   "notyError": "{name}{action}失败",
   "error": "出错了",
   "createTime": "创建时间",
-  "default":"默认"
+  "default":"默认",
+  "stop":"停止",
+  "run": "运行中"
+
 }

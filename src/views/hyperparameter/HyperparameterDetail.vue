@@ -169,7 +169,7 @@ const onEdit = () => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            :label="t('views.Hyperparameter.parameterSet')"
+            :label="t('views.Hyperparameter.hyperparameterGroup')"
             :to="{ name: 'HyperparameterList' }"
           />
           <dao-breadcrumb-item :label="name" />

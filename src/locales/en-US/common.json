@@ -16,13 +16,13 @@
   "reverted": "reverted",
   "export": "export",
   "exported": "exported",
-  "edit": "edit",
-  "editd": "editd",
-  "create": "create",
-  "created": "created",
+  "edit": "Edit",
+  "editd": "Editd",
+  "create": "Create",
+  "created": "Created",
   "add": "add",
-  "delete": "delete",
-  "deleted": "deleted",
+  "delete": "Delete",
+  "deleted": "Deleted",
   "remove": "remove",
   "removed": "removed",
   "fail":"fail",
@@ -31,6 +31,8 @@
   "notyError": "Failed to {action} {name}",
   "error": "error",
   "createTime": "Create Time",
-  "default":"default"
+  "default":"default",
+  "stop":"Stop",
+  "run": "Running"
 
 }
