@@ -5,6 +5,12 @@
   "optimalresult": "最优结果",
   "time": "用时",
   "BasicLargeModel": "基础大模型",
-  "": "数据集",
-  "parameterGroup": "参数组"
+  "dataSet": "数据集",
+  "parameterGroup": "参数组",
+  "results": "评估结果",
+  "contrast":"对比",
+  "taskList":"任务列表",
+  "pleaseEnter":"请输入容器组名称搜索",
+  "stopConfirm":"确认停止微调实验 {finetuneToShop} 吗？"
+
 }

@@ -31,6 +31,8 @@
   "notyError": "Failed to {action} {name}",
   "error": "error",
   "createTime": "Create Time",
-  "default":"default"
+  "default":"default",
+  "stop":"Stop",
+  "run": "Running"
 
 }

@@ -2,8 +2,15 @@
   "finetuneExperiment": "Finetune Experiment",
   "status": "Status",
   "evaluationMethod": "Evaluation Method",
-  "optimalResult": "Optimal Result",
+  "optimalresult": "Optimal Result",
   "time": "Time",
   "BasicLargeModel": "basic Large Model",
-  "parameterGroup": "Parameter Group"
+  "parameterGroup": "Parameter Group",
+  "dataSet": "Data Set",
+  "results": "Results",
+  "contrast":"Contrast",
+  "taskList":"TaskList",
+  "pleaseEnter":"Please enter a container group name to search for",
+  "stopConfirm":"Confirm deletion of dataset {finetuneToShop}?"
+
 }

@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
 import { FinetuneJob } from '@/api/finetune-job';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   data: {
@@ -9,6 +10,7 @@ const props = defineProps({
     default: () => ([]),
   },
 });
+const { t } = useI18n();
 
 const infos = computed(() => {
   const { data: { spec } } = props;
@@ -18,25 +20,17 @@ const infos = computed(() => {
 
   const items = [
     {
-      label: '基础大模型',
+      label: t('views.FinetuneExperiment.BasicLargeModel'),
       value: llms,
       slotId: 'llm',
     },
-    // {
-    //   label: '评估方式',
-    //   value: spec?.scoringConfig.name,
-    // },
     {
-      label: '数据集',
+      label: t('views.FinetuneExperiment.dataSet'),
       value: datasets,
       slotId: 'dataset',
     },
-    // {
-    //   label: '创建时间',
-    //   value: useDateFormat(creationTimestamp),
-    // },
     {
-      label: '超参组',
+      label: t('views.FinetuneExperiment.parameterGroup'),
       value: hyperparameters,
       slotId: 'hyperparameter',
     },
@@ -44,7 +38,20 @@ const infos = computed(() => {
 
   return items;
 });
+const infosTwo = computed(() => {
+  const { data: { spec } } = props;
 
+  const items = [
+    {
+      label: t('views.FinetuneExperiment.results'),
+      value: spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
+      slotId: 'hyperparameterRef',
+
+    },
+  ];
+
+  return items;
+});
 </script>
 
 <template>
@@ -55,48 +62,56 @@ const infos = computed(() => {
     use-font
   >
     <template #title>
-      <router-link
-        class="finetune-experiment-item__header__text active"
-        :to="{
-          name: 'FinetuneExperimentDetail',
-          params: { name: props.data.metadata?.name },
-        }"
-      >
-        {{ props.data.metadata?.name }}
-      </router-link>
-
+      cfh
       <dao-state-icon :type="'success'">
-        运行中
-      </dao-state-icon>
-
-      <dao-state-icon :type="'error'">
-        运行中
+        {{ t('common.run') }}
       </dao-state-icon>
     </template>
 
     <dao-card-item class="finetune-experiment-item__base-info">
-      <dao-key-value-layout
-        :column="2"
-        :data="infos"
-      >
-        <template #kv-llm="{ row }">
-          <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
-          </dao-key-value-layout-item>
-        </template>
+      <div class="flex">
+        <div class="flex-1 w-0">
+          <dao-key-value-layout
+            :column="1"
+            :data="infos"
+            direction="horizontal"
+          >
+            <template #kv-llm="{ row }">
+              <dao-key-value-layout-item :label="row.label">
+                <dao-hover-card :data="row.value?.split(',')" />
+              </dao-key-value-layout-item>
+            </template>
 
-        <template #kv-dataset="{ row }">
-          <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
-          </dao-key-value-layout-item>
-        </template>
+            <template #kv-dataset="{ row }">
+              <dao-key-value-layout-item :label="row.label">
+                <dao-hover-card :data="row.value?.split(',')" />
+              </dao-key-value-layout-item>
+            </template>
 
-        <template #kv-hyperparameter="{ row }">
-          <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
-          </dao-key-value-layout-item>
-        </template>
-      </dao-key-value-layout>
+            <template #kv-hyperparameter="{ row }">
+              <dao-key-value-layout-item :label="row.label">
+                <dao-hover-card :data="row.value?.split(',')" />
+              </dao-key-value-layout-item>
+            </template>
+          </dao-key-value-layout>
+        </div>
+        <div class="flex-1 ml-[20px]">
+          <dao-key-value-layout
+            :column="1"
+            :data="infosTwo"
+            direction="horizontal"
+          >
+            <template #kv-hyperparameterRef="{ row }">
+              <dao-key-value-layout-item :label="row.label">
+                <dao-hover-card :data="row.value?.split(',')" />
+              </dao-key-value-layout-item>
+            </template>
+          </dao-key-value-layout>
+        </div>
+      </div>
+    </dao-card-item>
+    <dao-card-item class="flex">
+      123
     </dao-card-item>
   </dao-card>
 </template>
