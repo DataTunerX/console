@@ -19,6 +19,7 @@
   "datasetInformation": "Dataset Information",
   "pluginConfiguration": "Plugin Configuration",
   "pluginName": "Plugin Name",
+  "pluginParameters": "Runtime Parameters",
   "subsetName": "Subset Name",
   "duplicateSubsetName":"duplicate SubsetName",
   "trainingDataFile": "Training Data Address",
@@ -40,5 +41,7 @@
   "license":"license",
   "datasetFileSource":"Dataset File Source",
   "basicInformation":"Basic Information",
-  "datasetInfoConfig": "Dataset Information"
+  "datasetInfoConfig": "Dataset Information",
+
+  "loadDatasetError": "Failed to load dataset information"
 }

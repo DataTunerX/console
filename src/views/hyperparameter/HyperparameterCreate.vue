@@ -1,5 +1,3 @@
-<!-- eslint-disable camelcase -->
-<!-- eslint-disable @typescript-eslint/ban-ts-comment -->
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import {
@@ -32,7 +30,6 @@ const isUpdate = computed(() => !!query.name as boolean);
 const { t } = useI18n();
 const title = computed(() => (isUpdate.value ? t('views.Hyperparameter.update') : t('views.Hyperparameter.create')));
 
-// 定义表单验证模式
 const schema = markRaw(
   object({
     metadata: object({
@@ -58,10 +55,8 @@ const schema = markRaw(
   }),
 );
 
-// 获取超参数相关信息
 const { hyperparameter, fetchHyperparameter } = useHyperparameter();
 
-// 表单处理
 const {
   values: formModel,
   setValues,
@@ -85,16 +80,22 @@ const onSubmit = handleSubmit(async () => {
     model.spec.parameters[key] = `${model.spec.parameters[key]}`;
   });
 
-  try {
-    if (isUpdate.value && model.metadata.name) {
+  if (isUpdate.value && model.metadata.name) {
+    try {
       await hyperparameterClient.update(namespace.value, model.metadata.name, model);
-    } else {
-      await hyperparameterClient.create(namespace.value, model);
+      nSuccess(t('common.updateSucceed'));
+      toList();
+    } catch (error) {
+      nError(t('common.updateFailed'), error);
     }
-    nSuccess('成功');
-    toList();
-  } catch (error) {
-    nError('出错了', error);
+  } else {
+    try {
+      await hyperparameterClient.create(namespace.value, model);
+      nSuccess(t('common.createSucceed'));
+      toList();
+    } catch (error) {
+      nError(t('common.createFailed'), error);
+    }
   }
 });
 
@@ -123,13 +124,11 @@ const resetQuantization = () => {
   });
 };
 
-// 监听表单字段 "quantization" 的变化
 watch(
   () => formModel.spec.parameters.quantization,
   (val?: string) => updateQuantization(val),
 );
 
-// 处理更新和创建超参数的逻辑
 onMounted(async () => {
   if (isUpdate.value) {
     await fetchHyperparameter(namespace.value, query.name as string);
@@ -147,7 +146,7 @@ onMounted(async () => {
     @cancel="$router.back"
     @confirm="onSubmit"
   >
-    <dao-form label-width="120px">
+    <dao-form>
       <dao-form-group :title="t('views.Dataset.basicInformation')">
         <dao-form-item-validate
           :label="t('views.Hyperparameter.hyperparameterGroupName')"

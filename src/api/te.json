@@ -1,0 +1,52 @@
+{
+  "apiVersion": "finetune.datatunerx.io/v1beta1",
+  "kind": "FinetuneJob",
+  "metadata": {
+    "creationTimestamp": "2023-11-13T13:51:14Z",
+    "finalizers": [
+      "finetune.datatunerx.io/finalizer"
+    ],
+    "generation": 1,
+    "name": "demo1-finetunejob",
+    "namespace": "datatunerx-dev",
+    "resourceVersion": "5080210",
+    "uid": "d49261df-d7f0-4d3c-a64a-824cb121d15d"
+  },
+  "spec": {
+    "finetune": {
+      "finetuneSpec": {
+        "dataset": "day01",
+        "hyperparameter": {
+          "hyperparameterRef": "hyperparameter-demo"
+        },
+        "image": {
+          "imagePullPolicy": "IfNotPresent",
+          "name": ""
+        },
+        "llm": "llama2-7b",
+        "node": 0,
+        "resource": {
+          "limits": {
+            "cpu": "2",
+            "gpu": "1",
+            "memory": "4Gi"
+          },
+          "requests": {
+            "cpu": "2",
+            "gpu": "1",
+            "memory": "4Gi"
+          }
+        }
+      }
+    },
+    "scoringConfig": {
+      "name": ""
+    },
+    "serveConfig": {
+      "nodeSelector": "arch=arm64"
+    }
+  },
+  "status": {
+    "state": "FINETUNE"
+  }
+}

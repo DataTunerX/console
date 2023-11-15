@@ -1,108 +1,49 @@
 <script lang="ts" setup>
-import {
-  ref, watch, watchEffect, computed,
-} from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { first } from 'lodash';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
 import { nSuccess, nError } from '@/utils/useNoty';
+import { useQueryTable } from '@/hooks/useQueryTable';
 import DatasetItem from './components/DatasetItem.vue';
 
 const { t } = useI18n();
-
-// 常量定义
-const pageSize = ref(10);
-
 const router = useRouter();
-const namespaceStore = useNamespaceStore();
-const { namespace } = storeToRefs(namespaceStore);
+const { namespace } = storeToRefs(useNamespaceStore());
 
-// 数据状态
-const search = ref<{ fuzzy: string[] }>();
-const currentPage = ref(1);
-const datasets = ref<Dataset[]>([]);
-const loading = ref(true);
-const showData = ref<Dataset[]>([]);
 const datasetToDelete = ref<string>('');
+
+const {
+  isLoading, pagedData, page, pageSize, total, handleRefresh, search,
+} = useQueryTable<Dataset>(async () => datasetClient.list(namespace.value));
+
+watch(namespace, handleRefresh);
+
 const isShow = ref(false);
 
-// 创建数据集
-const onCreate = () => {
-  router.push({
-    name: 'DatasetCreate',
-  });
-};
-
-// 加载数据集列表
-const fetchDatasets = async () => {
-  loading.value = true;
-  try {
-    const res = await datasetClient.list(namespace.value);
-
-    datasets.value = res.data.items;
-
-    if (datasets.value.length) {
-      currentPage.value = 1;
-    }
-  } catch (error) {
-    nError(t('common.error'), error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const onSearch = () => {
-  currentPage.value = 1;
-};
-
-// 显示数据集列表
-const filteredData = computed(() => datasets.value.filter((item) => item.metadata?.name?.includes(first(search.value?.fuzzy) ?? '')));
-
-watchEffect(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = currentPage.value * pageSize.value;
-
-  showData.value = filteredData.value.slice(startIndex, endIndex);
-});
-
-// 显示删除对话框
 const showDialog = (dataset: string) => {
   isShow.value = true;
   datasetToDelete.value = dataset;
 };
 
-// 隐藏删除对话框
 const hideDialog = () => {
   isShow.value = false;
 };
 
-// 确认删除数据集
-const confirmDelete = () => {
-  datasetClient
-    .delete(namespace.value, datasetToDelete.value)
-    .then(() => {
-      hideDialog();
-      fetchDatasets();
-      nSuccess(t('common.notySuccess', { name: t('common.delete') }));
-    })
-    .catch((err) => {
-      nError(t('common.notyError', { name: t('common.delete') }), err);
-    });
+const deleteDataset = async () => {
+  try {
+    await datasetClient.delete(namespace.value, datasetToDelete.value);
+    hideDialog();
+    nSuccess(t('common.notySuccess', { name: t('common.delete') }));
+    handleRefresh();
+  } catch (err) {
+    nError(t('common.notyError', { name: t('common.delete') }), err);
+  }
 };
 
-// 监听命名空间变化，重新加载数据集
-watch(
-  () => namespaceStore.namespace,
-  () => {
-    fetchDatasets();
-  },
-  {
-    immediate: true,
-  },
-);
+const onCreate = () => router.push({ name: 'DatasetCreate' });
 </script>
 
 <template>
@@ -113,11 +54,9 @@ watch(
     />
 
     <dao-toolbar
-      v-model:search="search"
-      :search-placeholder="' '"
+      v-model:search="search.keywords"
       :fuzzy="{ key: 'fuzzy', single: true }"
-      @refresh="fetchDatasets"
-      @search="onSearch"
+      @refresh="handleRefresh"
     >
       <template #action>
         <dao-button @click="onCreate">
@@ -126,39 +65,42 @@ watch(
       </template>
     </dao-toolbar>
 
-    <div v-loading="loading">
+    <div v-loading="isLoading">
+      <dao-empty v-if="!pagedData.length" />
       <dataset-item
-        v-for="dataset in showData"
+        v-for="dataset in pagedData"
+        v-else
         :key="dataset.metadata?.name"
         class="mt-[20px]"
         :data="dataset"
         @on-delete="(dataset) => showDialog(dataset)"
       />
       <dao-pagination
-        v-model:current-page="currentPage"
+        v-if="pagedData.length"
+        v-model:current-page="page"
         v-model:page-size="pageSize"
         class="mt-[20px]"
-        :total="filteredData.length"
+        :total="total"
       />
     </div>
-  </div>
 
-  <dao-dialog
-    :model-value="isShow"
-    header="Basic Dialog"
-    @cancel="hideDialog"
-    @confirm="confirmDelete"
-  >
-    <div class="body">
-      <div class="content">
-        {{ $t('views.Dataset.deleteConfirm', { datasetToDelete }) }}
+    <dao-dialog
+      :model-value="isShow"
+      header="Basic Dialog"
+      @cancel="hideDialog"
+      @confirm="deleteDataset"
+    >
+      <div class="body">
+        <div class="content">
+          {{ $t('views.Dataset.deleteConfirm', { datasetToDelete }) }}
+        </div>
       </div>
-    </div>
-    <template #footer>
-      <dao-confirm-dialog-footer
-        :text="datasetToDelete"
-        :confirm-text="$t('common.delete')"
-      />
-    </template>
-  </dao-dialog>
+      <template #footer>
+        <dao-confirm-dialog-footer
+          :text="datasetToDelete"
+          :confirm-text="$t('common.delete')"
+        />
+      </template>
+    </dao-dialog>
+  </div>
 </template>

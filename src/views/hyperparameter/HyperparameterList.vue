@@ -1,7 +1,5 @@
-<script setup lang="tsx">
-import {
-  ref, watchEffect, computed, watch,
-} from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
 import {
@@ -11,20 +9,15 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
-import { first, omit } from 'lodash';
+import { omit } from 'lodash';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { generateQueryString } from '@/utils/queryString';
-import { retrieveQuantization, useHyperparameter } from './composition/hyperparameter';
+import { useQueryTable } from '@/hooks/useQueryTable';
+import { retrieveQuantization } from './composition/hyperparameter';
 
-const router = useRouter();
-const namespaceStore = useNamespaceStore();
-const { namespace } = storeToRefs(namespaceStore);
 const { t } = useI18n();
-
-const showData = ref<Hyperparameter[]>([]);
-const pageSize = ref(10);
-const currentPage = ref(1);
-const search = ref<{ fuzzy?: string[] }>({});
+const router = useRouter();
+const { namespace } = storeToRefs(useNamespaceStore());
 
 const columns = defineColumns([
   {
@@ -51,20 +44,12 @@ const columns = defineColumns([
   },
 ]);
 
-const { hyperparameters, fetchHyperparameters, loading } = useHyperparameter();
-
-const refresh = () => fetchHyperparameters(namespace.value);
+const {
+  isLoading, pagedData, page, pageSize, total, handleRefresh, search,
+} = useQueryTable<Hyperparameter>(async () => hyperparameterClient.list(namespace.value));
 
 // 监听命名空间变化，重新加载数据集
-watch(
-  () => namespaceStore.namespace,
-  () => {
-    refresh();
-  },
-  {
-    immediate: true,
-  },
-);
+watch(namespace, handleRefresh);
 
 const regroupParameters = (parameters: Parameters) => {
   const params = {
@@ -74,19 +59,6 @@ const regroupParameters = (parameters: Parameters) => {
 
   return generateQueryString(params);
 };
-
-const onSearch = () => {
-  currentPage.value = 1;
-};
-
-const filteredData = computed(() => hyperparameters.value.filter((item) => item.metadata.name?.includes(first(search.value.fuzzy) ?? '')));
-
-watchEffect(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = currentPage.value * pageSize.value;
-
-  showData.value = filteredData.value.slice(startIndex, endIndex);
-});
 
 const onUpdate = (name: string) => {
   router.push({
@@ -120,7 +92,7 @@ const confirmDelete = () => {
     .delete(namespace.value, hyperparameterToDelete)
     .then(() => {
       hideDialog();
-      refresh();
+      handleRefresh();
       nSuccess(t('common.notySuccess', { name: t('common.delete') }));
     })
     .catch((err) => {
@@ -139,15 +111,14 @@ const confirmDelete = () => {
     <dao-table
       id="demo"
       v-model:page-size="pageSize"
-      v-model:current-page="currentPage"
-      v-model:search="search"
-      :loading="loading"
+      v-model:current-page="page"
+      v-model:search="search.keywords"
+      :loading="isLoading"
       :fuzzy="{ key: 'fuzzy', single: true }"
       :columns="columns"
-      :data="showData"
-      :total="filteredData.length"
-      @refresh="refresh"
-      @search="onSearch"
+      :data="pagedData"
+      :total="total"
+      @refresh="handleRefresh"
     >
       <template #th-action="{ column }">
         <div>{{ column.header }}</div>
@@ -197,24 +168,24 @@ const confirmDelete = () => {
         </dao-button>
       </template>
     </dao-table>
-  </div>
 
-  <dao-dialog
-    :model-value="isShow"
-    header="Basic Dialog"
-    @cancel="hideDialog"
-    @confirm="confirmDelete"
-  >
-    <div class="body">
-      <div class="content">
-        {{ $t('views.Hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
+    <dao-dialog
+      :model-value="isShow"
+      header="Basic Dialog"
+      @cancel="hideDialog"
+      @confirm="confirmDelete"
+    >
+      <div class="body">
+        <div class="content">
+          {{ $t('views.Hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
+        </div>
       </div>
-    </div>
-    <template #footer>
-      <dao-confirm-dialog-footer
-        :text="hyperparameterToDelete"
-        :confirm-text="t('common.delete')"
-      />
-    </template>
-  </dao-dialog>
+      <template #footer>
+        <dao-confirm-dialog-footer
+          :text="hyperparameterToDelete"
+          :confirm-text="t('common.delete')"
+        />
+      </template>
+    </dao-dialog>
+  </div>
 </template>

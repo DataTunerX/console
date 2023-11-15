@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-shadow -->
 <script setup lang="ts">
 import {
   useForm, useFieldArray, useFieldError, useField,
@@ -7,6 +6,7 @@ import {
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
 import {
   computed, markRaw, reactive, onMounted, ref,
+  watch,
 } from 'vue';
 import {
   object, array, string, addMethod,
@@ -48,6 +48,7 @@ fetchPlugins();
 
 addMethod(array, 'unique', function unique(message, mapper = (a: string) => a) {
   return this.test('unique', message, (list) => {
+    if (!list?.length) return true;
     const filteredList = list?.map(mapper).filter((item) => item);
 
     return filteredList?.length === new Set(filteredList).size;
@@ -117,8 +118,8 @@ const schema = markRaw(
         plugin: object({
           name: string().when('loadPlugin', {
             is: true,
-            then: (schema) => schema.required(),
-            otherwise: (schema) => schema.notRequired(),
+            then: (schemaCopy) => schemaCopy.required(),
+            otherwise: (schemaCopy) => schemaCopy.notRequired(),
           }),
           parameters: object().test('labels', 'labels is required', async () => {
             if (componentRef.value) {
@@ -173,13 +174,35 @@ const { remove: removeFromSubtasks, push: pushToSubtasks, fields: subTasks } = u
 const addSubtask = () => pushToSubtasks({ name: '' });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
-const { remove: removeFromRules, push: pushToRules, fields: subsets } = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
+const {
+  remove: removeFromRules, push: pushToRules, fields: subsets, replace,
+} = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
 const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
 
-const canRemove = computed(() => (formModel.spec?.datasetMetadata.datasetInfo?.subsets?.length ?? 0) > 1);
+watch(() => loadPlugin.value, (val) => {
+  replace(val ? [] : [{ name: 'Default' }]);
+});
+
+const canRemove = computed(() => {
+  if (loadPlugin.value) {
+    return false;
+  }
+
+  return (formModel.spec?.datasetMetadata.datasetInfo?.subsets?.length ?? 0) > 1;
+});
+
+const hasMarginBottom = computed(() => {
+  if (loadPlugin.value) {
+    if (subsets.value.length) {
+      return true;
+    }
+  }
+
+  return false;
+});
 
 const toList = () => {
   router.push({
@@ -231,7 +254,7 @@ const onSubmit = handleSubmit(async (values) => {
     @cancel="$router.back"
     @confirm="onSubmit"
   >
-    <dao-form label-width="170px">
+    <dao-form>
       <dao-form-item-validate
         :label="$t('views.Dataset.datasetName')"
         name="metadata.name"
@@ -244,13 +267,12 @@ const onSubmit = handleSubmit(async (values) => {
 
       <dao-form-item
         :label="$t('views.Dataset.tag')"
-        class="multi-row-block"
         :padding-bottom="10"
       >
         <div
           v-for="(field, index) in tags"
           :key="field.key"
-          class="multi-row-block__item"
+          class="flex"
         >
           <dao-form-item-validate
             label-width="0px"
@@ -345,6 +367,7 @@ const onSubmit = handleSubmit(async (values) => {
       <dao-form-item-validate
         :label="$t('views.Dataset.taskType')"
         name="spec.datasetMetadata.task.name"
+        padding-bottom="10"
         required
         :control-props="{
           class: 'select-form-width',
@@ -359,29 +382,17 @@ const onSubmit = handleSubmit(async (values) => {
         />
       </dao-form-item-validate>
 
-      <dao-form-item v-if="!subTasks?.length">
-        <dao-text-button
-          :prop="{
-            type: 'action',
-            icon: 'icon-add',
-          }"
-          @click="addSubtask"
-        >
-          {{ $t('views.Dataset.addSubtaskType') }}
-        </dao-text-button>
-      </dao-form-item>
-
-      <dao-form-item v-else>
+      <dao-form-item>
         <dao-form-item
           :label="$t('views.Dataset.subtaskType')"
           label-width="85px"
-          class="multi-row-block background"
+          class="form-item--block w-[500px]"
           :padding-bottom="0"
         >
           <div
             v-for="(field, index) in subTasks"
             :key="field.key"
-            class="multi-row-block__item"
+            class="flex"
           >
             <dao-form-item-validate
               label-width="0px"
@@ -389,6 +400,9 @@ const onSubmit = handleSubmit(async (values) => {
               class="no-padding flex-1"
               :padding-bottom="field.isLast ? 0 : 10"
               :tag="DaoSelect"
+              :control-props="{
+                style: 'width: 100%'
+              }"
             >
               <dao-option
                 v-for="subTask in taskCategories[formModel.spec?.datasetMetadata.task?.name as keyof typeof taskCategories]"
@@ -430,43 +444,40 @@ const onSubmit = handleSubmit(async (values) => {
       <dao-form-item :label="$t('views.Dataset.datasetInformation')">
         <div class="kpd-form-block">
           <dao-form-item-validate
-            label-width="80px"
             :label="$t('views.Dataset.pluginConfiguration')"
             name="spec.datasetMetadata.plugin.loadPlugin"
             :tag="DaoSwitch"
           />
 
-          <dao-form-item-validate
-            v-if="loadPlugin"
-            label-width="80px"
-            :label="$t('views.Dataset.pluginName')"
-            :tag="DaoSelect"
-            required
-            name="spec.datasetMetadata.plugin.name"
-          >
-            <dao-option
-              v-for="plugin in state.plugins"
-              :key="plugin.metadata.name"
-              :label="plugin.metadata.name"
-              :value="plugin.metadata.name"
-            />
-          </dao-form-item-validate>
+          <template v-if="loadPlugin">
+            <dao-form-item-validate
+              :label="$t('views.Dataset.pluginName')"
+              :tag="DaoSelect"
+              required
+              name="spec.datasetMetadata.plugin.name"
+            >
+              <dao-option
+                v-for="plugin in state.plugins"
+                :key="plugin.metadata.name"
+                :label="plugin.metadata.name"
+                :value="plugin.metadata.name"
+              />
+            </dao-form-item-validate>
 
-          <dao-form-item
-            label="运行参数"
-            label-width="80px"
-          >
-            <key-value-form
-              ref="componentRef"
-              name="spec.datasetMetadata.plugin.parameters"
-              v-bind="parameters"
-            />
-          </dao-form-item>
+            <dao-form-item :label="$t('views.Dataset.pluginParameters')">
+              <key-value-form
+                ref="componentRef"
+                name="spec.datasetMetadata.plugin.parameters"
+                v-bind="parameters"
+              />
+            </dao-form-item>
+          </template>
 
           <div
             v-for="(field, index) in subsets"
             :key="field.key"
             class="kpd-form-block__item"
+            :class="{ 'mb-[20px]': field.isLast && hasMarginBottom }"
           >
             <dao-form-item-validate
               :label="$t('views.Dataset.subsetName')"
@@ -487,16 +498,17 @@ const onSubmit = handleSubmit(async (values) => {
               }"
             />
             <dao-form-item-validate
-              :label="$t('views.Dataset.testingDataFile')"
-              :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.test.file`"
+              :label="$t('views.Dataset.validationDataFile')"
+              :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.validate.file`"
+              required
               :control-props="{
                 class: 'input-form-width',
                 disabled: loadPlugin,
               }"
             />
             <dao-form-item-validate
-              :label="$t('views.Dataset.validationDataFile')"
-              :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.validate.file`"
+              :label="$t('views.Dataset.testingDataFile')"
+              :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.test.file`"
               required
               :control-props="{
                 class: 'input-form-width',
@@ -513,7 +525,7 @@ const onSubmit = handleSubmit(async (values) => {
           </div>
 
           <dao-text-button
-            :disabled="loadPlugin"
+            v-if="!loadPlugin"
             :prop="{
               type: 'action',
               icon: 'icon-add',
@@ -598,21 +610,4 @@ $form-width: 500px;
   font-size: 16px;
 }
 
-.multi-row-block {
-  &.background {
-    width: $form-width;
-    padding: 20px;
-    background: var(--dao-gray-blue-110);
-    border: 1px solid var(--dao-gray-blue-050);
-    border-radius: 10px;
-  }
-
-  &__item {
-    display: flex;
-  }
-
-  :deep(.dao-select.dao-select--size-md) {
-    width: 100%;
-  }
-}
 </style>

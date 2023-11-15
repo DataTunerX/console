@@ -30,9 +30,11 @@ const showData = ref<FinetuneJob[]>();
 const finetuneToShop = ref<string>();
 
 const fetchDataset = () => {
-  finetuneExperimentClient.read(namespaceStore.namespace, route.params.name as string).then((res) => {
-    finetuneExperiment.value = res.data;
-  });
+  finetuneExperimentClient
+    .read(namespaceStore.namespace, route.params.name as string)
+    .then((res) => {
+      finetuneExperiment.value = res.data;
+    });
 };
 // 初始化查询
 const onSearch = () => {
@@ -47,9 +49,15 @@ const name = computed(() => finetuneExperiment.value?.metadata?.name);
 const infos = computed(() => {
   const finetuneExperimentData = finetuneExperiment.value?.spec;
   const creationTimestamp = finetuneExperiment.value?.metadata?.creationTimestamp;
-  const llms = finetuneExperimentData?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.llm).filter((i) => i);
-  const datasets = finetuneExperimentData?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.dataset);
-  const hyperparameters = finetuneExperimentData?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef);
+  const llms = finetuneExperimentData?.finetuneJobs
+    .map((job) => job.spec?.finetune.finetuneSpec.llm)
+    .filter((i) => i);
+  const datasets = finetuneExperimentData?.finetuneJobs.map(
+    (job) => job.spec?.finetune.finetuneSpec.dataset,
+  );
+  const hyperparameters = finetuneExperimentData?.finetuneJobs.map(
+    (job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
+  );
 
   const items = [
     {
@@ -85,7 +93,6 @@ const infos = computed(() => {
       label: t('views.Dataset.header'),
       value: datasets?.join(','),
       slotId: 'dataset',
-
     },
     {
       label: t('views.FinetuneExperiment.parameterGroup'),
@@ -110,7 +117,10 @@ watchEffect(() => {
 const fetchDatasets = async () => {
   loading.value = true;
   try {
-    const res = await finetuneExperimentClient.read(namespaceStore.namespace, route.params.name as string);
+    const res = await finetuneExperimentClient.read(
+      namespaceStore.namespace,
+      route.params.name as string,
+    );
 
     finetuneExperiment.value = res.data;
     if (finetuneExperimentDetailData.value?.length) {
@@ -159,7 +169,7 @@ const confirmShop = () => {
           type="tertiary"
           @click="showDialog()"
         >
-          {{ t('common.stop') }}
+          {{ t("common.stop") }}
         </dao-button>
       </template>
     </dao-header>
@@ -194,7 +204,7 @@ const confirmShop = () => {
       </dao-card-item>
     </dao-card>
     <div class="task-title">
-      {{ t('views.FinetuneExperiment.taskList') }}
+      {{ t("views.FinetuneExperiment.taskList") }}
     </div>
     <dao-toolbar
       v-model:search="search"
@@ -226,19 +236,19 @@ const confirmShop = () => {
   >
     <div class="body">
       <div class="content">
-        {{ $t('views.FinetuneExperiment.stopConfirm', { finetuneToShop }) }}
+        {{ $t("views.FinetuneExperiment.stopConfirm", { finetuneToShop }) }}
       </div>
     </div>
   </dao-dialog>
 </template>
 <style lang="scss">
-  .task-title {
-    padding: 25px 0;
-    font-weight: bold;
-    color: #33363B;
-  }
+.task-title {
+  padding: 25px 0;
+  font-weight: bold;
+  color: #33363b;
+}
 
-  .search-style{
-    border-radius: 10px;
-  }
+.search-style {
+  border-radius: 10px;
+}
 </style>
