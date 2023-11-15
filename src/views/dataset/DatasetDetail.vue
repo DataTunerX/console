@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
+import { nError } from '@/utils/useNoty';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -13,13 +14,17 @@ const namespaceStore = useNamespaceStore();
 
 const dataset = ref<Dataset>();
 
-const fetchDataset = () => {
+const loadDataset = () => {
   datasetClient.read(namespaceStore.namespace, route.params.name as string).then((res) => {
     dataset.value = res.data;
   });
 };
 
-fetchDataset();
+try {
+  loadDataset();
+} catch (error) {
+  nError(t('views.Dataset.loadDatasetError'));
+}
 
 const name = computed(() => dataset.value?.metadata?.name);
 

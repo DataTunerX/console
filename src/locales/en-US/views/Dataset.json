@@ -41,5 +41,7 @@
   "license":"license",
   "datasetFileSource":"Dataset File Source",
   "basicInformation":"Basic Information",
-  "datasetInfoConfig": "Dataset Information"
+  "datasetInfoConfig": "Dataset Information",
+
+  "loadDatasetError": "Failed to load dataset information"
 }

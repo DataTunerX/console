@@ -41,6 +41,7 @@
   "license":"许可证",
   "datasetFileSource":"数据集文件源",
   "basicInformation":"基本信息",
-  "datasetInfoConfig": "数据集信息配置"
+  "datasetInfoConfig": "数据集信息配置",
 
+  "loadDatasetError": "加载数据集失败"
 }
