@@ -30,7 +30,6 @@ export interface FinetuneJob {
    * FinetuneJobStatus defines the observed state of FinetuneJob
    */
   status?: Status;
-  valid?: boolean;
 }
 
 /**

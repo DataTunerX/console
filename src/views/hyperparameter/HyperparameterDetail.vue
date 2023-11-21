@@ -1,45 +1,24 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import {
-  Hyperparameter, hyperparameterClient,
-} from '@/api/hyperparameter';
-import { nError } from '@/utils/useNoty';
-import { retrieveQuantization, useDeleteHyperparameter } from './composition/hyperparameter';
+import { storeToRefs } from 'pinia';
+import { retrieveQuantization, useDeleteHyperparameter, useHyperparameter } from './composition/hyperparameter';
 
 const router = useRouter();
 const route = useRoute();
-const namespaceStore = useNamespaceStore();
 const { t } = useI18n();
 
-const hyperparameter = ref<Hyperparameter | null>(null);
+const { namespace } = storeToRefs(useNamespaceStore());
+const name = route.params.name as string;
 
-// 获取超参数详细信息
-const fetchDataset = async () => {
-  try {
-    const res = await hyperparameterClient.read(
-      namespaceStore.namespace,
-      route.params.name as string,
-    );
+const { hyperparameter, fetchHyperparameter } = useHyperparameter();
 
-    hyperparameter.value = res.data;
-  } catch (error) {
-    nError(
-      t('common.notyError', {
-        name: t('common.fetch'),
-        action: t('views.Hyperparameter.hyperparameterGroup'),
-      }),
-      error,
-    );
-  }
-};
-
-fetchDataset();
-
-const name = computed(() => hyperparameter.value?.metadata.name);
+onBeforeMount(() => {
+  fetchHyperparameter(namespace.value, name);
+});
 
 // 基本信息
 const infos = computed(() => {
@@ -50,14 +29,14 @@ const infos = computed(() => {
   return [
     {
       label: t('views.Hyperparameter.name'),
-      value: name.value,
+      value: data.metadata.name,
     },
     {
       label: t('views.Hyperparameter.fineTuningType'),
       value: data.spec.objective.type,
     },
     {
-      label: '被引用任务',
+      label: t('views.Hyperparameter.referencedTask'),
       value: data.metadata.labels,
       slotId: 'tag',
     },
@@ -154,7 +133,7 @@ const onEdit = () => {
   router.push({
     name: 'HyperparameterCreate',
     query: {
-      name: name.value,
+      name,
     },
   });
 };
@@ -166,7 +145,7 @@ const toList = () => {
 };
 
 const { onConfirmDelete } = useDeleteHyperparameter(
-  namespaceStore.namespace,
+  namespace.value,
   toList,
 );
 </script>

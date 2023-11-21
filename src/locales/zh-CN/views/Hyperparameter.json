@@ -8,6 +8,7 @@
 
   "name": "名称",
   "fineTuningType": "微调类型",
+  "referencedTask":"被引用任务",
   "parameters": "参数预览",
   "hyperparameterGroup": "超参组",
   "configuration": "参数配置",

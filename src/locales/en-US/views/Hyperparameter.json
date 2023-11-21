@@ -8,6 +8,7 @@
 
   "name": "Name",
   "fineTuningType": "Fine-tuning",
+  "referencedTask": "Referenced Task",
   "parameters": "Parameters Preview",
   "hyperparameterGroup": "Hyperparameter",
   "configuration": "Configuration",

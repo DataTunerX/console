@@ -8,7 +8,6 @@ import { FinetuneExperiment, finetuneExperimentClient } from '@/api/finetune-exp
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { createDialog } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
-import { hyperparameterClient } from '@/api/hyperparameter';
 import FinetuneExperimentItem from './components/FinetuneExperimentItem.vue';
 import { useFinetuneExperiment } from './composition/finetune';
 
@@ -28,7 +27,7 @@ const onCreate = () => {
   });
 };
 
-const deleteFn = (name: string) => hyperparameterClient.delete(namespace.value, name).then(() => {
+const deleteFn = (name: string) => finetuneExperimentClient.delete(namespace.value, name).then(() => {
   handleRefresh();
 });
 

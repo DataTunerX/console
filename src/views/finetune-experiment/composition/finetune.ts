@@ -60,7 +60,6 @@ export const useFinetuneJob = () => {
     metadata: {
       name: '',
     },
-    valid: true,
     spec: {
       finetune: {
         finetuneSpec: {

@@ -28,7 +28,7 @@ const onDelete = () => {
 const readyJobs = computed(() => {
   const { jobsStatus } = props.data.status ?? {};
 
-  return jobsStatus?.filter((job) => job.state === FinetuneJobState.Successful).length ?? 0;
+  return jobsStatus?.filter((job) => job.status?.state === FinetuneJobState.Successful).length ?? 0;
 });
 
 const infos = computed(() => {
