@@ -1,33 +1,23 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { Dataset, datasetClient } from '@/api/dataset';
-import { nError } from '@/utils/useNoty';
-import { useDeleteDataset } from './composition/dataset';
+import { storeToRefs } from 'pinia';
+import { useDataset, useDeleteDataset } from './composition/dataset';
 
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
-const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(useNamespaceStore());
+const name = route.params.name as string;
 
-const dataset = ref<Dataset>();
+const { dataset, fetchDataset } = useDataset();
 
-const loadDataset = () => {
-  datasetClient.read(namespaceStore.namespace, route.params.name as string).then((res) => {
-    dataset.value = res.data;
-  });
-};
-
-try {
-  loadDataset();
-} catch (error) {
-  nError(t('views.Dataset.loadDatasetError'));
-}
-
-const name = computed(() => dataset.value?.metadata?.name);
+onBeforeMount(() => {
+  fetchDataset(namespace.value, name);
+});
 
 const infos = computed(() => {
   const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.Dataset.${lang}`)).join(', ') ?? '-';
@@ -96,22 +86,15 @@ const subsets = computed(() => dataset.value?.spec?.datasetMetadata.datasetInfo?
 const onEdit = () => {
   router.push({
     name: 'DatasetCreate',
-    query: {
-      name: name.value,
-    },
+    query: { name },
   });
 };
 
 const toList = () => {
-  router.push({
-    name: 'DatasetList',
-  });
+  router.push({ name: 'DatasetList' });
 };
 
-const { onConfirmDelete } = useDeleteDataset(
-  namespaceStore.namespace,
-  toList,
-);
+const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
 
 </script>
 

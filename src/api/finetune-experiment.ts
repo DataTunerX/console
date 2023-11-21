@@ -1,7 +1,5 @@
 /* eslint-disable no-use-before-define */
-import type {
-  Condition, ListMeta, ObjectMeta,
-} from 'kubernetes-types/meta/v1';
+import type { Condition, ListMeta, ObjectMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
 import { FinetuneJob, Status as FinetuneJobStatus, ScoringConfig } from './finetune-job';
 
@@ -41,6 +39,8 @@ export interface FinetuneExperiment {
   status?: Status;
 }
 
+export type FinetuneJobWithName = FinetuneJob & { name: string };
+
 /**
  * FinetuneExperimentSpec defines the desired state of FinetuneExperiment
  */
@@ -48,13 +48,15 @@ export interface Spec {
   /**
    * Defining multiple finetunejobs in a single experiment.
    */
-  finetuneJobs: FinetuneJob[];
+  finetuneJobs: FinetuneJobWithName[];
   /**
    * Define the scoring plugin used for this experiment.
    */
   scoringConfig: ScoringConfig;
   pending?: boolean;
 }
+
+export type FinetuneJobStatusWithName = {status?: FinetuneJobStatus;} & { name?: string };
 
 /**
  * FinetuneExperimentStatus defines the observed state of FinetuneExperiment
@@ -65,7 +67,7 @@ export interface Status {
    */
   bestVersion: BestVersion;
   conditions: Condition[];
-  jobsStatus: FinetuneJobStatus[];
+  jobsStatus: FinetuneJobStatusWithName[];
   state: State;
 }
 
@@ -84,7 +86,7 @@ export enum State {
   Failed = 'FAILED',
   Processing = 'PROCESSING',
   Success = 'SUCCESS',
-  Pending = 'PENDING'
+  Pending = 'PENDING',
 }
 
 export const apiVersion = 'finetune.datatunerx.io/v1beta1';

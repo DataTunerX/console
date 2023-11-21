@@ -1,18 +1,20 @@
 <script lang="ts" setup>
+import { FinetuneJobWithName } from '@/api/finetune-experiment';
 import { PropType, computed } from 'vue';
-import { FinetuneJob } from '@/api/finetune-job';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   data: {
-    type: Object as PropType<FinetuneJob>,
+    type: Object as PropType<FinetuneJobWithName>,
     default: () => ({}),
   },
 });
 const { t } = useI18n();
 
 const infos = computed(() => {
-  const { data: { spec } } = props;
+  const {
+    data: { spec },
+  } = props;
   const llms = spec?.finetune?.finetuneSpec.llm;
   const datasets = spec?.finetune.finetuneSpec.dataset;
   const hyperparameters = spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef;
@@ -38,7 +40,9 @@ const infos = computed(() => {
   return items;
 });
 const infosTwo = computed(() => {
-  const { data: { spec } } = props;
+  const {
+    data: { spec },
+  } = props;
 
   const items = [
     {
@@ -60,10 +64,15 @@ const infosTwo = computed(() => {
     use-font
   >
     <template #title>
-      cfh
-      <dao-state-icon :type="'success'">
-        {{ t('common.run') }}
-      </dao-state-icon>
+      <div class="finetune-job-item__header">
+        <div class="finetune-job-item__header__text dataset-item__header__text--link">
+          {{ props.data.name }}
+        </div>
+
+        <dao-state-icon :type="'success'">
+          {{ t("common.run") }}
+        </dao-state-icon>
+      </div>
     </template>
 
     <dao-card-item class="finetune-experiment-item__base-info">
@@ -114,35 +123,35 @@ const infosTwo = computed(() => {
   </dao-card>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .finetune-job-item {
+  margin-top: 20px;
   margin-right: 20px;
   margin-left: 20px;
-
-  &.finetune-job-item{
-    margin-top: 20px;
-  }
 
   // &__base-info.dao-card-item {
   //   flex: 1.25 1 0;
   // }
 
   &__header {
-   display: flex;
+    display: flex;
     align-items: center;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--dao-text-pageTitle);
 
     &__text {
       display: inline-block;
       max-width: 75%;
+      margin-right: 10px;
       overflow: hidden;
-      color: var(--dao-text-primary);
       text-decoration: none;
       text-overflow: ellipsis;
       white-space: nowrap;
 
-      &.active {
+      &--link {
+        color: var(--dao-text-primary);
+        cursor: pointer;
+
         &:hover,
         &:active {
           color: var(--dao-primary-blue-040);
@@ -150,19 +159,5 @@ const infosTwo = computed(() => {
       }
     }
   }
-
-  &__text {
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  &__size {
-    color: var(--dao-green-030);
-  }
-
-}
-
-.dao-key-value-layout.is-horizontal .dao-key-value-layout-item__label {
-  width: 110px;
 }
 </style>
