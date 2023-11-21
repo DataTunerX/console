@@ -25,7 +25,7 @@ import {
   useLargeLanguageModel,
   useScoringConfig,
 } from './composition/finetune';
-import { useDataset } from '../dataset/composition/create';
+import { useDataset } from '../dataset/composition/dataset';
 import { useHyperparameter } from '../hyperparameter/composition/hyperparameter';
 
 const { t } = useI18n();
@@ -217,7 +217,6 @@ const onSubmit = async () => {
             :title="job.value.metadata?.name"
           >
             <FinetuneJobComponent
-              :key="idx"
               :llms="largeLanguageModels"
               :datasets="datasets"
               :hyperparameters="hyperparameters"

@@ -3,11 +3,14 @@ import {
   FeatureName,
   SizeType,
   LanguageOptions,
-  TEXT_GENERATION,
   datasetClient,
+  TaskName,
 } from '@/api/dataset';
 import { reactive, ref, toRefs } from 'vue';
 import { DatasetForRender, convertDatasetForRender } from '@/api/dataset-for-render';
+import { createDialog } from '@dao-style/extend';
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
+import { useI18n } from 'vue-i18n';
 
 const initialValue: DatasetForRender = {
   apiVersion: 'extension.datatunerx.io/v1beta1',
@@ -61,7 +64,7 @@ const initialValue: DatasetForRender = {
       size: SizeType.SIZE_1K,
       tags: [],
       task: {
-        name: TEXT_GENERATION,
+        name: TaskName.TextGeneration,
         subTasks: [],
       },
     },
@@ -93,5 +96,28 @@ export function useDataset() {
     ...toRefs(state),
     fetchDataset,
     fetchDatasets,
+  };
+}
+
+export function useDeleteDataset(namespace: string, handleRefresh: () => void) {
+  const { t } = useI18n();
+
+  const deleteFn = (name: string) => datasetClient.delete(namespace, name).then(() => {
+    handleRefresh();
+  });
+
+  const onConfirmDelete = (name?: string) => {
+    const dialog = createDialog(ConfirmDeleteDialog);
+
+    return dialog.show({
+      header: t('views.Dataset.delete.header'),
+      content: t('views.Dataset.delete.content', { name }),
+      name,
+      deleteFn,
+    });
+  };
+
+  return {
+    onConfirmDelete,
   };
 }

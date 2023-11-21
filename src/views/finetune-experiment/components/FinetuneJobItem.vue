@@ -116,6 +116,9 @@ const infosTwo = computed(() => {
 
 <style lang="scss">
 .finetune-job-item {
+  margin-right: 20px;
+  margin-left: 20px;
+
   &.finetune-job-item{
     margin-top: 20px;
   }

@@ -1,7 +1,10 @@
 {
   "create": "创建超参组",
   "update": "更新超参组",
-  "deleteConfirm": "确认删除超参组 {hyperparameterToDelete} 吗？",
+  "delete":{
+    "header":"删除数据集",
+    "content":"确认删除超参组 {name} 吗？"
+  },
 
   "name": "名称",
   "fineTuningType": "微调类型",

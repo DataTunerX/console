@@ -92,9 +92,7 @@ export const useFinetuneJob = () => {
       scoringConfig: {
         name: '',
       },
-      serveConfig: {
-        nodeSelector: 'arch=arm64',
-      },
+      serveConfig: {},
     },
   });
 

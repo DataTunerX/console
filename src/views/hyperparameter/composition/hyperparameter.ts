@@ -10,8 +10,9 @@ import {
   hyperparameterClient,
   Parameters,
 } from '@/api/hyperparameter';
-
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import { nError } from '@/utils/useNoty';
+import { createDialog } from '@dao-style/extend';
 
 // 定义默认的超参数对象
 const defaultHyperparameter: Hyperparameter = {
@@ -110,3 +111,26 @@ export const retrieveQuantization = (parameters: Parameters) => {
 
   return quantizationValue;
 };
+
+export function useDeleteHyperparameter(namespace: string, handleRefresh: () => void) {
+  const { t } = useI18n();
+
+  const deleteFn = (name: string) => hyperparameterClient.delete(namespace, name).then(() => {
+    handleRefresh();
+  });
+
+  const onConfirmDelete = (name?: string) => {
+    const dialog = createDialog(ConfirmDeleteDialog);
+
+    return dialog.show({
+      header: t('views.Hyperparameter.delete.header'),
+      content: t('views.Hyperparameter.delete.content', { name }),
+      name,
+      deleteFn,
+    });
+  };
+
+  return {
+    onConfirmDelete,
+  };
+}

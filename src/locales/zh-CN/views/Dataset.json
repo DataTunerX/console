@@ -4,7 +4,10 @@
   "en-US": "英文",
   "create": "创建数据集",
   "update": "更新数据集",
-  "deleteConfirm": "确认删除数据集 {datasetToDelete} 吗？",
+  "delete":{
+    "header":"删除数据集",
+    "content":"确认删除数据集 {name} 吗？"
+  },
 
   "tag": "标签",
   "duplicateTags": "标签重复",
@@ -43,5 +46,10 @@
   "basicInformation":"基本信息",
   "datasetInfoConfig": "数据集信息配置",
 
-  "loadDatasetError": "加载数据集失败"
+  "loadDatasetError": "加载数据集失败",
+
+  "status": {
+    "ready": "就绪",
+    "unready": "未就绪"
+  }
 }

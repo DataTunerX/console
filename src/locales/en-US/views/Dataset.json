@@ -4,7 +4,10 @@
   "en-US": "English",
   "create": "Create Dataset",
   "update": "Update Dataset",
-  "deleteConfirm": "Confirm deletion of dataset {datasetToDelete}?",
+  "delete":{
+    "header":"Delete Dataset",
+    "content":"Are you sure you want to delete this dataset: {name}?"
+  },
 
   "tag": "Tag",
   "duplicateTags": "Duplicate Tags",
@@ -43,5 +46,10 @@
   "basicInformation":"Basic Information",
   "datasetInfoConfig": "Dataset Information",
 
-  "loadDatasetError": "Failed to load dataset information"
+  "loadDatasetError": "Failed to load dataset information",
+
+  "status": {
+    "ready": "Ready",
+    "unready": "Not Ready"
+  }
 }

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
 import { Dataset } from '@/api/dataset';
+import DatasetStatus from './DatasetStatus.vue';
 
 const { t } = useI18n();
 
@@ -57,8 +58,8 @@ const infos = computed(() => {
       value: useDateFormat(creationTimestamp),
     },
     {
-      label: t('views.Dataset.testingData'),
-      value: splits?.test?.file,
+      label: t('views.Dataset.validationData'),
+      value: splits?.validate?.file,
     },
     {
       label: t('views.Dataset.tag'),
@@ -66,8 +67,8 @@ const infos = computed(() => {
       slotId: 'tag',
     },
     {
-      label: t('views.Dataset.validationData'),
-      value: splits?.validate?.file,
+      label: t('views.Dataset.testingData'),
+      value: splits?.test?.file,
     },
   ];
 
@@ -100,13 +101,7 @@ const languages = computed(() => {
           {{ props.data.metadata?.name }}
         </router-link>
 
-        <!-- <dao-state-icon :type="'success'">
-          {{ t('views.Dataset.available') }}
-        </dao-state-icon> -->
-
-        <dao-state-icon :type="'error'">
-          {{ t('views.Dataset.noAvailable') }}
-        </dao-state-icon>
+        <dataset-status :data="props.data" />
       </div>
     </template>
 
@@ -142,7 +137,13 @@ const languages = computed(() => {
       >
         <template #kv-tag="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
+            <dao-hover-card
+              v-if="row.value"
+              :data="row.value?.split(',')"
+            />
+            <template v-else>
+              -
+            </template>
           </dao-key-value-layout-item>
         </template>
       </dao-key-value-layout>
@@ -249,7 +250,7 @@ const languages = computed(() => {
     &__tip {
       margin-top: 27px;
       font-size: 12px;
-      font-weight: 700;
+      // font-weight: 700;
       line-height: 16px;
       color: var(--dao-gray-070);
     }
