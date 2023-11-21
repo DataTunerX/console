@@ -1,7 +1,7 @@
 <template>
   <dao-dialog
     size="md"
-    :model-value="modelValue"
+    :model-value="true"
     :header="header"
     @cancel="$emit('reject')"
   >
@@ -27,10 +27,6 @@ import { useI18n } from 'vue-i18n';
 import { nError } from '@/utils/useNoty';
 
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
   header: {
     type: String,
     default: '',

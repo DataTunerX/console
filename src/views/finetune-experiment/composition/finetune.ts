@@ -10,6 +10,8 @@ import { BuildInScoringPlugin, ScoringPlugin, scoringConfigClient } from '@/api/
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
 import { ImagePullPolicy } from '@/api/finetune';
 import { FinetuneExperimentForRender } from '@/api/finetune-experiment-for-render';
+import { createDialog } from '@dao-style/extend';
+import StopExperimentDialog from '../components/StopExperimentDialog.vue';
 
 const defaultFinetuneExperiment: FinetuneExperimentForRender = {
   apiVersion,
@@ -38,9 +40,18 @@ export const useFinetuneExperiment = () => {
     state.finetuneExperiments = res.data.items;
   };
 
+  const stop = (workload: FinetuneExperiment) => {
+    const dialog = createDialog(StopExperimentDialog);
+
+    return dialog.show({
+      workload,
+    });
+  };
+
   return {
     ...toRefs(state),
     fetchFinetuneExperiments,
+    stop,
   };
 };
 

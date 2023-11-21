@@ -48,6 +48,7 @@
     "@intlify/vue-i18n-loader": "^3.0.0",
     "@types/fs-extra": "^11.0.2",
     "@types/jest": "^27.0.1",
+    "@types/json-patch": "^0.0.33",
     "@types/lodash": "^4.14.200",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",

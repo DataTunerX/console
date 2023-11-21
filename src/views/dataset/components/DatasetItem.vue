@@ -89,23 +89,25 @@ const languages = computed(() => {
     use-font
   >
     <template #title>
-      <router-link
-        class="dataset-item__header__text active"
-        :to="{
-          name: 'DatasetDetail',
-          params: { name: props.data.metadata?.name },
-        }"
-      >
-        {{ props.data.metadata?.name }}
-      </router-link>
+      <div class="dataset-item__header">
+        <router-link
+          class="dataset-item__header__text dataset-item__header__text--link"
+          :to="{
+            name: 'DatasetDetail',
+            params: { name: props.data.metadata?.name },
+          }"
+        >
+          {{ props.data.metadata?.name }}
+        </router-link>
 
-      <!-- <dao-state-icon :type="'success'">
-        {{ t('views.Dataset.available') }}
-      </dao-state-icon>
+        <!-- <dao-state-icon :type="'success'">
+          {{ t('views.Dataset.available') }}
+        </dao-state-icon> -->
 
-      <dao-state-icon :type="'error'">
-        {{ t('views.Dataset.noAvailable') }}
-      </dao-state-icon> -->
+        <dao-state-icon :type="'error'">
+          {{ t('views.Dataset.noAvailable') }}
+        </dao-state-icon>
+      </div>
     </template>
 
     <template #action>
@@ -147,37 +149,39 @@ const languages = computed(() => {
     </dao-card-item>
 
     <dao-card-item class="flex">
-      <dao-key-value-layout
-        :direction="'vertical'"
-        class="flex flex-nowrap flex-grow items-center"
-      >
-        <dao-key-value-layout-item
-          :label="t('views.Dataset.licenseInformation')"
-          class="text-center"
-        >
-          <span class="dataset-item__text">
-            {{ props.data.spec?.datasetMetadata.license ?? '-' }}
-          </span>
-        </dao-key-value-layout-item>
+      <div class="dataset-status__container">
+        <div class="dataset-status__card">
+          <div class="dataset-status__num">
+            <span>
+              {{ props.data.spec?.datasetMetadata.license ?? '-' }}
+            </span>
+            <span class="dataset-status__tip">
+              {{ t('views.Dataset.licenseInformation') }}
+            </span>
+          </div>
+        </div>
 
-        <dao-key-value-layout-item
-          class="text-center"
-          :label="t('views.Dataset.datasetSize')"
-        >
-          <span class="dataset-item__text dataset-item__size">
-            {{ props.data.spec?.datasetMetadata.size ?? '-' }}
-          </span>
-        </dao-key-value-layout-item>
-
-        <dao-key-value-layout-item
-          class="text-center"
-          :label="t('views.Dataset.language')"
-        >
-          <span class="dataset-item__text">
-            {{ languages }}
-          </span>
-        </dao-key-value-layout-item>
-      </dao-key-value-layout>
+        <div class="dataset-status__card">
+          <div class="dataset-status__num">
+            <span class="dataset-status__size">
+              {{ props.data.spec?.datasetMetadata.size ?? '-' }}
+            </span>
+            <span class="dataset-status__tip">
+              {{ t('views.Dataset.datasetSize') }}
+            </span>
+          </div>
+        </div>
+        <div class="dataset-status__card">
+          <div class="dataset-status__num">
+            <span>
+              {{ languages }}
+            </span>
+            <span class="dataset-status__tip">
+              {{ t('views.Dataset.language') }}
+            </span>
+          </div>
+        </div>
+      </div>
     </dao-card-item>
   </dao-card>
 </template>
@@ -187,20 +191,22 @@ const languages = computed(() => {
   &__header {
     display: flex;
     align-items: center;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--dao-text-pageTitle);
 
     &__text {
       display: inline-block;
       max-width: 75%;
-      margin-right: 30px;
+      margin-right: 10px;
       overflow: hidden;
-      color: var(--dao-text-primary);
       text-decoration: none;
       text-overflow: ellipsis;
       white-space: nowrap;
 
-      &.active {
+      &--link {
+        color: var(--dao-text-primary);
+        cursor: pointer;
+
         &:hover,
         &:active {
           color: var(--dao-primary-blue-040);
@@ -209,13 +215,45 @@ const languages = computed(() => {
     }
   }
 
-  &__text {
-    font-size: 28px;
-    font-weight: bold;
+  .dataset-status {
+    width: 100%;
+
+    &__container {
+      display: flex;
+      width: 100%;
+      padding: 0 16px;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1;
+      color: var(--dao-gray-010);
+    }
+
+    &__card {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &__num {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &__size{
+      color: var(--dao-green-030);
+    }
+
+    &__tip {
+      margin-top: 27px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 16px;
+      color: var(--dao-gray-070);
+    }
   }
 
-  &__size {
-    color: var(--dao-green-030);
-  }
 }
 </style>

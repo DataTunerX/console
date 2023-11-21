@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useNamespaceStore } from '@/stores/namespace';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import { FinetuneExperiment, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useQueryTable } from '@/hooks/useQueryTable';
+import { createDialog } from '@dao-style/extend';
+import { useI18n } from 'vue-i18n';
 import FinetuneExperimentItem from './components/FinetuneExperimentItem.vue';
+import { useFinetuneExperiment } from './composition/finetune';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const router = useRouter();
+const { t } = useI18n();
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
@@ -17,35 +21,33 @@ const {
 
 watch(namespace, handleRefresh);
 
-const experimentToDelete = ref('');
-const dialogVisible = ref(false);
-
 const onCreate = () => {
   router.push({
     name: 'FinetuneExperimentCreate',
   });
 };
 
-const deleteFn = (name:string) => finetuneExperimentClient.delete(namespace.value, name);
-
-const confirmProps = computed(() => ({
-  header: '删除微调实验',
-  content: `确定删除微调实验 ${experimentToDelete.value} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。`,
-  name: experimentToDelete.value,
-  deleteFn,
-}));
-
-const onConfirmDelete = (name:string) => {
-  experimentToDelete.value = name;
-  dialogVisible.value = true;
-};
-const closeDialog = () => {
-  dialogVisible.value = false;
-};
-
-const onDeleteSuccess = () => {
+const deleteFn = (name: string) => finetuneExperimentClient.delete(namespace.value, name).then(() => {
   handleRefresh();
-  closeDialog();
+});
+
+const onConfirmDelete = (name: string) => {
+  const dialog = createDialog(ConfirmDeleteDialog);
+
+  return dialog.show({
+    header: t('views.FinetuneExperiment.deleteFineTuningExperiment'),
+    content: t('views.FinetuneExperiment.deleteFineTuningExperimentContent'),
+    name,
+    deleteFn,
+  });
+};
+
+const { stop } = useFinetuneExperiment();
+
+const onConfirmStop = (workload: FinetuneExperiment) => {
+  stop(workload).then(() => {
+    handleRefresh();
+  });
 };
 </script>
 
@@ -53,7 +55,7 @@ const onDeleteSuccess = () => {
   <div class="finetune-experiment-list console-main-container">
     <dao-header
       type="2nd"
-      title="微调实验"
+      :title="$t('views.FinetuneExperiment.finetuneExperiment')"
     />
     <dao-toolbar
       v-model:search="search.keywords"
@@ -65,20 +67,24 @@ const onDeleteSuccess = () => {
           type="primary"
           @click="onCreate"
         >
-          创建微调实验
+          {{ $t("views.FinetuneExperiment.createFineTuningExperiment") }}
         </dao-button>
       </template>
     </dao-toolbar>
 
-    <div v-loading="isLoading">
-      <dao-empty v-if="!pagedData.length" />
+    <dao-empty v-if="!pagedData.length" />
 
+    <div
+      v-else
+      v-loading="isLoading"
+      class="mt-[20px]"
+    >
       <FinetuneExperimentItem
         v-for="experiment in pagedData"
-        v-else
         :key="experiment.metadata?.name"
         :data="experiment"
         @on-delete="onConfirmDelete"
+        @on-stop="onConfirmStop"
       />
 
       <dao-pagination
@@ -89,12 +95,5 @@ const onDeleteSuccess = () => {
         :total="total"
       />
     </div>
-
-    <ConfirmDeleteDialog
-      v-model="dialogVisible"
-      v-bind="confirmProps"
-      @reject="closeDialog"
-      @resolve="onDeleteSuccess"
-    />
   </div>
 </template>

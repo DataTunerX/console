@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-shadow -->
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
 import { FinetuneJob } from '@/api/finetune-job';
@@ -6,8 +5,8 @@ import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   data: {
-    type: Array as PropType<FinetuneJob>,
-    default: () => ([]),
+    type: Object as PropType<FinetuneJob>,
+    default: () => ({}),
   },
 });
 const { t } = useI18n();
@@ -20,7 +19,7 @@ const infos = computed(() => {
 
   const items = [
     {
-      label: t('views.FinetuneExperiment.BasicLargeModel'),
+      label: t('views.FinetuneExperiment.basicLargeModel'),
       value: llms,
       slotId: 'llm',
     },
@@ -46,7 +45,6 @@ const infosTwo = computed(() => {
       label: t('views.FinetuneExperiment.results'),
       value: spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
       slotId: 'hyperparameterRef',
-
     },
   ];
 
@@ -56,8 +54,8 @@ const infosTwo = computed(() => {
 
 <template>
   <dao-card
-    class="finetune-experiment-item"
-    icon="icon-mspider"
+    class="finetune-job-item"
+    icon="icon-dsp"
     divider
     use-font
   >
@@ -103,7 +101,7 @@ const infosTwo = computed(() => {
           >
             <template #kv-hyperparameterRef="{ row }">
               <dao-key-value-layout-item :label="row.label">
-                <dao-hover-card :data="row.value?.split(',')" />
+                🐛
               </dao-key-value-layout-item>
             </template>
           </dao-key-value-layout>
@@ -111,14 +109,14 @@ const infosTwo = computed(() => {
       </div>
     </dao-card-item>
     <dao-card-item class="flex">
-      123
+      Working hard on this.
     </dao-card-item>
   </dao-card>
 </template>
 
 <style lang="scss">
-.finetune-experiment-item {
-  &.finetune-experiment-item{
+.finetune-job-item {
+  &.finetune-job-item{
     margin-top: 20px;
   }
 
@@ -135,7 +133,6 @@ const infosTwo = computed(() => {
     &__text {
       display: inline-block;
       max-width: 75%;
-      margin-right: 30px;
       overflow: hidden;
       color: var(--dao-text-primary);
       text-decoration: none;

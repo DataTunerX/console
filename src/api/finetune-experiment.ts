@@ -53,6 +53,7 @@ export interface Spec {
    * Define the scoring plugin used for this experiment.
    */
   scoringConfig: ScoringConfig;
+  pending?: boolean;
 }
 
 /**
@@ -83,6 +84,7 @@ export enum State {
   Failed = 'FAILED',
   Processing = 'PROCESSING',
   Success = 'SUCCESS',
+  Pending = 'PENDING'
 }
 
 export const apiVersion = 'finetune.datatunerx.io/v1beta1';

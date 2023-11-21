@@ -36,13 +36,6 @@ const activeOpened = computed(() => getActiveRouteFold(routes.value));
     type="2nd"
     :active-opened="activeOpened"
   >
-    <!-- <template #header>
-      <dao-nav-head
-        icon="icon-engine"
-        title="DataTunerX"
-        use-font
-      />
-    </template> -->
     <router-link
       v-for="(route, index) in routes"
       :key="index"

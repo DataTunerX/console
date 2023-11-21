@@ -1,5 +1,6 @@
 import { DeleteOptions, ListMeta } from 'kubernetes-types/meta/v1';
 import { AxiosRequestConfig } from 'axios';
+import { OpPatch } from 'json-patch';
 import httpClient from './index';
 
 type HttpClient = typeof httpClient;
@@ -41,6 +42,16 @@ export class K8sClient<T, D = any> {
     const url = `${this.getPath(namespace)}/${name}`;
 
     return this.httpClient.put<T>(url, data);
+  }
+
+  patch(namespace: string, name: string, data: OpPatch[]) {
+    const url = `${this.getPath(namespace)}/${name}`;
+
+    return this.httpClient.patch(url, data, {
+      headers: {
+        'Content-Type': 'application/json-patch+json',
+      },
+    });
   }
 
   read(namespace: string, name: string) {
