@@ -71,13 +71,15 @@ const infosTwo = computed(() => {
     <template #title>
       <div class="finetune-job-item__header">
         <div class="finetune-job-item__header__text dataset-item__header__text--link">
-          <!-- <router-link
+          <router-link
             class="finetune-experiment-item__header__text active"
             :to="{
               name: 'FinetuneExperimentJobDetail',
               params: { name: props.name, jobname: props.data.name },
             }"
-          /> -->
+          >
+            {{ props.data.name }}
+          </router-link>
         </div>
 
         <dao-state-icon :type="'success'">
