@@ -45,5 +45,16 @@
     "unknown": "未知状态"
   },
   "deleteFineTuningExperiment": "删除微调实验",
-  "deleteFineTuningExperimentContent": "确定删除微调实验 {name} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。"
+  "deleteFineTuningExperimentContent": "确定删除微调实验 {name} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。",
+  "finetuneJob": "微调任务",
+  "finetuneStatus": "微调状态",
+  "spreadPolicies": "分布策略",
+  "jobState": {
+    "buildimage": "构建镜像",
+    "failed": "失败",
+    "finetune": "微调",
+    "init": "初始化",
+    "serve": "工作",
+    "successful": "成功"
+  }
 }

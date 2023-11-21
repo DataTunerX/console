@@ -8,7 +8,12 @@ const props = defineProps({
     type: Object as PropType<FinetuneJobWithName>,
     default: () => ({}),
   },
+  name: {
+    type: String,
+    default: () => (''),
+  },
 });
+
 const { t } = useI18n();
 
 const infos = computed(() => {
@@ -66,7 +71,13 @@ const infosTwo = computed(() => {
     <template #title>
       <div class="finetune-job-item__header">
         <div class="finetune-job-item__header__text dataset-item__header__text--link">
-          {{ props.data.name }}
+          <!-- <router-link
+            class="finetune-experiment-item__header__text active"
+            :to="{
+              name: 'FinetuneExperimentJobDetail',
+              params: { name: props.name, jobname: props.data.name },
+            }"
+          /> -->
         </div>
 
         <dao-state-icon :type="'success'">
