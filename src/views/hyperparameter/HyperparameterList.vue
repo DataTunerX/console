@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
 import {
@@ -10,10 +10,9 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
 import { omit } from 'lodash';
-import { nError, nSuccess } from '@/utils/useNoty';
 import { generateQueryString } from '@/utils/queryString';
 import { useQueryTable } from '@/hooks/useQueryTable';
-import { retrieveQuantization } from './composition/hyperparameter';
+import { retrieveQuantization, useDeleteHyperparameter } from './composition/hyperparameter';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -48,6 +47,8 @@ const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable<Hyperparameter>(async () => hyperparameterClient.list(namespace.value));
 
+const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, handleRefresh);
+
 // 监听命名空间变化，重新加载数据集
 watch(namespace, handleRefresh);
 
@@ -75,30 +76,6 @@ const onCreate = () => {
   });
 };
 
-let hyperparameterToDelete: string;
-const isShow = ref(false);
-
-const hideDialog = () => {
-  isShow.value = false;
-};
-
-const showDialog = (hyperparameter: string) => {
-  isShow.value = true;
-  hyperparameterToDelete = hyperparameter;
-};
-
-const confirmDelete = () => {
-  hyperparameterClient
-    .delete(namespace.value, hyperparameterToDelete)
-    .then(() => {
-      hideDialog();
-      handleRefresh();
-      nSuccess(t('common.notySuccess', { name: t('common.delete') }));
-    })
-    .catch((err) => {
-      nError(t('common.notyError', { name: t('common.delete') }), err);
-    });
-};
 </script>
 
 <template>
@@ -156,7 +133,7 @@ const confirmDelete = () => {
         </dao-dropdown-item>
         <dao-dropdown-item
           color="red"
-          @click="showDialog(row.metadata.name as string)"
+          @click="onConfirmDelete(row.metadata.name as string)"
         >
           {{ t('common.delete') }}
         </dao-dropdown-item>
@@ -168,24 +145,5 @@ const confirmDelete = () => {
         </dao-button>
       </template>
     </dao-table>
-
-    <dao-dialog
-      :model-value="isShow"
-      header="Basic Dialog"
-      @cancel="hideDialog"
-      @confirm="confirmDelete"
-    >
-      <div class="body">
-        <div class="content">
-          {{ $t('views.Hyperparameter.deleteConfirm', { hyperparameterToDelete }) }}
-        </div>
-      </div>
-      <template #footer>
-        <dao-confirm-dialog-footer
-          :text="hyperparameterToDelete"
-          :confirm-text="t('common.delete')"
-        />
-      </template>
-    </dao-dialog>
   </div>
 </template>

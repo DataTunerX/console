@@ -227,29 +227,58 @@ export interface Validate {
 }
 
 /**
-* Plugin defines a plugin used by a dataset
-*/
+ * Plugin describes the plugin including parameters and whether uses a plugin.
+ */
 export interface Plugin {
+  /**
+   * LoadPlugin describes a Scoring CR whether uses plugin to do evaluation, if true then
+   * Plugin data will be needed,
+   */
   loadPlugin: boolean;
   name?: string;
   parameters?: string;
 }
 
 /**
-* Task defines a dataset task type
-*/
+ * Task describes the main task that the dataset can do, including Text Generation, Question
+ * Answering, Translation, Conversational etc.
+ */
 export interface Task {
-  name?: string;
+  name: TaskName;
+  /**
+   * SubTask defines a dataset task's subtask e.g. language-modeling of Text Generation,
+   * open-domain-qa of Question Answering etc. It is corresponding to Task.
+   */
   subTasks?: SubTask[];
 }
 
+export enum TaskName {
+  QuestionAnswering = 'Question Answering',
+  Summarization = 'Summarization',
+  TextClassification = 'Text Classification',
+  TextGeneration = 'Text Generation',
+}
+
 /**
-* EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE: json tags are required.  Any
-* new fields you add must have json tags for the fields to be serialized. SubTask defines a
-* dataset task's subtask
-*/
+ * SubTask defines a dataset task's subtask
+ */
 export interface SubTask {
-  name?: string;
+  name: SubTaskName;
+}
+
+export enum SubTaskName {
+  ClosedDomainQA = 'closed-domain-qa',
+  ExtractiveQA = 'extractive-qa',
+  LanguageModeling = 'language-modeling',
+  MaskedLanguageModeling = 'masked-language-modeling',
+  MultiChoiceQA = 'multi-choice-qa',
+  MultiClassClassification = 'multi-class-classification',
+  MultiLabelClassification = 'multi-label-classification',
+  NaturalLanguageInference = 'natural-language-inference',
+  NewsArticlesSummarization = 'news-articles-summarization',
+  OpenDomainQA = 'open-domain-qa',
+  SentimentClassification = 'sentiment-classification',
+  TopicClassification = 'topic-classification',
 }
 
 /**
@@ -260,7 +289,15 @@ export interface Status {
    * INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make"
    * to regenerate code after modifying this file
    */
-  state?: string;
+  state?: State;
+}
+
+/**
+* DatasetState is an enum type for the State field
+*/
+export enum State {
+  Ready = 'READY',
+  Unready = 'UNREADY',
 }
 
 const apiVersion = 'extension.datatunerx.io/v1beta1';

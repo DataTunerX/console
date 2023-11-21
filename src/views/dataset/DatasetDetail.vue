@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
 import { nError } from '@/utils/useNoty';
+import { useDeleteDataset } from './composition/dataset';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -100,6 +101,18 @@ const onEdit = () => {
     },
   });
 };
+
+const toList = () => {
+  router.push({
+    name: 'DatasetList',
+  });
+};
+
+const { onConfirmDelete } = useDeleteDataset(
+  namespaceStore.namespace,
+  toList,
+);
+
 </script>
 
 <template>
@@ -125,6 +138,12 @@ const onEdit = () => {
         >
           {{ t('common.edit') }}
         </dao-button>
+        <dao-button
+          type="danger"
+          @click="onConfirmDelete(dataset?.metadata?.name)"
+        >
+          {{ t('common.delete') }}
+        </dao-button>
       </template>
     </dao-header>
 
@@ -140,7 +159,13 @@ const onEdit = () => {
         >
           <template #kv-tag="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-hover-card :data="row.value?.split(',')" />
+              <dao-hover-card
+                v-if="row.value"
+                :data="row.value?.split(',')"
+              />
+              <template v-else>
+                -
+              </template>
             </dao-key-value-layout-item>
           </template>
         </dao-key-value-layout>

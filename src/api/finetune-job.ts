@@ -1,6 +1,7 @@
 import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
 /* eslint-disable no-use-before-define */
 import { K8sClient } from '@/plugins/axios/client';
+import { Toleration } from 'kubernetes-types/core/v1';
 import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
 /**
  * FinetuneJob is the Schema for the finetunejobs API
@@ -29,12 +30,12 @@ export interface FinetuneJob {
    * FinetuneJobStatus defines the observed state of FinetuneJob
    */
   status?: Status;
-  valid?: boolean
+  valid?: boolean;
 }
 
 /**
-* FinetuneJobSpec defines the desired state of FinetuneJob
-*/
+ * FinetuneJobSpec defines the desired state of FinetuneJob
+ */
 export interface Spec {
   /**
    * Finetune cr config.
@@ -51,8 +52,8 @@ export interface Spec {
 }
 
 /**
-* Finetune cr config.
-*/
+ * Finetune cr config.
+ */
 export interface Finetune {
   /**
    * FinetuneSpec defines the desired state of Finetune
@@ -62,33 +63,33 @@ export interface Finetune {
 }
 
 /**
-* Score plugin config.
-*/
+ * Score plugin config.
+ */
 export interface ScoringConfig {
   /**
    * Name specifies the name of the scoring CR.
    */
-  name: string;
+  name?: string;
   parameters?: string;
 }
 
 /**
-* Serve config.
-*/
+ * Serve config.
+ */
 export interface ServeConfig {
   /**
    * NodeSelector specifies the node where service will be deployed.
    */
-  nodeSelector: string;
+  nodeSelector?: { [key: string]: string };
   /**
    * Tolerations specifies the tolerations for service.
    */
-  tolerations?: string;
+  tolerations?: Toleration[];
 }
 
 /**
-* FinetuneJobStatus defines the observed state of FinetuneJob
-*/
+ * FinetuneJobStatus defines the observed state of FinetuneJob
+ */
 export interface Status {
   conditions?: Condition[];
   finetuneState?: FinetuneState;

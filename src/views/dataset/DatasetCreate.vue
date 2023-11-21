@@ -14,7 +14,7 @@ import {
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
-  LicenseType, SizeType, LanguageOptions, SubTask, Subset, taskCategories, datasetClient,
+  LicenseType, SizeType, LanguageOptions, SubTask, Subset, taskCategories, datasetClient, SubTaskName,
 } from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
@@ -23,7 +23,7 @@ import { HttpStatusCode, KubernetesError } from '@/plugins/axios';
 import KeyValueForm from '@/components/KeyValueForm.vue';
 import { type DatasetForRender, convertDatasetForPost } from '@/api/dataset-for-render';
 
-import { useDataset } from './composition/create';
+import { useDataset } from './composition/dataset';
 
 const { t } = useI18n();
 
@@ -170,8 +170,10 @@ const { remove: removeFromTags, push: pushToTags, fields: tags } = useFieldArray
 const addTag = async () => pushToTags('');
 const removeTag = (index: number) => removeFromTags(index);
 
-const { remove: removeFromSubtasks, push: pushToSubtasks, fields: subTasks } = useFieldArray<SubTask>('spec.datasetMetadata.task.subTasks');
-const addSubtask = () => pushToSubtasks({ name: '' });
+const {
+  remove: removeFromSubtasks, push: pushToSubtasks, fields: subTasks, replace: replaceSubTask,
+} = useFieldArray<SubTask>('spec.datasetMetadata.task.subTasks');
+const addSubtask = () => pushToSubtasks({ name: '' as SubTaskName });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
 const {
@@ -181,6 +183,10 @@ const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
 const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
+
+watch(() => formModel.spec.datasetMetadata.task?.name, () => {
+  replaceSubTask([]);
+});
 
 watch(() => loadPlugin.value, (val) => {
   replace(val ? [] : [{ name: 'Default' }]);

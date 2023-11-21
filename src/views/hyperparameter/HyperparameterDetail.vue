@@ -8,7 +8,7 @@ import {
   Hyperparameter, hyperparameterClient,
 } from '@/api/hyperparameter';
 import { nError } from '@/utils/useNoty';
-import { retrieveQuantization } from './composition/hyperparameter';
+import { retrieveQuantization, useDeleteHyperparameter } from './composition/hyperparameter';
 
 const router = useRouter();
 const route = useRoute();
@@ -158,6 +158,17 @@ const onEdit = () => {
     },
   });
 };
+
+const toList = () => {
+  router.push({
+    name: 'HyperparameterList',
+  });
+};
+
+const { onConfirmDelete } = useDeleteHyperparameter(
+  namespaceStore.namespace,
+  toList,
+);
 </script>
 
 <template>
@@ -182,6 +193,12 @@ const onEdit = () => {
           @click="onEdit"
         >
           {{ t('common.edit') }}
+        </dao-button>
+        <dao-button
+          type="danger"
+          @click="onConfirmDelete(hyperparameter?.metadata.name)"
+        >
+          {{ t('common.delete') }}
         </dao-button>
       </template>
     </dao-header>

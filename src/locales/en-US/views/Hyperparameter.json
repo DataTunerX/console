@@ -1,7 +1,10 @@
 {
   "create": "Create Hyperparameter",
   "update": "Update Hyperparameter",
-  "deleteConfirm": "Confirm deletion of Hyperparameter Group {hyperparameterToDelete}?",
+  "delete":{
+    "header":"Delete Hyperparameter",
+    "content":"Are you sure to delete the hyperparameter: {name}?"
+  },
 
   "name": "Name",
   "fineTuningType": "Fine-tuning",
