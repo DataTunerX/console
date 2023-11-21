@@ -4,14 +4,14 @@
   "evaluationMethod": "评估方式",
   "optimalresult": "最优结果",
   "time": "用时",
-  "BasicLargeModel": "基础大模型",
+  "basicLargeModel": "基础大模型",
   "dataSet": "数据集",
   "parameterGroup": "参数组",
   "results": "评估结果",
-  "contrast":"对比",
-  "taskList":"任务列表",
-  "pleaseEnter":"请输入容器组名称搜索",
-  "stopConfirm":"确认停止微调实验 {finetuneToShop} 吗？",
+  "contrast": "对比",
+  "taskList": "任务列表",
+  "pleaseEnter": "请输入容器组名称搜索",
+  "stopConfirm": "确认停止微调实验 {finetuneToShop} 吗？",
 
   "createFineTuningExperiment": "创建微调实验",
   "basicInformation": "基本信息",
@@ -26,6 +26,24 @@
   "baseLargeModel": "基础大模型",
   "dataset": "数据集",
   "hyperparameter": "超参组",
-  "modifyHyperparameterGroup": "修改超参组后，将会覆盖原有超参组的超参值。"
+  "modifyHyperparameterGroup": "修改超参组后，将会覆盖原有超参组的超参值。",
 
+  "StopWorkloadDialog": {
+    "header": "确定停止微调实验 {name} 吗？",
+    "content": "停止微调实验可能导致实验数据丢失，在停止负载 “{name}” 前，请确保业务数据保存在存储中。实验停止后，无法再次启动",
+    "stopSuccess": "停止微调实验 {name} 任务下发成功，请稍后刷微调实验列表查看。",
+    "stopError": "停止微调实验 {name} 失败，原因："
+  },
+  "duration": "已持续时间",
+  "highestScore": "最高评分",
+  "taskStatus": "任务状态",
+  "taskState": {
+    "processing": "运行中",
+    "failed": "失败",
+    "succeeded": "成功",
+    "pending": "已停止",
+    "unknown": "未知状态"
+  },
+  "deleteFineTuningExperiment": "删除微调实验",
+  "deleteFineTuningExperimentContent": "确定删除微调实验 {name} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。"
 }

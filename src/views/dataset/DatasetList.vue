@@ -60,7 +60,7 @@ const onCreate = () => router.push({ name: 'DatasetCreate' });
     >
       <template #action>
         <dao-button @click="onCreate">
-          {{ $t('views.Dataset.create') }}
+          {{ $t("views.Dataset.create") }}
         </dao-button>
       </template>
     </dao-toolbar>
@@ -92,7 +92,7 @@ const onCreate = () => router.push({ name: 'DatasetCreate' });
     >
       <div class="body">
         <div class="content">
-          {{ $t('views.Dataset.deleteConfirm', { datasetToDelete }) }}
+          {{ $t("views.Dataset.deleteConfirm", { datasetToDelete }) }}
         </div>
       </div>
       <template #footer>

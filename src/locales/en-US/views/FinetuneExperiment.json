@@ -1,31 +1,49 @@
 {
+  "finetuneExperiment": "Fine-tuning Experiment",
+  "status": "Status",
+  "evaluationMethod": "Evaluation Method",
+  "optimalresult": "Optimal Result",
+  "time": "Time",
+  "basicLargeModel": "Basic Large Language Model",
+  "dataSet": "Data Set",
+  "parameterGroup": "Parameter Group",
+  "results": "Evaluation Results",
+  "contrast": "Contrast",
+  "taskList": "Task List",
+  "pleaseEnter": "Please enter a container group name to search",
+  "stopConfirm": "Confirm to stop the fine-tuning experiment {finetuneToShop}?",
+
   "createFineTuningExperiment": "Create Fine-tuning Experiment",
   "basicInformation": "Basic Information",
   "experimentName": "Experiment Name",
   "scoringConfig": "Scoring Config",
   "buildInScoringPlugin": "System Default",
-  "parameters": "Running Parameters",
+  "parameters": "Runtime Parameters",
   "configuration": "Configuration",
   "add": "Add Task",
 
   "taskName": "Task Name",
-  "baseLargeModel": "Large Language Model",
-  "dataset": "Dataset",
-  "hyperparameter": "Hyperparameter",
-  "modifyHyperparameterGroup": "Modifying the hyperparameter group will overwrite the hyperparameter values of the original group.",
+  "baseLargeModel": "Basic Large Language Model",
+  "dataset": "Data Set",
+  "hyperparameter": "Hyperparameter Group",
+  "modifyHyperparameterGroup": "Modifying the hyperparameter group will override the hyperparameter values of the original group.",
 
-  "finetuneExperiment": "Finetune Experiment",
-  "status": "Status",
-  "evaluationMethod": "Evaluation Method",
-  "optimalresult": "Optimal Result",
-  "time": "Time",
-  "BasicLargeModel": "basic Large Model",
-  "parameterGroup": "Parameter Group",
-  "dataSet": "Data Set",
-  "results": "Results",
-  "contrast":"Contrast",
-  "taskList":"TaskList",
-  "pleaseEnter":"Please enter a container group name to search for",
-  "stopConfirm":"Confirm deletion of dataset {finetuneToShop}?"
-
+  "StopWorkloadDialog": {
+    "header": "Are you sure you want to stop the fine-tuning experiment {name}?",
+    "content": "Stopping the fine-tuning experiment may result in data loss. Before stopping the workload '{name}', make sure that business data is saved in storage. Once the experiment is stopped, it cannot be restarted.",
+    "stopSuccess": "Stop the fine-tuning experiment {name} task dispatched successfully. Please refresh the fine-tuning experiment list later.",
+    "stopError": "Failed to stop the fine-tuning experiment {name}. Reason:"
+  },
+  "duration": "Elapsed Runtime",
+  "highestScore": "Highest Score",
+  "taskStatus": "Task Status",
+  "taskState": {
+    "processing": "Processing",
+    "failed": "Failed",
+    "succeeded": "Succeeded",
+    "pending": "Stopped",
+    "unknown": "Unknown"
+  },
+  "deleteFineTuningExperiment": "Delete Fine-tuning Experiment",
+  "deleteFineTuningExperimentContent": "Are you sure you want to delete the fine-tuning experiment {name}? After removal, the corresponding data will be completely lost and cannot be recovered. Please operate with caution."
 }
