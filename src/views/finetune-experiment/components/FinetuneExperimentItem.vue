@@ -32,9 +32,7 @@ const readyJobs = computed(() => {
 });
 
 const infos = computed(() => {
-  const {
-    data: { metadata, spec },
-  } = props;
+  const { data: { metadata, spec } } = props;
   const creationTimestamp = metadata?.creationTimestamp;
   const llms = spec?.finetuneJobs
     .map((job) => job.spec?.finetune.finetuneSpec.llm)
@@ -193,7 +191,7 @@ const infos = computed(() => {
   </dao-card>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .finetune-experiment-item {
   & + & {
     margin-top: 20px;
@@ -294,9 +292,5 @@ const infos = computed(() => {
       color: var(--dao-gray-070);
     }
   }
-}
-
-.dao-key-value-layout.is-horizontal .dao-key-value-layout-item__label {
-  width: 110px;
 }
 </style>

@@ -55,6 +55,7 @@
     "finetune": "微调",
     "init": "初始化",
     "serve": "工作",
-    "successful": "成功"
+    "successful": "成功",
+    "unknown": "未知状态"
   }
 }

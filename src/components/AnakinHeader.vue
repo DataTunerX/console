@@ -52,7 +52,7 @@ const namespace = computed({
     <dao-select
       v-model="namespace"
       search
-      class="ml-[30px]"
+      class="namespace-select"
     >
       <dao-option
         v-for="ns in namespaceStore.namespaces"
@@ -225,6 +225,30 @@ $ghippo-header-color: var(--dao-navigation-090);
     margin-right: 10px;
     font-size: 16px;
     color: #a2a7b0;
+  }
+}
+
+.namespace-select {
+  height: 3.8rem;
+  margin-left: 1.2rem;
+  line-height: 3.8rem;
+  color: #fff;
+  background: transparent;
+
+  :deep(.dao-selection) {
+    width: 200px;
+    padding: 0 1rem 0 1.8rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #fff;
+    background: transparent;
+    border-width: 0;
+    border-radius: 0.6rem;
+
+    &:hover {
+      // background: rgba(0, 0, 0, 0.3);
+      background-color: var(--dao-top-gray-020);
+    }
   }
 }
 </style>

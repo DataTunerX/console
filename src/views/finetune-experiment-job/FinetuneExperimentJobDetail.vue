@@ -7,14 +7,15 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { FinetuneJob, finetuneJobClient } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
-import ExperimentJobStatus from '../components/ExperimentJobStatus.vue';
+import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
+import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
 const name = route.params.name as string;
-const jobname = route.params.jobname as string;
+const jobName = route.params.jobname as string;
 
 const namespaceStore = useNamespaceStore();
 
@@ -22,7 +23,7 @@ const finetuneJob = ref<FinetuneJob>({});
 
 const fetchDataset = () => {
   finetuneJobClient
-    .read(namespaceStore.namespace, jobname)
+    .read(namespaceStore.namespace, jobName)
     .then((res) => {
       finetuneJob.value = res.data;
     });
@@ -33,11 +34,12 @@ fetchDataset();
 
 // 显示基本信息
 const infos = computed(() => {
-  const creationTimestamp = finetuneJob.value?.metadata?.creationTimestamp;
+  const finetuneSpec = finetuneJob.value.spec?.finetune.finetuneSpec;
+
   const items = [
     {
       label: t('views.Hyperparameter.name'),
-      value: jobname,
+      value: jobName,
     },
     {
       label: t('views.FinetuneExperiment.status'),
@@ -45,15 +47,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.evaluationMethod'),
-      value: finetuneJob?.value?.spec?.scoringConfig?.name,
-    },
-    {
-      label: t('components.AnakinHeader.namespace'),
-      value: finetuneJob?.value.metadata?.namespace,
-    },
-    {
-      label: t('common.createTime'),
-      value: useDateFormat(creationTimestamp),
+      value: finetuneJob.value.spec?.scoringConfig?.name,
     },
     {
       label: t('views.FinetuneExperiment.time'),
@@ -61,23 +55,25 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.basicLargeModel'),
-      value: '-',
+      value: finetuneSpec?.llm,
+      slotId: 'llm',
     },
     {
       label: t('views.FinetuneExperiment.dataSet'),
-      value: '-',
+      value: finetuneSpec?.dataset,
+      slotId: 'dataset',
     },
     {
       label: t('views.FinetuneExperiment.parameterGroup'),
-      value: '-',
+      slotId: 'hyperparameter',
     },
     {
       label: t('views.FinetuneExperiment.finetuneStatus'),
-      value: '-',
+      value: finetuneJob.value.status?.finetuneState,
     },
     {
-      label: t('views.FinetuneExperiment.spreadPolicies'),
-      value: '-',
+      label: t('common.createTime'),
+      value: useDateFormat(finetuneJob.value?.metadata?.creationTimestamp),
     },
   ];
 
@@ -106,7 +102,7 @@ const infos = computed(() => {
             :label="t('views.FinetuneExperiment.finetuneJob')"
           />
           <dao-breadcrumb-item
-            :label="jobname"
+            :label="jobName"
           />
         </dao-breadcrumb>
       </template>
@@ -127,21 +123,21 @@ const infos = computed(() => {
               <experiment-job-status :data="finetuneJob" />
             </dao-key-value-layout-item>
           </template>
-          <!-- <template #kv-llm="{ row }">
+          <template #kv-llm="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-hover-card :data="row.value?.split(',')" />
+              <dao-tag>{{ row.value }}</dao-tag>
             </dao-key-value-layout-item>
           </template>
           <template #kv-dataset="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-hover-card :data="row.value?.split(',')" />
+              <dao-tag>{{ row.value }}</dao-tag>
             </dao-key-value-layout-item>
           </template>
           <template #kv-hyperparameter="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-hover-card :data="row.value?.split(',')" />
+              <hyperparameter-with-overrides :data="finetuneJob.spec?.finetune.finetuneSpec.hyperparameter" />
             </dao-key-value-layout-item>
-          </template> -->
+          </template>
         </dao-key-value-layout>
       </dao-card-item>
     </dao-card>

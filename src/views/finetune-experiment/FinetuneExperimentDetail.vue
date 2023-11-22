@@ -99,10 +99,9 @@ const {
 
 const { stop } = useFinetuneExperiment();
 
-const onConfirmStop = () => {
-  stop(finetuneExperiment.value).then(() => {
-    fetchDataset();
-  });
+const onConfirmStop = async () => {
+  await stop(finetuneExperiment.value);
+  fetchDataset();
 };
 
 const curTab = ref('profile');

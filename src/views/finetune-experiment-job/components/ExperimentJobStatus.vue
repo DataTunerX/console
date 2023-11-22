@@ -28,24 +28,24 @@ const statusMap: Record<string, JobStatusMap> = {
     type: 'error',
   },
   [FinetuneJobState.Finetune]: {
-    text: t('views.FinetuneExperiment.jobState.processing'),
+    text: t('views.FinetuneExperiment.jobState.finetune'),
     type: 'spin',
   },
   [FinetuneJobState.Init]: {
-    text: t('views.FinetuneExperiment.jobState.finetune'),
+    text: t('views.FinetuneExperiment.jobState.init'),
     type: 'default',
   },
   [FinetuneJobState.Serve]: {
-    text: t('views.FinetuneExperiment.jobState.init'),
+    text: t('views.FinetuneExperiment.jobState.serve'),
     type: 'spin',
   },
   [FinetuneJobState.Successful]: {
-    text: t('views.FinetuneExperiment.jobState.serve'),
+    text: t('views.FinetuneExperiment.jobState.successful'),
     type: 'info',
   },
   unknown: {
-    text: t('views.FinetuneExperiment.jobState.successful'),
-    type: 'success',
+    text: t('views.FinetuneExperiment.jobState.unknown'),
+    type: 'warning',
   },
 };
 
