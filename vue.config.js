@@ -19,6 +19,7 @@ module.exports = defineConfig({
     proxy: {
       '^/apis': {
         target: process.env.VUE_APP_API_URL,
+        changeOrigin: true,
         bypass: (req) => {
           Object.assign(req.headers, {
             Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,
@@ -27,6 +28,7 @@ module.exports = defineConfig({
       },
       '^/api': {
         target: process.env.VUE_APP_API_URL,
+        changeOrigin: true,
         bypass: (req) => {
           Object.assign(req.headers, {
             Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,

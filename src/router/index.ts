@@ -15,7 +15,7 @@ import HyperparameterDetail from '@/views/hyperparameter/HyperparameterDetail.vu
 import FinetuneExperimentList from '@/views/finetune-experiment/FinetuneExperimentList.vue';
 import FinetuneExperimentDetail from '@/views/finetune-experiment/FinetuneExperimentDetail.vue';
 import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperimentCreate.vue';
-import FinetuneExperimentJobDetail from '@/views/finetune-experiment/finetune-experiment-job/FinetuneExperimentJobDetail.vue';
+import FinetuneExperimentJobDetail from '@/views/finetune-experiment-job/FinetuneExperimentJobDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
