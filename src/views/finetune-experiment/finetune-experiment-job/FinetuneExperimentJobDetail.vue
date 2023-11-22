@@ -16,10 +16,7 @@ const route = useRoute();
 const name = route.params.name as string;
 const jobname = route.params.jobname as string;
 
-const isShow = ref(false);
-
 const namespaceStore = useNamespaceStore();
-const finetuneToShop = ref<string>();
 
 const finetuneJob = ref<FinetuneJob>({});
 
@@ -87,20 +84,6 @@ const infos = computed(() => {
   return items;
 });
 
-// 显示停止对话框
-const showDialog = () => {
-  isShow.value = true;
-  // finetuneToShop.value = finetuneExperiment.value?.metadata?.name;
-};
-// 隐藏停止对话框
-const hideDialog = () => {
-  isShow.value = false;
-};
-// 确认停止微调实验
-const confirmShop = () => {
-  isShow.value = false;
-};
-
 </script>
 
 <template>
@@ -126,20 +109,6 @@ const confirmShop = () => {
             :label="jobname"
           />
         </dao-breadcrumb>
-      </template>
-
-      <template #action>
-        <dao-button
-          type="tertiary"
-        >
-          {{ t("common.log") }}
-        </dao-button>
-        <dao-button
-          type="tertiary"
-          @click="showDialog()"
-        >
-          {{ t("common.stop") }}
-        </dao-button>
       </template>
     </dao-header>
     <dao-card
@@ -177,19 +146,4 @@ const confirmShop = () => {
       </dao-card-item>
     </dao-card>
   </div>
-
-  <dao-dialog
-    :model-value="isShow"
-    @cancel="hideDialog"
-    @confirm="confirmShop"
-  >
-    <template #header>
-      {{ t("common.prompt") }}
-    </template>
-    <div class="body">
-      <div class="content">
-        {{ $t("views.FinetuneExperiment.stopConfirm", { finetuneToShop }) }}
-      </div>
-    </div>
-  </dao-dialog>
 </template>
