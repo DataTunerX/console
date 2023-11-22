@@ -48,5 +48,9 @@
   "updateFailed": "Update Failed, Reason:",
   "fetchFailed": "Fetch Data Failed, Reason:",
   "fetchNotFound": "Requested Resource Not Found",
-  "dataSynced": "Data Syncing..."
+  "dataSynced": "Data Syncing...",
+
+  "log": "Log",
+  "prompt": "Prompt"
+
 }

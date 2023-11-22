@@ -23,10 +23,14 @@
   "add": "Add Task",
 
   "taskName": "Task Name",
-  "baseLargeModel": "Basic Large Language Model",
-  "dataset": "Data Set",
-  "hyperparameter": "Hyperparameter Group",
-  "modifyHyperparameterGroup": "Modifying the hyperparameter group will override the hyperparameter values of the original group.",
+  "baseLargeModel": "Large Language Model",
+  "dataset": "Dataset",
+  "hyperparameter": "Hyperparameter",
+  "modifyHyperparameterGroup": "Modifying the hyperparameter group will overwrite the hyperparameter values of the original group.",
+
+  "finetuneJob": "Finetune Job",
+  "finetuneStatus": "Finetune Status",
+  "spreadPolicies": "Spread Policies",
 
   "StopWorkloadDialog": {
     "header": "Are you sure you want to stop the fine-tuning experiment {name}?",
@@ -45,5 +49,13 @@
     "unknown": "Unknown"
   },
   "deleteFineTuningExperiment": "Delete Fine-tuning Experiment",
-  "deleteFineTuningExperimentContent": "Are you sure you want to delete the fine-tuning experiment {name}? After removal, the corresponding data will be completely lost and cannot be recovered. Please operate with caution."
+  "deleteFineTuningExperimentContent": "Are you sure you want to delete the fine-tuning experiment {name}? After removal, the corresponding data will be completely lost and cannot be recovered. Please operate with caution.",
+  "jobState": {
+    "buildimage": "Buildimage",
+    "failed": "Failed",
+    "finetune": "Finetune",
+    "init": "Init",
+    "serve": "Serve",
+    "successful": "Successful"
+  }
 }

@@ -3,8 +3,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { FinetuneExperiment, finetuneExperimentClient, State as FinetuneExperimentState } from '@/api/finetune-experiment';
-import { FinetuneJob } from '@/api/finetune-job';
+import {
+  FinetuneJobWithName, FinetuneExperiment, finetuneExperimentClient, State as FinetuneExperimentState,
+} from '@/api/finetune-experiment';
 import { useDateFormat } from '@dao-style/extend';
 import { storeToRefs } from 'pinia';
 import { useQueryTable } from '@/hooks/useQueryTable';
@@ -94,7 +95,7 @@ const infos = computed(() => {
 
 const {
   items, page, pageSize, total, search,
-} = useQueryTable<FinetuneJob>(fetchDataset);
+} = useQueryTable<FinetuneJobWithName>(fetchDataset);
 
 const { stop } = useFinetuneExperiment();
 
@@ -190,6 +191,7 @@ const curTab = ref('profile');
           v-for="(experiment, index) in items"
           :key="index"
           :data="experiment"
+          :name="name"
         />
 
         <dao-pagination

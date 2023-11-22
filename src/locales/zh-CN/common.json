@@ -48,5 +48,8 @@
   "updateFailed": "更新失败，原因：",
   "fetchFailed": "获取数据失败，原因：",
   "fetchNotFound": "请求资源不存在",
-  "dataSynced": "数据同步中..."
+  "dataSynced": "数据同步中...",
+
+  "log": "日志",
+  "prompt": "提示"
 }
