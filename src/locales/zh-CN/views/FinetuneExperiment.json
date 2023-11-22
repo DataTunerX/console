@@ -2,8 +2,6 @@
   "finetuneExperiment": "微调实验",
   "status": "状态",
   "evaluationMethod": "评估方式",
-  "optimalresult": "最优结果",
-  "time": "用时",
   "basicLargeModel": "基础大模型",
   "dataSet": "数据集",
   "parameterGroup": "参数组",
@@ -25,8 +23,8 @@
   "taskName": "任务名称",
   "baseLargeModel": "基础大模型",
   "dataset": "数据集",
-  "hyperparameter": "超参组",
-  "modifyHyperparameterGroup": "修改超参组后，将会覆盖原有超参组的超参值。",
+  "hyperparameter": "参数组",
+  "modifyHyperparameterGroup": "修改参数组后，将会覆盖原有参数组的超参值。",
 
   "StopWorkloadDialog": {
     "header": "确定停止微调实验 {name} 吗？",
@@ -37,6 +35,7 @@
   "duration": "已持续时间",
   "highestScore": "最高评分",
   "taskStatus": "任务状态",
+  "jobComparison": "任务对比",
   "taskState": {
     "processing": "运行中",
     "failed": "失败",

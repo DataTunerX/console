@@ -200,6 +200,7 @@ const languages = computed(() => {
       max-width: 75%;
       margin-right: 10px;
       overflow: hidden;
+      font-weight: 700;
       text-decoration: none;
       text-overflow: ellipsis;
       white-space: nowrap;

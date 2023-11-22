@@ -1,19 +1,25 @@
 {
-  "create": "创建超参组",
-  "update": "更新超参组",
-  "delete":{
-    "header":"删除数据集",
-    "content":"确认删除超参组 {name} 吗？"
+  "create": "创建参数组",
+  "update": "更新参数组",
+  "delete": {
+    "header": "删除数据集",
+    "content": "确认删除参数组 {name} 吗？"
   },
 
   "name": "名称",
   "fineTuningType": "微调类型",
-  "referencedTask":"被引用任务",
+  "referencedTask": "被引用任务",
   "parameters": "参数预览",
-  "hyperparameterGroup": "超参组",
+  "hyperparameterGroup": "参数组",
   "configuration": "参数配置",
-  "hyperparameterGroupName": "超参组名称",
-  "parameterSet":"参数集",
-  "parameterDetail":"参数详情",
-  "hyperparameterGroupList": "超参组列表"
+  "hyperparameterGroupName": "参数组名称",
+  "parameterSet": "参数集",
+  "parameterDetail": "参数详情",
+  "hyperparameterGroupList": "参数组列表",
+
+  "quantization": {
+    "default": "默认",
+    "int4": "int4",
+    "int8": "int8"
+  }
 }

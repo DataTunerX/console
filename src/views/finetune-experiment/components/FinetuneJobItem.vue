@@ -79,13 +79,25 @@ const infos = computed(() => {
       >
         <template #kv-llm="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
+            <dao-hover-card :data="row.value?.split(',')">
+              <template #item="{ text }">
+                <dao-label-extend color="green-ecology">
+                  {{ text }}
+                </dao-label-extend>
+              </template>
+            </dao-hover-card>
           </dao-key-value-layout-item>
         </template>
 
         <template #kv-dataset="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
+            <dao-hover-card :data="row.value?.split(',')">
+              <template #item="{ text }">
+                <dao-label-extend color="blue">
+                  {{ text }}
+                </dao-label-extend>
+              </template>
+            </dao-hover-card>
           </dao-key-value-layout-item>
         </template>
 
@@ -111,8 +123,8 @@ const infos = computed(() => {
 <style lang="scss" scoped>
 .finetune-job-item {
   margin-top: 20px;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 15px;
+  margin-left: 15px;
 
   &__header {
     display: flex;

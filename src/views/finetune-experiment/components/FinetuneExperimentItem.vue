@@ -136,13 +136,25 @@ const infos = computed(() => {
 
         <template #kv-dataset="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
+            <dao-hover-card :data="row.value?.split(',')">
+              <!-- <template #item="{ text }">
+                <dao-label-extend color="orange">
+                  {{ text }}
+                </dao-label-extend>
+              </template> -->
+            </dao-hover-card>
           </dao-key-value-layout-item>
         </template>
 
         <template #kv-hyperparameter="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')" />
+            <dao-hover-card :data="row.value?.split(',')">
+              <!-- <template #item="{ text }">
+                <dao-label-extend color="purple">
+                  {{ text }}
+                </dao-label-extend>
+              </template> -->
+            </dao-hover-card>
           </dao-key-value-layout-item>
         </template>
       </dao-key-value-layout>
@@ -212,6 +224,7 @@ const infos = computed(() => {
       max-width: 75%;
       margin-right: 10px;
       overflow: hidden;
+      font-weight: 700;
       text-decoration: none;
       text-overflow: ellipsis;
       white-space: nowrap;

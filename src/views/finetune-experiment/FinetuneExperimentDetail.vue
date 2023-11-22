@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import {
@@ -12,6 +12,7 @@ import { useQueryTable } from '@/hooks/useQueryTable';
 import { useFinetuneExperiment } from './composition/finetune';
 import FinetuneJobItem from './components/FinetuneJobItem.vue';
 import ExperimentStatus from './components/ExperimentStatus.vue';
+import JobComparison from './components/JobComparison.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -66,7 +67,7 @@ const infos = computed(() => {
       value: '-',
     },
     {
-      label: t('views.FinetuneExperiment.time'),
+      label: t('views.FinetuneExperiment.duration'),
       value: '1小时32分',
     },
     // {
@@ -78,7 +79,7 @@ const infos = computed(() => {
     //   label: t('views.Dataset.header'),
     //   value: datasets?.join(','),
     //   slotId: 'dataset',
-    // },
+    // }
     // {
     //   label: t('views.FinetuneExperiment.hyperparameter'),
     //   value: hyperparameters?.join(','),
@@ -97,6 +98,18 @@ const {
   items, page, pageSize, total, search,
 } = useQueryTable<FinetuneJobWithName>(fetchDataset);
 
+const jobsWithStatus = computed(() => items.value?.map((job) => {
+  // TODO: 从微调任务中获取状态
+  const status = finetuneExperiment.value?.status?.jobsStatus?.find(
+    (item) => item.name === job.name,
+  );
+
+  return {
+    ...job,
+    status: status?.status,
+  };
+}));
+
 const { stop } = useFinetuneExperiment();
 
 const onConfirmStop = async () => {
@@ -106,7 +119,13 @@ const onConfirmStop = async () => {
 
 const curTab = ref('profile');
 
+const toList = () => {
+  router.push({ name: 'FinetuneExperimentList' });
+};
+
+watch(namespace, toList);
 </script>
+
 <template>
   <div class="finetune-experiment-detail console-main-container">
     <dao-header type="3rd">
@@ -180,14 +199,13 @@ const curTab = ref('profile');
         <dao-toolbar
           v-model:search="search.keywords"
           no-rounded
-          compact
-          :hide-refresh="true"
+          hide-refresh
           :fuzzy="{ key: 'fuzzy', single: true }"
           @refresh="fetchDataset"
         />
 
         <FinetuneJobItem
-          v-for="(experiment, index) in items"
+          v-for="(experiment, index) in jobsWithStatus"
           :key="index"
           :data="experiment"
           :name="name"
@@ -203,9 +221,9 @@ const curTab = ref('profile');
       </dao-tab-item>
       <dao-tab-item
         value="detail"
-        label="任务对比"
+        :label="$t('views.FinetuneExperiment.jobComparison')"
       >
-        <p>detail 的内容</p>
+        <job-comparison :jobs="jobsWithStatus" />
       </dao-tab-item>
     </dao-tabs>
   </div>

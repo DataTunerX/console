@@ -230,15 +230,6 @@ onMounted(async () => {
                   label="False"
                 />
               </dao-form-item-validate>
-
-              <!-- <dao-form-item-validate
-                class="w-[240px]"
-                label-width="0px"
-                name="spec.parameters.PEFT"
-                :tag="DaoCheckbox"
-              >
-                PEFT
-              </dao-form-item-validate> -->
             </div>
 
             <div class="flex space-x-5">
@@ -279,15 +270,15 @@ onMounted(async () => {
                 required
               >
                 <dao-option
-                  :label="t('common.default')"
+                  :label="t('views.Hyperparameter.quantization.default')"
                   :value="Quantization.default"
                 />
                 <dao-option
-                  label="int4"
+                  :label="t('views.Hyperparameter.quantization.int4')"
                   :value="Quantization.int4"
                 />
                 <dao-option
-                  label="int8"
+                  :label="t('views.Hyperparameter.quantization.int8')"
                   :value="Quantization.int8"
                 />
               </dao-form-item-validate>

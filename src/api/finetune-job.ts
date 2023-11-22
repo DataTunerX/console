@@ -116,6 +116,4 @@ export enum State {
 export const kind = 'FinetuneJob';
 export const apiVersion = 'finetune.datatunerx.io/v1beta1';
 
-// const jsonpath = '{.items[?(@.spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef=="hyperparameter")].metadata.name}';
-
 export const finetuneJobClient = new K8sClient<FinetuneJob>(apiVersion, kind);

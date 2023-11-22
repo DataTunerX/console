@@ -9,17 +9,17 @@ const routes = computed<NavRoute[]>(() => {
     {
       to: { name: 'FinetuneExperimentList' },
       display: i18n.t('components.AnakinHeader.menu.fineTuningExperiment'),
-      icon: 'icon-registry',
+      icon: 'icon-engine',
     },
     {
       to: { name: 'DatasetList' },
       display: i18n.t('components.AnakinHeader.menu.dataset'),
-      icon: 'icon-apps',
+      icon: 'icon-mspider',
     },
     {
       to: { name: 'HyperparameterList' },
       display: i18n.t('components.AnakinHeader.menu.hyperparameterGroup'),
-      icon: 'icon-config-file',
+      icon: 'icon-cluster',
     },
   ] as NavRoute[];
 

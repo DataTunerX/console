@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, watch } from 'vue';
 import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
-import { retrieveQuantization, useDeleteHyperparameter, useHyperparameter } from './composition/hyperparameter';
+import { filter } from 'lodash';
+import {
+  retrieveQuantization,
+  useDeleteHyperparameter,
+  useHyperparameter,
+} from './composition/hyperparameter';
+import { useFinetuneJob } from '../finetune-experiment-job/composition/job';
 
 const router = useRouter();
 const route = useRoute();
@@ -18,6 +24,21 @@ const { hyperparameter, fetchHyperparameter } = useHyperparameter();
 
 onBeforeMount(() => {
   fetchHyperparameter(namespace.value, name);
+});
+
+const { jobs, fetchJobs } = useFinetuneJob();
+
+onBeforeMount(() => {
+  fetchJobs(namespace.value);
+});
+
+const referenceJobs = computed<string[]>(() => {
+  const data = filter(
+    jobs.value,
+    (job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef === name,
+  ).map((job) => job.metadata?.name);
+
+  return data as string[];
 });
 
 // 基本信息
@@ -37,7 +58,6 @@ const infos = computed(() => {
     },
     {
       label: t('views.Hyperparameter.referencedTask'),
-      value: data.metadata.labels,
       slotId: 'tag',
     },
     {
@@ -81,7 +101,7 @@ const parameters = computed(() => {
       },
       {
         label: 'int4/8',
-        value: retrieveQuantization(params),
+        value: t(`views.Hyperparameter.quantization.${retrieveQuantization(params)}`),
       },
     ],
     [
@@ -122,13 +142,6 @@ const parameters = computed(() => {
   ];
 });
 
-// 获取标签字符串数组
-const getLabels = (row?: Record<string, string> | null) => {
-  if (!row) return [];
-
-  return Object.entries(row).map(([key, value]) => `${key}:${value}`);
-};
-
 const onEdit = () => {
   router.push({
     name: 'HyperparameterCreate',
@@ -144,10 +157,9 @@ const toList = () => {
   });
 };
 
-const { onConfirmDelete } = useDeleteHyperparameter(
-  namespace.value,
-  toList,
-);
+watch(namespace, toList);
+
+const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
 </script>
 
 <template>
@@ -171,13 +183,13 @@ const { onConfirmDelete } = useDeleteHyperparameter(
           type="tertiary"
           @click="onEdit"
         >
-          {{ t('common.edit') }}
+          {{ t("common.edit") }}
         </dao-button>
         <dao-button
           type="danger"
           @click="onConfirmDelete(hyperparameter?.metadata.name)"
         >
-          {{ t('common.delete') }}
+          {{ t("common.delete") }}
         </dao-button>
       </template>
     </dao-header>
@@ -194,7 +206,13 @@ const { onConfirmDelete } = useDeleteHyperparameter(
         >
           <template #kv-tag="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-hover-card :data="getLabels(row.value as Record<string, string> | null)" />
+              <dao-hover-card :data="referenceJobs">
+                <template #item="{ text }">
+                  <dao-label-extend color="canary">
+                    {{ text }}
+                  </dao-label-extend>
+                </template>
+              </dao-hover-card>
             </dao-key-value-layout-item>
           </template>
         </dao-key-value-layout>

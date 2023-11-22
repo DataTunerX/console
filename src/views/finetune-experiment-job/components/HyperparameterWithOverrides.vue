@@ -12,9 +12,10 @@ const props = defineProps({
 
 <template>
   <dao-tooltip placement="right-start">
-    <dao-tag>
+    <dao-label-extend color="orange">
       {{ props.data.hyperparameterRef }}
-    </dao-tag>
+    </dao-label-extend>
+
     <template #content>
       <span class="font-bold">Overrides</span>
       <div class="flex flex-col">

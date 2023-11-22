@@ -8,13 +8,19 @@
 
   "name": "Name",
   "fineTuningType": "Fine-tuning",
-  "referencedTask": "Referenced Task",
+  "referencedTask": "Referenced Jobs",
   "parameters": "Parameters Preview",
   "hyperparameterGroup": "Hyperparameter",
   "configuration": "Configuration",
   "hyperparameterGroupName": "Hyperparameter Group Name",
   "parameterSet":"Parameter Set",
   "parameterDetail":"Parameter Detail",
-  "hyperparameterGroupList": "Hyperparameter Group List"
+  "hyperparameterGroupList": "Hyperparameter Group List",
+
+  "quantization":{
+    "default": "default",
+    "int4": "int4",
+    "int8": "int8"
+  }
 
 }

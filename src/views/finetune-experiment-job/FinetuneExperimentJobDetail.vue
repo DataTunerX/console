@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useNamespaceStore } from '@/stores/namespace';
 import { FinetuneJob, finetuneJobClient } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
+import { storeToRefs } from 'pinia';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 
@@ -17,13 +18,13 @@ const route = useRoute();
 const name = route.params.name as string;
 const jobName = route.params.jobname as string;
 
-const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(useNamespaceStore());
 
 const finetuneJob = ref<FinetuneJob>({});
 
 const fetchDataset = () => {
   finetuneJobClient
-    .read(namespaceStore.namespace, jobName)
+    .read(namespace.value, jobName)
     .then((res) => {
       finetuneJob.value = res.data;
     });
@@ -50,7 +51,7 @@ const infos = computed(() => {
       value: finetuneJob.value.spec?.scoringConfig?.name,
     },
     {
-      label: t('views.FinetuneExperiment.time'),
+      label: t('views.FinetuneExperiment.duration'),
       value: '-',
     },
     {
@@ -79,6 +80,12 @@ const infos = computed(() => {
 
   return items;
 });
+
+const toList = () => {
+  router.push({ name: 'FinetuneExperimentList' });
+};
+
+watch(namespace, toList);
 
 </script>
 
@@ -125,12 +132,16 @@ const infos = computed(() => {
           </template>
           <template #kv-llm="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-tag>{{ row.value }}</dao-tag>
+              <dao-label-extend color="green-ecology">
+                {{ row.value }}
+              </dao-label-extend>
             </dao-key-value-layout-item>
           </template>
           <template #kv-dataset="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-tag>{{ row.value }}</dao-tag>
+              <dao-label-extend color="blue">
+                {{ row.value }}
+              </dao-label-extend>
             </dao-key-value-layout-item>
           </template>
           <template #kv-hyperparameter="{ row }">

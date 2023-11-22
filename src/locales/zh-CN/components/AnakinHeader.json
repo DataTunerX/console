@@ -8,7 +8,7 @@
   "menu": {
     "fineTuningExperiment": "微调实验",
     "dataset": "数据集",
-    "hyperparameterGroup": "超参组"
+    "hyperparameterGroup": "参数组"
   },
   "feedback": "建议反馈",
   "help": "帮助文档",

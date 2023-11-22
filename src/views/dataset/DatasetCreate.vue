@@ -230,7 +230,7 @@ const onSubmit = handleSubmit(async (values) => {
       await datasetClient.create(namespaceStore.namespace, convertDatasetForPost(values));
     }
     nSuccess(
-      t('common.notyError', {
+      t('common.notySuccess', {
         name: !isUpdate.value ? t('common.create') : t('common.update'),
       }),
     );

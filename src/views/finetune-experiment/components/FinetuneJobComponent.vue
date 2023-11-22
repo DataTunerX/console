@@ -3,7 +3,7 @@ import { DaoSelect } from '@dao-style/core';
 import { Dataset } from '@/api/dataset';
 import { Hyperparameter, Parameters } from '@/api/hyperparameter';
 import { LargeLanguageModel } from '@/api/large-language-model';
-import { PropType } from 'vue';
+import { PropType, watchEffect } from 'vue';
 import { useField } from 'vee-validate';
 import HyperParameterOverride from './HyperparameterOverride.vue';
 
@@ -14,24 +14,28 @@ const props = defineProps({
   },
   llms: {
     type: Array as PropType<Array<LargeLanguageModel>>,
+    default: () => [],
     required: true,
   },
   datasets: {
     type: Array as PropType<Array<Dataset>>,
+    default: () => [],
     required: true,
   },
   hyperparameters: {
     type: Array as PropType<Array<Hyperparameter>>,
+    default: () => [],
     required: true,
   },
 });
 
 const hyperparametersMap = new Map();
 
-// eslint-disable-next-line no-restricted-syntax
-for (const hp of props.hyperparameters) {
-  hyperparametersMap.set(hp.metadata.name, hp);
-}
+watchEffect(() => {
+  props.hyperparameters.forEach((hp) => {
+    hyperparametersMap.set(hp.metadata.name, hp);
+  });
+});
 
 const { value: overrides } = useField<Partial<Parameters>>(
   () => `${props.name}.spec.finetune.finetuneSpec.hyperparameter.overrides`,
@@ -44,7 +48,7 @@ const { value: hyperparameterRef } = useField<string>(
 <template>
   <dao-form-item-validate
     :label="$t('views.FinetuneExperiment.taskName')"
-    :name="`${name}.metadata.name`"
+    :name="`${name}.name`"
     required
     :control-props="{
       class: 'input-form-width',

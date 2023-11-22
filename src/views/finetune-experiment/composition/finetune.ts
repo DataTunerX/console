@@ -4,14 +4,51 @@ import {
   kind,
   FinetuneExperiment,
   finetuneExperimentClient,
+  FinetuneJobWithName,
 } from '@/api/finetune-experiment';
-import { FinetuneJob } from '@/api/finetune-job';
 import { BuildInScoringPlugin, ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
 import { ImagePullPolicy } from '@/api/finetune';
 import { FinetuneExperimentForRender } from '@/api/finetune-experiment-for-render';
 import { createDialog } from '@dao-style/extend';
 import StopExperimentDialog from '../components/StopExperimentDialog.vue';
+
+const defaultFinetuneJob: FinetuneJobWithName = {
+  name: '',
+  spec: {
+    finetune: {
+      finetuneSpec: {
+        image: {
+          name: '',
+          imagePullPolicy: ImagePullPolicy.IfNotPresent,
+        },
+        resource: {
+          limits: {
+            cpu: '2',
+            gpu: '1',
+            memory: '4Gi',
+          },
+          requests: {
+            cpu: '2',
+            gpu: '1',
+            memory: '4Gi',
+          },
+        },
+        dataset: '',
+        llm: '',
+        hyperparameter: {
+          hyperparameterRef: '',
+          overrides: {},
+          parameters: {},
+        },
+      },
+    },
+    scoringConfig: {
+      name: '',
+    },
+    serveConfig: {},
+  },
+};
 
 const defaultFinetuneExperiment: FinetuneExperimentForRender = {
   apiVersion,
@@ -20,7 +57,7 @@ const defaultFinetuneExperiment: FinetuneExperimentForRender = {
     name: '',
   },
   spec: {
-    finetuneJobs: [],
+    finetuneJobs: [defaultFinetuneJob],
     scoringConfig: {
       name: BuildInScoringPlugin,
       parameters: {},
@@ -56,44 +93,7 @@ export const useFinetuneExperiment = () => {
 };
 
 export const useFinetuneJob = () => {
-  const finetuneJob = ref<FinetuneJob>({
-    metadata: {
-      name: '',
-    },
-    spec: {
-      finetune: {
-        finetuneSpec: {
-          image: {
-            name: '',
-            imagePullPolicy: ImagePullPolicy.IfNotPresent,
-          },
-          resource: {
-            limits: {
-              cpu: '2',
-              gpu: '1',
-              memory: '4Gi',
-            },
-            requests: {
-              cpu: '2',
-              gpu: '1',
-              memory: '4Gi',
-            },
-          },
-          dataset: '',
-          llm: '',
-          hyperparameter: {
-            hyperparameterRef: '',
-            overrides: {},
-            parameters: {},
-          },
-        },
-      },
-      scoringConfig: {
-        name: '',
-      },
-      serveConfig: {},
-    },
-  });
+  const finetuneJob = ref<FinetuneJobWithName>(defaultFinetuneJob);
 
   return { finetuneJob };
 };
