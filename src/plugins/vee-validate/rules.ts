@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { findDuplicateIndices } from '@/utils/findDuplicate';
 import { useI18n } from 'vue-i18n';
 import { addMethod, array, Flags } from 'yup'; // Import the ArraySchema type
@@ -47,5 +46,3 @@ addMethod(array, 'unique', function unique(mapper: MapperFunction, label: string
     },
   });
 });
-
-export * as yup from 'yup';

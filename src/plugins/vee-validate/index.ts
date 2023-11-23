@@ -9,7 +9,9 @@ import {
   GetKey, KeyValOptions, KeyValRuleExpression, UseFieldReturn,
 } from './types';
 
-export * from './rules';
+import './rules';
+
+export * as yup from 'yup';
 
 export const useFieldByProps = <
   T extends object,

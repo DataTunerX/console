@@ -227,7 +227,7 @@ const onSubmit = async () => {
             :name="`${job.key}`"
             :title="job.value.name"
           >
-            <FinetuneJobComponent
+            <finetune-job-component
               :llms="largeLanguageModels"
               :datasets="datasets"
               :hyperparameters="hyperparameters"

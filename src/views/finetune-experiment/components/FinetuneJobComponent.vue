@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
-import { Dataset } from '@/api/dataset';
+import { Dataset, State } from '@/api/dataset';
 import { Hyperparameter, Parameters } from '@/api/hyperparameter';
 import { LargeLanguageModel } from '@/api/large-language-model';
 import { PropType, watchEffect } from 'vue';
 import { useField } from 'vee-validate';
+import DatasetStatus from '@/views/dataset/components/DatasetStatus.vue';
 import HyperParameterOverride from './HyperparameterOverride.vue';
 
 const props = defineProps({
@@ -43,6 +44,8 @@ const { value: overrides } = useField<Partial<Parameters>>(
 const { value: hyperparameterRef } = useField<string>(
   () => `${props.name}.spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef`,
 );
+
+const isDatasetDisabled = (dataset: Dataset) => dataset.status?.state !== State.Ready;
 </script>
 
 <template>
@@ -84,7 +87,13 @@ const { value: hyperparameterRef } = useField<string>(
       :key="dataset.metadata?.name"
       :label="dataset.metadata?.name"
       :value="dataset.metadata?.name"
-    />
+      :disabled="isDatasetDisabled(dataset)"
+    >
+      <div class="flex justify-between">
+        <span>{{ dataset.metadata?.name }}</span>
+        <dataset-status :data="dataset" />
+      </div>
+    </dao-option>
   </dao-form-item-validate>
 
   <dao-form-item-validate
@@ -111,7 +120,11 @@ const { value: hyperparameterRef } = useField<string>(
       :origin="hyperparametersMap.get(hyperparameterRef)"
     />
     <template #helper>
-      <dao-helper-text>{{ $t('views.FinetuneExperiment.modifyHyperparameterGroup') }}</dao-helper-text>
+      <dao-helper-text>
+        {{
+          $t("views.FinetuneExperiment.modifyHyperparameterGroup")
+        }}
+      </dao-helper-text>
     </template>
   </dao-form-item>
 </template>
