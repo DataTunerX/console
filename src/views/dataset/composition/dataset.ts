@@ -81,14 +81,14 @@ export function useDataset() {
   });
 
   const fetchDataset = async (namespace: string, name: string) => {
-    await datasetClient.read(namespace, name).then((res) => {
-      state.dataset = convertDatasetForRender(res.data);
+    await datasetClient.read(namespace, name).then(({ data }) => {
+      state.dataset = convertDatasetForRender(data);
     });
   };
 
   const fetchDatasets = async (namespace: string) => {
-    await datasetClient.list(namespace).then((res) => {
-      state.datasets = res.data.items;
+    await datasetClient.list(namespace).then(({ data }) => {
+      state.datasets = data.items;
     });
   };
 

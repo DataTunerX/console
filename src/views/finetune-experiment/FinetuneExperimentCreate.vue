@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
-import { useFieldArray, useForm } from 'vee-validate';
+import { useFieldArray, useFieldError, useForm } from 'vee-validate';
 import {
   string, object, array, number,
 } from 'yup';
 import {
   markRaw, ref, computed, watch,
+  onBeforeMount,
 } from 'vue';
 import { FinetuneJobWithName, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
@@ -53,7 +54,7 @@ const validationSchema = markRaw(
       name: string().RFC1123Label().required().label(t('views.FinetuneExperiment.experimentName')),
     }),
     spec: object({
-      finetuneJobs: array().of(
+      finetuneJobs: array<FinetuneJobWithName>().of(
         object({
           name: string().required().label(t('views.FinetuneExperiment.taskName')),
           spec: object({
@@ -80,7 +81,7 @@ const validationSchema = markRaw(
             }),
           }),
         }),
-      ).min(1),
+      ).min(1).unique((job) => job.name, t('views.FinetuneExperiment.taskName')),
       scoringConfig: object({
         name: string().required().label(t('views.FinetuneExperiment.scoringConfig')),
         parameters: object().test('parameters', '', async () => {
@@ -98,7 +99,7 @@ const validationSchema = markRaw(
 );
 
 const {
-  validate, errorBag, values, defineComponentBinds, resetForm,
+  validate, errorBag, values, defineComponentBinds,
 } = useForm<FinetuneExperimentForRender>({
   initialValues: finetuneExperiment,
   validationSchema,
@@ -120,6 +121,8 @@ const onAdd = () => {
 
 const onlyOneJob = computed(() => jobs.value.length === 1);
 
+const jobDuplicateError = useFieldError('spec.finetuneJobs');
+
 const init = () => {
   Promise.all([
     fetchLargeLanguageModels(namespace.value),
@@ -129,12 +132,8 @@ const init = () => {
   ]);
 };
 
-watch(namespace, init, {
-  immediate: true,
-});
-
-watch(namespace, () => {
-  resetForm();
+onBeforeMount(() => {
+  init();
 });
 
 const activeSection = ref([`${jobs.value[0].key}`]);
@@ -144,6 +143,8 @@ const toList = () => {
     name: 'FinetuneExperimentList',
   });
 };
+
+watch(namespace, toList);
 
 const onSubmit = async () => {
   const { valid } = await validate();
@@ -248,6 +249,9 @@ const onSubmit = async () => {
               />
             </template>
           </dao-expansion-item>
+          <dao-error-text class="mt-[10px]">
+            {{ jobDuplicateError }}
+          </dao-error-text>
         </dao-expansion>
         <dao-text-button
           :prop="{

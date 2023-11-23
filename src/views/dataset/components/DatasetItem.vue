@@ -54,17 +54,17 @@ const infos = computed(() => {
       value: splits?.train?.file,
     },
     {
-      label: t('common.createTime'),
-      value: useDateFormat(creationTimestamp),
+      label: t('views.Dataset.tag'),
+      value: tags?.join(','),
+      slotId: 'tag',
     },
     {
       label: t('views.Dataset.validationData'),
       value: splits?.validate?.file,
     },
     {
-      label: t('views.Dataset.tag'),
-      value: tags?.join(','),
-      slotId: 'tag',
+      label: t('common.createTime'),
+      value: useDateFormat(creationTimestamp),
     },
     {
       label: t('views.Dataset.testingData'),

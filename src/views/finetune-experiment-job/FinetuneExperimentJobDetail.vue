@@ -8,6 +8,7 @@ import { FinetuneJob, finetuneJobClient } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
 import { storeToRefs } from 'pinia';
+import { useRelativeTime } from '@/utils/useRelativeTime';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 
@@ -16,7 +17,7 @@ const router = useRouter();
 const route = useRoute();
 
 const name = route.params.name as string;
-const jobName = route.params.jobname as string;
+const jobName = route.params.jobName as string;
 
 const { namespace } = storeToRefs(useNamespaceStore());
 
@@ -25,8 +26,8 @@ const finetuneJob = ref<FinetuneJob>({});
 const fetchDataset = () => {
   finetuneJobClient
     .read(namespace.value, jobName)
-    .then((res) => {
-      finetuneJob.value = res.data;
+    .then(({ data }) => {
+      finetuneJob.value = data;
     });
 };
 
@@ -36,6 +37,7 @@ fetchDataset();
 // 显示基本信息
 const infos = computed(() => {
   const finetuneSpec = finetuneJob.value.spec?.finetune.finetuneSpec;
+  const creationTimestamp = finetuneJob.value?.metadata?.creationTimestamp;
 
   const items = [
     {
@@ -52,7 +54,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.duration'),
-      value: '-',
+      value: useRelativeTime(creationTimestamp),
     },
     {
       label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -74,7 +76,7 @@ const infos = computed(() => {
     },
     {
       label: t('common.createTime'),
-      value: useDateFormat(finetuneJob.value?.metadata?.creationTimestamp),
+      value: useDateFormat(creationTimestamp),
     },
   ];
 
@@ -98,12 +100,9 @@ watch(namespace, toList);
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            :label="t('views.FinetuneExperiment.finetuneExperiment')"
-            :to="{ name: 'FinetuneExperimentList' }"
-          />
-          <dao-breadcrumb-item
-            :label="name"
-            :to="{ name: 'FinetuneExperimentDetail' }"
+            :label="t('views.FinetuneExperiment.finetuneExperimentTitle')"
+            :value="name"
+            :to="{ name: 'FinetuneExperimentDetail', }"
           />
           <dao-breadcrumb-item
             :label="t('views.FinetuneExperiment.finetuneJob')"

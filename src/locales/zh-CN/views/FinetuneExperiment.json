@@ -1,5 +1,6 @@
 {
   "finetuneExperiment": "微调实验",
+  "finetuneExperimentTitle": "微调实验:",
   "status": "状态",
   "evaluationMethod": "评估方式",
   "basicLargeModel": "基础大模型",
@@ -25,6 +26,10 @@
   "dataset": "数据集",
   "hyperparameter": "参数组",
   "modifyHyperparameterGroup": "修改参数组后，将会覆盖原有参数组的超参值。",
+
+  "error":{
+    "duplicateName": "第 {items} 项{label}重复"
+  },
 
   "StopWorkloadDialog": {
     "header": "确定停止微调实验 {name} 吗？",

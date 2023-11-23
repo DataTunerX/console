@@ -11,9 +11,9 @@ export const useFinetuneJob = () => {
 
   const fetchJobs = async (namespace: string) => {
     try {
-      const res = await finetuneJobClient.list(namespace);
+      const { data } = await finetuneJobClient.list(namespace);
 
-      state.jobs = res.data.items;
+      state.jobs = data.items;
     } catch (error) {
       nError(t('common.fetchFailed'), error);
     }

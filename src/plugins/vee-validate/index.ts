@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable max-len */
 import { reactive } from 'vue';
 import { useField } from 'vee-validate';
 import type { DeepRequired } from 'utility-types';
 import { get, set } from 'lodash';
+
 import {
   GetKey, KeyValOptions, KeyValRuleExpression, UseFieldReturn,
 } from './types';
 
-export * as yup from 'yup';
+export * from './rules';
 
 export const useFieldByProps = <
   T extends object,

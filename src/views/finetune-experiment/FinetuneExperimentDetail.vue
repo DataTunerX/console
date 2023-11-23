@@ -9,6 +9,9 @@ import {
 import { useDateFormat } from '@dao-style/extend';
 import { storeToRefs } from 'pinia';
 import { useQueryTable } from '@/hooks/useQueryTable';
+import { useRelativeTime } from '@/utils/useRelativeTime';
+import { AxiosResponse } from 'axios';
+import { List } from '@/plugins/axios/client';
 import { useFinetuneExperiment } from './composition/finetune';
 import FinetuneJobItem from './components/FinetuneJobItem.vue';
 import ExperimentStatus from './components/ExperimentStatus.vue';
@@ -24,17 +27,6 @@ const name = route.params.name as string;
 const finetuneExperiment = ref<FinetuneExperiment>({});
 
 const canStop = computed(() => finetuneExperiment.value.status?.state === FinetuneExperimentState.Pending);
-
-// 加载微调实验详情
-const fetchDataset = async () => finetuneExperimentClient.read(namespace.value, name).then((res) => {
-  finetuneExperiment.value = res.data;
-
-  return {
-    data: {
-      items: res.data.spec?.finetuneJobs,
-    },
-  };
-});
 
 const infos = computed(() => {
   // const finetuneExperimentData = finetuneExperiment.value?.spec;
@@ -68,7 +60,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.duration'),
-      value: '1小时32分',
+      value: useRelativeTime(creationTimestamp),
     },
     // {
     //   label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -94,9 +86,20 @@ const infos = computed(() => {
   return items;
 });
 
+// 加载微调实验详情
+const fetchExperiment = async () => finetuneExperimentClient.read(namespace.value, name).then(({ data }) => {
+  finetuneExperiment.value = data;
+
+  return {
+    data: {
+      items: data.spec?.finetuneJobs,
+    },
+  } as AxiosResponse<List<FinetuneJobWithName>>;
+});
+
 const {
   items, page, pageSize, total, search,
-} = useQueryTable<FinetuneJobWithName>(fetchDataset);
+} = useQueryTable<FinetuneJobWithName>(fetchExperiment);
 
 const jobsWithStatus = computed(() => items.value?.map((job) => {
   // TODO: 从微调任务中获取状态
@@ -114,7 +117,7 @@ const { stop } = useFinetuneExperiment();
 
 const onConfirmStop = async () => {
   await stop(finetuneExperiment.value);
-  fetchDataset();
+  fetchExperiment();
 };
 
 const curTab = ref('profile');
@@ -201,7 +204,7 @@ watch(namespace, toList);
           no-rounded
           hide-refresh
           :fuzzy="{ key: 'fuzzy', single: true }"
-          @refresh="fetchDataset"
+          @refresh="fetchExperiment"
         />
 
         <FinetuneJobItem

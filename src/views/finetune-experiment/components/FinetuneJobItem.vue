@@ -59,10 +59,11 @@ const infos = computed(() => {
     <template #title>
       <div class="finetune-job-item__header">
         <router-link
+          v-if="props.data.name"
           class="finetune-job-item__header__text finetune-job-item__header__text--link"
           :to="{
             name: 'FinetuneExperimentJobDetail',
-            params: { name: props.name, jobname: props.data.name },
+            params: { name: props.name, jobName: props.data.name },
           }"
         >
           {{ props.data.name }}

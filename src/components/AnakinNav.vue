@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { i18n } from '@/plugins';
-import { getActiveRouteFold } from '@/lib/util';
 import { NavRoute } from '@/types/common';
+import { getActiveRouteFold } from '@/utils/util';
 
 const routes = computed<NavRoute[]>(() => {
   const items = [

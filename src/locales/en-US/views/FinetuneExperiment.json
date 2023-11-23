@@ -1,5 +1,6 @@
 {
   "finetuneExperiment": "Fine-tuning Experiment",
+  "finetuneExperimentTitle": "Fine-tuning Experiment:",
   "status": "Status",
   "evaluationMethod": "Evaluation Method",
   "basicLargeModel": "Basic Large Language Model",
@@ -25,6 +26,10 @@
   "dataset": "Dataset",
   "hyperparameter": "Hyperparameter",
   "modifyHyperparameterGroup": "Modifying the hyperparameter group will overwrite the hyperparameter values of the original group.",
+
+  "error":{
+    "duplicateName": "{label} {items} is duplicated"
+  },
 
   "finetuneJob": "Finetune Job",
   "finetuneStatus": "Finetune Status",

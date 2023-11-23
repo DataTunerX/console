@@ -59,9 +59,9 @@ export const useHyperparameter = () => {
   // 获取指定命名空间和名称的超参数
   const fetchHyperparameter = async (namespace: string, name: string) => {
     try {
-      const res = await hyperparameterClient.read(namespace, name);
+      const { data } = await hyperparameterClient.read(namespace, name);
 
-      state.hyperparameter = res.data;
+      state.hyperparameter = data;
     } catch (error) {
       nError(
         t('common.notyError', {
@@ -77,9 +77,9 @@ export const useHyperparameter = () => {
   const fetchHyperparameters = async (namespace: string) => {
     try {
       state.loading = true;
-      const res = await hyperparameterClient.list(namespace);
+      const { data } = await hyperparameterClient.list(namespace);
 
-      state.hyperparameters = res.data.items;
+      state.hyperparameters = data.items;
     } catch (error) {
       nError(
         t('common.notyError', {

@@ -72,9 +72,9 @@ export const useFinetuneExperiment = () => {
   });
 
   const fetchFinetuneExperiments = async (namespace: string) => {
-    const res = await finetuneExperimentClient.list(namespace);
+    const { data } = await finetuneExperimentClient.list(namespace);
 
-    state.finetuneExperiments = res.data.items;
+    state.finetuneExperiments = data.items;
   };
 
   const stop = (workload: FinetuneExperiment) => {
@@ -104,9 +104,9 @@ export const useScoringConfig = () => {
   });
 
   const fetchScoringConfigs = async (namespace: string) => {
-    const res = await scoringConfigClient.list(namespace);
+    const { data } = await scoringConfigClient.list(namespace);
 
-    state.scoringConfigs = res.data.items;
+    state.scoringConfigs = data.items;
   };
 
   return {
@@ -121,9 +121,9 @@ export const useLargeLanguageModel = () => {
   });
 
   const fetchLargeLanguageModels = async (namespace: string) => {
-    const res = await largeLanguageModelClient.list(namespace);
+    const { data } = await largeLanguageModelClient.list(namespace);
 
-    state.largeLanguageModels = res.data.items;
+    state.largeLanguageModels = data.items;
   };
 
   return {
