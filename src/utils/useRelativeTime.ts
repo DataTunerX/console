@@ -1,5 +1,5 @@
 import { dayjs } from '@/plugins/dayjs';
-import { isNil } from 'lodash';
+import isNil from 'lodash/isNil';
 
 type DateTime = string | number | Date | dayjs.Dayjs | null | undefined
 

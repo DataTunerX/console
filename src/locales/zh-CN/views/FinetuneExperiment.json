@@ -9,7 +9,6 @@
   "results": "评估结果",
   "contrast": "对比",
   "taskList": "任务列表",
-  "pleaseEnter": "请输入容器组名称搜索",
   "stopConfirm": "确认停止微调实验 {finetuneToShop} 吗？",
 
   "createFineTuningExperiment": "创建微调实验",

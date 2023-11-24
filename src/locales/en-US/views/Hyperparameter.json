@@ -1,26 +1,24 @@
 {
-  "create": "Create Hyperparameter",
-  "update": "Update Hyperparameter",
-  "delete":{
-    "header":"Delete Hyperparameter",
-    "content":"Are you sure to delete the hyperparameter: {name}?"
+  "create": "Create Hyperparameter Group",
+  "update": "Update Hyperparameter Group",
+  "delete": {
+    "header": "Delete Hyperparameter Group",
+    "content": "Are you sure you want to delete the hyperparameter group {name}?"
   },
 
   "name": "Name",
-  "fineTuningType": "Fine-tuning",
-  "referencedTask": "Referenced Jobs",
-  "parameters": "Parameters Preview",
-  "hyperparameterGroup": "Hyperparameter",
-  "configuration": "Configuration",
+  "fineTuningType": "Fine-tuning Type",
+  "referencedTask": "Referenced Task",
+  "parameters": "Hyperparameter Preview",
+  "hyperparameterGroup": "Hyperparameter Group",
+  "configuration": "Hyperparameter Configuration",
   "hyperparameterGroupName": "Hyperparameter Group Name",
-  "parameterSet":"Parameter Set",
-  "parameterDetail":"Parameter Detail",
+  "parameterDetail": "Hyperparameter Details",
   "hyperparameterGroupList": "Hyperparameter Group List",
 
-  "quantization":{
-    "default": "default",
+  "quantization": {
+    "default": "Default",
     "int4": "int4",
     "int8": "int8"
   }
-
 }

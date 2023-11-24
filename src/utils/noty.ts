@@ -1,6 +1,6 @@
 import { noty } from '@/plugins/dao-style';
 import { i18n } from '@/plugins/vue-i18n';
-import { capitalize } from 'lodash';
+import capitalize from 'lodash/capitalize';
 
 export type grpcError = {
   code: number;

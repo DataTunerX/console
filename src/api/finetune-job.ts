@@ -3,6 +3,9 @@ import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
 import { Toleration } from 'kubernetes-types/core/v1';
 import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
+
+export const Theme = 'canary';
+
 /**
  * FinetuneJob is the Schema for the finetunejobs API
  */

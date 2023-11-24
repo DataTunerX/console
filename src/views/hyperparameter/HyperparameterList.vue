@@ -2,12 +2,14 @@
 import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
-import { type Hyperparameter, hyperparameterClient, Parameters } from '@/api/hyperparameter';
+import {
+  type Hyperparameter, Theme, hyperparameterClient, Parameters,
+} from '@/api/hyperparameter';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
-import { omit } from 'lodash';
+import omit from 'lodash/omit';
 import { generateQueryString } from '@/utils/queryString';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { retrieveQuantization, useDeleteHyperparameter } from './composition/hyperparameter';
@@ -123,7 +125,7 @@ const onCreate = () => {
       <template #td-parameters="{ row }">
         <dao-hover-card :data="regroupParameters(row.spec.parameters)">
           <template #item="{ text }">
-            <dao-label-extend color="purple">
+            <dao-label-extend :color="Theme">
               {{ text }}
             </dao-label-extend>
           </template>

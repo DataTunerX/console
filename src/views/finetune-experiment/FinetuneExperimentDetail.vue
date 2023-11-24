@@ -4,7 +4,10 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import {
-  FinetuneJobWithName, FinetuneExperiment, finetuneExperimentClient, State as FinetuneExperimentState,
+  FinetuneJobWithName,
+  FinetuneExperiment,
+  finetuneExperimentClient,
+  State as FinetuneExperimentState,
 } from '@/api/finetune-experiment';
 import { useDateFormat } from '@dao-style/extend';
 import { storeToRefs } from 'pinia';
@@ -26,7 +29,9 @@ const name = route.params.name as string;
 
 const finetuneExperiment = ref<FinetuneExperiment>({});
 
-const canStop = computed(() => finetuneExperiment.value.status?.state === FinetuneExperimentState.Pending);
+const canStop = computed(
+  () => finetuneExperiment.value.status?.state === FinetuneExperimentState.Pending,
+);
 
 const infos = computed(() => {
   // const finetuneExperimentData = finetuneExperiment.value?.spec;
@@ -40,6 +45,12 @@ const infos = computed(() => {
   // const hyperparameters = finetuneExperimentData?.finetuneJobs.map(
   //   (job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
   // );
+
+  let to: string | undefined;
+
+  if (finetuneExperiment.value.status?.state !== FinetuneExperimentState.Processing) {
+    to = finetuneExperiment.value.status?.stats;
+  }
 
   const items = [
     {
@@ -60,7 +71,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.duration'),
-      value: useRelativeTime(creationTimestamp),
+      value: useRelativeTime(creationTimestamp, to),
     },
     // {
     //   label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -207,7 +218,7 @@ watch(namespace, toList);
           @refresh="fetchExperiment"
         />
 
-        <FinetuneJobItem
+        <finetune-job-item
           v-for="(experiment, index) in jobsWithStatus"
           :key="index"
           :data="experiment"

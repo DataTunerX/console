@@ -6,7 +6,7 @@
     "logout": "Logout"
   },
   "menu": {
-    "fineTuningExperiment": "Fine-tuning Experiment",
+    "fineTuningExperiment": "Fine-tune Experiment",
     "dataset": "Dataset",
     "hyperparameterGroup": "Hyperparameter"
   },

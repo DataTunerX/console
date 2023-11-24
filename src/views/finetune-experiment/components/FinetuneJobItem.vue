@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { FinetuneJobWithName } from '@/api/finetune-experiment';
 import { PropType, computed } from 'vue';
+import { Theme as datasetTheme } from '@/api/dataset';
+import { Theme as llmTheme } from '@/api/large-language-model';
 import { useI18n } from 'vue-i18n';
 import ExperimentJobStatus from '@/views/finetune-experiment-job/components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from '@/views/finetune-experiment-job/components/HyperparameterWithOverrides.vue';
@@ -82,7 +84,7 @@ const infos = computed(() => {
           <dao-key-value-layout-item :label="row.label">
             <dao-hover-card :data="row.value?.split(',')">
               <template #item="{ text }">
-                <dao-label-extend color="green-ecology">
+                <dao-label-extend :color="llmTheme">
                   {{ text }}
                 </dao-label-extend>
               </template>
@@ -94,7 +96,7 @@ const infos = computed(() => {
           <dao-key-value-layout-item :label="row.label">
             <dao-hover-card :data="row.value?.split(',')">
               <template #item="{ text }">
-                <dao-label-extend color="blue">
+                <dao-label-extend :color="datasetTheme">
                   {{ text }}
                 </dao-label-extend>
               </template>

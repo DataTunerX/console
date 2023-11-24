@@ -4,6 +4,7 @@ import { useDateFormat } from '@dao-style/extend';
 import { FinetuneExperiment, State as FinetuneExperimentState } from '@/api/finetune-experiment';
 import { useI18n } from 'vue-i18n';
 import { State as FinetuneJobState } from '@/api/finetune-job';
+import { useRelativeTime } from '@/utils/useRelativeTime';
 import ExperimentStatus from './ExperimentStatus.vue';
 
 const props = defineProps({
@@ -32,15 +33,22 @@ const readyJobs = computed(() => {
 });
 
 const infos = computed(() => {
-  const { data: { metadata, spec } } = props;
+  const {
+    data: { metadata, spec },
+  } = props;
   const creationTimestamp = metadata?.creationTimestamp;
-  const llms = spec?.finetuneJobs
-    .map((job) => job.spec?.finetune.finetuneSpec.llm)
-    .filter((i) => i);
-  const datasets = spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.dataset);
-  const hyperparameters = spec?.finetuneJobs.map(
-    (job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
-  );
+
+  const llms = [...new Set(spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.llm))];
+  const datasets = [
+    ...new Set(spec?.finetuneJobs.map((job) => job.spec?.finetune.finetuneSpec.dataset)),
+  ];
+  const hyperparameters = [
+    ...new Set(
+      spec?.finetuneJobs.map(
+        (job) => job.spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
+      ),
+    ),
+  ];
 
   const items = [
     {
@@ -69,6 +77,18 @@ const infos = computed(() => {
   ];
 
   return items;
+});
+
+const elapsedRuntime = computed(() => {
+  const { status } = props.data;
+  const startTime = props.data.metadata?.creationTimestamp;
+  let endTime: string | undefined;
+
+  if (status?.state !== FinetuneExperimentState.Processing) {
+    endTime = status?.stats;
+  }
+
+  return useRelativeTime(startTime, endTime);
 });
 </script>
 
@@ -109,14 +129,14 @@ const infos = computed(() => {
               :disabled="props.data.status?.state === FinetuneExperimentState.Pending"
               @click="stopExperiment"
             >
-              {{ $t('common.stop') }}
+              {{ $t("common.stop") }}
             </dao-dropdown-item>
             <dao-dropdown-item type="divider" />
             <dao-dropdown-item
               color="red"
               @click="onDelete"
             >
-              {{ $t('common.delete') }}
+              {{ $t("common.delete") }}
             </dao-dropdown-item>
           </dao-dropdown-menu>
         </template>
@@ -136,25 +156,13 @@ const infos = computed(() => {
 
         <template #kv-dataset="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')">
-              <!-- <template #item="{ text }">
-                <dao-label-extend color="orange">
-                  {{ text }}
-                </dao-label-extend>
-              </template> -->
-            </dao-hover-card>
+            <dao-hover-card :data="row.value?.split(',')" />
           </dao-key-value-layout-item>
         </template>
 
         <template #kv-hyperparameter="{ row }">
           <dao-key-value-layout-item :label="row.label">
-            <dao-hover-card :data="row.value?.split(',')">
-              <!-- <template #item="{ text }">
-                <dao-label-extend color="purple">
-                  {{ text }}
-                </dao-label-extend>
-              </template> -->
-            </dao-hover-card>
+            <dao-hover-card :data="row.value?.split(',')" />
           </dao-key-value-layout-item>
         </template>
       </dao-key-value-layout>
@@ -165,10 +173,10 @@ const infos = computed(() => {
         <div class="finetune-status__card">
           <div class="finetune-status__num">
             <div class="finetune-status__duration">
-              😊
+              {{ elapsedRuntime }}
             </div>
             <div class="finetune-status__tip">
-              {{ $t('views.FinetuneExperiment.duration') }}
+              {{ $t("views.FinetuneExperiment.duration") }}
             </div>
           </div>
         </div>
@@ -176,10 +184,10 @@ const infos = computed(() => {
         <div class="finetune-status__card">
           <div class="finetune-status__num">
             <div class="finetune-status__point">
-              {{ props.data.status?.bestVersion?.score??'-' }}
+              {{ props.data.status?.bestVersion?.score ?? "-" }}
             </div>
             <div class="finetune-status__tip">
-              {{ $t('views.FinetuneExperiment.highestScore') }}
+              {{ $t("views.FinetuneExperiment.highestScore") }}
             </div>
           </div>
         </div>
@@ -194,7 +202,7 @@ const infos = computed(() => {
               </span>
             </div>
             <div class="finetune-status__tip">
-              {{ $t('views.FinetuneExperiment.taskStatus') }}
+              {{ $t("views.FinetuneExperiment.taskStatus") }}
             </div>
           </div>
         </div>
@@ -268,22 +276,22 @@ const infos = computed(() => {
       font-weight: 500;
     }
 
-    &__duration{
-      font-size: 32px;
-      font-weight: 600;
+    &__duration {
+      font-size: 28px;
+      // font-weight: 600;
       line-height: 1;
       color: var(--dao-gray-010);
     }
 
-    &__point{
-      font-size: 32px;
-      font-weight: 600;
+    &__point {
+      font-size: 28px;
+      // font-weight: 600;
       line-height: 1;
       color: var(--dao-gray-010);
     }
 
     &__num-ready {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 700;
       line-height: 1;
       color: var(--dao-green-030);

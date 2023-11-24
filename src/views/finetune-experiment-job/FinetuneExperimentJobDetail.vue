@@ -2,9 +2,10 @@
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref, watch } from 'vue';
-
+import { Theme as datasetTheme } from '@/api/dataset';
+import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
-import { FinetuneJob, finetuneJobClient } from '@/api/finetune-job';
+import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
 import { storeToRefs } from 'pinia';
@@ -39,6 +40,12 @@ const infos = computed(() => {
   const finetuneSpec = finetuneJob.value.spec?.finetune.finetuneSpec;
   const creationTimestamp = finetuneJob.value?.metadata?.creationTimestamp;
 
+  let to: string | undefined;
+
+  if (finetuneJob.value.status?.state !== State.Init) {
+    to = finetuneJob.value.status?.stats;
+  }
+
   const items = [
     {
       label: t('views.Hyperparameter.name'),
@@ -54,7 +61,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.duration'),
-      value: useRelativeTime(creationTimestamp),
+      value: useRelativeTime(creationTimestamp, to),
     },
     {
       label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -131,14 +138,14 @@ watch(namespace, toList);
           </template>
           <template #kv-llm="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-label-extend color="green-ecology">
+              <dao-label-extend :color="llmTheme">
                 {{ row.value }}
               </dao-label-extend>
             </dao-key-value-layout-item>
           </template>
           <template #kv-dataset="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-label-extend color="blue">
+              <dao-label-extend :color="datasetTheme">
                 {{ row.value }}
               </dao-label-extend>
             </dao-key-value-layout-item>

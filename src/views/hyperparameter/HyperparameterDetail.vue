@@ -5,7 +5,8 @@ import { useDateFormat } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
-import { filter } from 'lodash';
+import filter from 'lodash/filter';
+import { Theme } from '@/api/finetune-job';
 import {
   retrieveQuantization,
   useDeleteHyperparameter,
@@ -208,7 +209,7 @@ const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
             <dao-key-value-layout-item :label="row.label">
               <dao-hover-card :data="referenceJobs">
                 <template #item="{ text }">
-                  <dao-label-extend color="canary">
+                  <dao-label-extend :color="Theme">
                     {{ text }}
                   </dao-label-extend>
                 </template>

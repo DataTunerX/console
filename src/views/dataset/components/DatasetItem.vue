@@ -168,7 +168,7 @@ const languages = computed(() => {
               {{ props.data.spec?.datasetMetadata.size ?? '-' }}
             </span>
             <span class="dataset-status__tip">
-              {{ t('views.Dataset.datasetSize') }}
+              {{ t('views.Dataset.size') }}
             </span>
           </div>
         </div>

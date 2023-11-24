@@ -1,5 +1,6 @@
 import { useI18n } from 'vue-i18n';
-import { get, merge } from 'lodash';
+import get from 'lodash/get';
+import merge from 'lodash/merge';
 import { nError } from '@/utils/useNoty';
 import {
   onBeforeMount,

@@ -1,7 +1,19 @@
 const { defineConfig } = require('@vue/cli-service');
 
+const proxyConfig = {
+  target: process.env.VUE_APP_API_URL,
+  changeOrigin: true,
+  bypass: (req) => {
+    Object.assign(req.headers, {
+      Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,
+    });
+  },
+};
+
 module.exports = defineConfig({
   transpileDependencies: true,
+  productionSourceMap: false,
+
   pluginOptions: {
     i18n: {
       locale: 'zh-CN',
@@ -17,24 +29,8 @@ module.exports = defineConfig({
   devServer: {
     port: 3000,
     proxy: {
-      '^/apis': {
-        target: process.env.VUE_APP_API_URL,
-        changeOrigin: true,
-        bypass: (req) => {
-          Object.assign(req.headers, {
-            Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,
-          });
-        },
-      },
-      '^/api': {
-        target: process.env.VUE_APP_API_URL,
-        changeOrigin: true,
-        bypass: (req) => {
-          Object.assign(req.headers, {
-            Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,
-          });
-        },
-      },
+      '^/apis': proxyConfig,
+      '^/api': proxyConfig,
     },
   },
 
