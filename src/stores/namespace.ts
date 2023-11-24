@@ -11,11 +11,11 @@ export const useNamespaceStore = defineStore('namespace', {
   actions: {
     async fetchNamespace() {
       try {
-        const response = await listNamespaces(); // 请求数据
+        const { data } = await listNamespaces(); // 请求数据
 
-        this.namespaces = response.data.items;
+        this.namespaces = data.items;
 
-        const [firstNamespace] = response.data.items;
+        const [firstNamespace] = data.items;
         const cachedNamespace = localStorage.getItem(NAMESPACE);
 
         if (!cachedNamespace && firstNamespace) {

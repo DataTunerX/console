@@ -8,6 +8,7 @@ import { FinetuneExperiment, finetuneExperimentClient } from '@/api/finetune-exp
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { createDialog } from '@dao-style/extend';
 import { useI18n } from 'vue-i18n';
+
 import FinetuneExperimentItem from './components/FinetuneExperimentItem.vue';
 import { useFinetuneExperiment } from './composition/finetune';
 
@@ -49,6 +50,7 @@ const onConfirmStop = (workload: FinetuneExperiment) => {
     handleRefresh();
   });
 };
+
 </script>
 
 <template>

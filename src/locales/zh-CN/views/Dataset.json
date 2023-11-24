@@ -4,17 +4,15 @@
   "en-US": "英文",
   "create": "创建数据集",
   "update": "更新数据集",
-  "delete":{
-    "header":"删除数据集",
-    "content":"确认删除数据集 {name} 吗？"
+  "delete": {
+    "header": "删除数据集",
+    "content": "确认删除数据集 {name} 吗？"
   },
-
   "tag": "标签",
   "duplicateTags": "标签重复",
   "datasetName": "数据集名称",
   "language": "语言",
   "licenseType": "授权协议",
-  "size": "词条数目",
   "taskType": "任务类型",
   "subtaskType": "子任务类型",
   "duplicateSubtask": "子任务名称重复",
@@ -22,9 +20,9 @@
   "datasetInformation": "数据集信息",
   "pluginConfiguration": "插件配置",
   "pluginName": "插件名称",
-  "pluginParameters":"运行参数",
+  "pluginParameters": "运行参数",
   "subsetName": "子数据集名称",
-  "duplicateSubsetName":"子数据集名称重复",
+  "duplicateSubsetName": "子数据集名称重复",
   "trainingDataFile": "训练数据集地址",
   "testingDataFile": "测试数据集地址",
   "validationDataFile": "验证数据集地址",
@@ -32,22 +30,17 @@
   "dataSourceInformation": "数据源信息",
   "datasetNameExists": "该名称的数据集已存在",
   "addDatasetInfoConfig": "添加数据集信息配置",
-
   "available": "可用",
   "noAvailable": "不可用",
-  "trainingData":"训练数据",
-  "testingData":"测试数据",
-  "validationData":"验证数据",
-  "licenseInformation":"许可证信息",
-  "datasetSize":"数据集大小",
-
-  "license":"许可证",
-  "datasetFileSource":"数据集文件源",
-  "basicInformation":"基本信息",
+  "trainingData": "训练数据",
+  "testingData": "测试数据",
+  "validationData": "验证数据",
+  "licenseInformation": "许可证信息",
+  "size": "词条数目",
+  "datasetFileSource": "数据集文件源",
+  "basicInformation": "基本信息",
   "datasetInfoConfig": "数据集信息配置",
-
   "loadDatasetError": "加载数据集失败",
-
   "status": {
     "ready": "就绪",
     "unready": "未就绪"

@@ -54,17 +54,17 @@ const infos = computed(() => {
       value: splits?.train?.file,
     },
     {
-      label: t('common.createTime'),
-      value: useDateFormat(creationTimestamp),
+      label: t('views.Dataset.tag'),
+      value: tags?.join(','),
+      slotId: 'tag',
     },
     {
       label: t('views.Dataset.validationData'),
       value: splits?.validate?.file,
     },
     {
-      label: t('views.Dataset.tag'),
-      value: tags?.join(','),
-      slotId: 'tag',
+      label: t('common.createTime'),
+      value: useDateFormat(creationTimestamp),
     },
     {
       label: t('views.Dataset.testingData'),
@@ -168,7 +168,7 @@ const languages = computed(() => {
               {{ props.data.spec?.datasetMetadata.size ?? '-' }}
             </span>
             <span class="dataset-status__tip">
-              {{ t('views.Dataset.datasetSize') }}
+              {{ t('views.Dataset.size') }}
             </span>
           </div>
         </div>
@@ -200,6 +200,7 @@ const languages = computed(() => {
       max-width: 75%;
       margin-right: 10px;
       overflow: hidden;
+      font-weight: 700;
       text-decoration: none;
       text-overflow: ellipsis;
       white-space: nowrap;

@@ -52,7 +52,7 @@ watch(
   (val) => {
     resetField({
       value: {
-        ...val.spec.parameters,
+        ...val?.spec.parameters,
         quantization: retrieveQuantization(val.spec.parameters),
       },
     });

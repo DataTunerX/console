@@ -3,6 +3,8 @@ import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
 
 import { K8sClient } from '@/plugins/axios/client';
 
+export const Theme = 'blue';
+
 export enum LicenseType {
   CCBY = 'CC BY',
   CCBY_SA = 'CC BY-SA',

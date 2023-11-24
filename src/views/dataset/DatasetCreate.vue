@@ -5,16 +5,20 @@ import {
 
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
 import {
-  computed, markRaw, reactive, onMounted, ref,
-  watch,
+  computed, markRaw, reactive, onMounted, ref, watch,
 } from 'vue';
-import {
-  object, array, string, addMethod,
-} from 'yup';
+import { object, array, string } from 'yup';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
-  LicenseType, SizeType, LanguageOptions, SubTask, Subset, taskCategories, datasetClient, SubTaskName,
+  LicenseType,
+  SizeType,
+  LanguageOptions,
+  SubTask,
+  Subset,
+  taskCategories,
+  datasetClient,
+  SubTaskName,
 } from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
 import { useNamespaceStore } from '@/stores/namespace';
@@ -39,39 +43,12 @@ const state = reactive({
 });
 
 const fetchPlugins = () => {
-  dataPluginClient.list(namespaceStore.namespace).then((res) => {
-    state.plugins = res.data.items;
+  dataPluginClient.list(namespaceStore.namespace).then(({ data }) => {
+    state.plugins = data.items;
   });
 };
 
 fetchPlugins();
-
-addMethod(array, 'unique', function unique(message, mapper = (a: string) => a) {
-  return this.test('unique', message, (list) => {
-    if (!list?.length) return true;
-    const filteredList = list?.map(mapper).filter((item) => item);
-
-    return filteredList?.length === new Set(filteredList).size;
-  });
-});
-
-// addMethod(array, 'unique', function a(message) {
-//   return this.test('unique', message, function b(list) {
-//     const mapper = (x: any) => x;
-//     const set = [...new Set(list?.map(mapper))];
-//     const isUnique = list?.length === set.length;
-
-//     if (isUnique) {
-//       return true;
-//     }
-//     const idx = list?.findIndex((l, i) => mapper(l) !== set[i]);
-
-//     return this.createError({
-//       path: `spec.datasetMetadata.tags[${idx}]`,
-//       message,
-//     });
-//   });
-// });
 
 const componentRef = ref<typeof KeyValueForm>();
 
@@ -83,7 +60,10 @@ const schema = markRaw(
     }),
     spec: object({
       datasetMetadata: object().shape({
-        tags: array().of(string().required()).unique(t('views.Dataset.duplicateTags')),
+        tags: array()
+          .of(string().required())
+          .unique((n) => n, t('views.Dataset.tag'))
+          .label(t('views.Dataset.tag')),
         languages: array().min(1),
         size: string().required(),
         task: object({
@@ -94,7 +74,7 @@ const schema = markRaw(
                 name: string().max(63).required(),
               }),
             )
-            .unique(t('views.Dataset.duplicateSubtask'), (obj: { name: string }) => obj.name),
+            .unique((item) => item.name, t('views.Dataset.subtaskType')),
         }),
 
         datasetInfo: object({
@@ -112,7 +92,7 @@ const schema = markRaw(
                 }),
               }),
             )
-            .unique(t('views.Dataset.duplicateSubsetName'), (obj: { name: string }) => obj.name),
+            .unique((item) => item.name, t('views.Dataset.subsetName')),
         }),
 
         plugin: object({
@@ -165,32 +145,48 @@ onMounted(() => {
   }
 });
 
-const { remove: removeFromTags, push: pushToTags, fields: tags } = useFieldArray<string>('spec.datasetMetadata.tags');
+const {
+  remove: removeFromTags,
+  push: pushToTags,
+  fields: tags,
+} = useFieldArray<string>('spec.datasetMetadata.tags');
 
 const addTag = async () => pushToTags('');
 const removeTag = (index: number) => removeFromTags(index);
 
 const {
-  remove: removeFromSubtasks, push: pushToSubtasks, fields: subTasks, replace: replaceSubTask,
+  remove: removeFromSubtasks,
+  push: pushToSubtasks,
+  fields: subTasks,
+  replace: replaceSubTask,
 } = useFieldArray<SubTask>('spec.datasetMetadata.task.subTasks');
 const addSubtask = () => pushToSubtasks({ name: '' as SubTaskName });
 const removeSubtask = (index: number) => removeFromSubtasks(index);
 
 const {
-  remove: removeFromRules, push: pushToRules, fields: subsets, replace,
+  remove: removeFromRules,
+  push: pushToRules,
+  fields: subsets,
+  replace,
 } = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
 const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
 const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
 
-watch(() => formModel.spec.datasetMetadata.task?.name, () => {
-  replaceSubTask([]);
-});
+watch(
+  () => formModel.spec.datasetMetadata.task?.name,
+  () => {
+    replaceSubTask([]);
+  },
+);
 
-watch(() => loadPlugin.value, (val) => {
-  replace(val ? [] : [{ name: 'Default' }]);
-});
+watch(
+  () => loadPlugin.value,
+  (val) => {
+    replace(val ? [] : [{ name: 'Default' }]);
+  },
+);
 
 const canRemove = computed(() => {
   if (loadPlugin.value) {
@@ -225,12 +221,16 @@ const toList = () => {
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isUpdate.value && values.metadata?.name) {
-      await datasetClient.update(namespaceStore.namespace, values.metadata?.name, convertDatasetForPost(values));
+      await datasetClient.update(
+        namespaceStore.namespace,
+        values.metadata?.name,
+        convertDatasetForPost(values),
+      );
     } else {
       await datasetClient.create(namespaceStore.namespace, convertDatasetForPost(values));
     }
     nSuccess(
-      t('common.notyError', {
+      t('common.notySuccess', {
         name: !isUpdate.value ? t('common.create') : t('common.update'),
       }),
     );
@@ -309,7 +309,7 @@ const onSubmit = handleSubmit(async (values) => {
           }"
           @click="addTag"
         >
-          {{ $t('common.add') }}
+          {{ $t("common.add") }}
         </dao-text-button>
 
         <template #error>
@@ -407,7 +407,7 @@ const onSubmit = handleSubmit(async (values) => {
               :padding-bottom="field.isLast ? 0 : 10"
               :tag="DaoSelect"
               :control-props="{
-                style: 'width: 100%'
+                style: 'width: 100%',
               }"
             >
               <dao-option
@@ -436,7 +436,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="text-button__add"
             @click="addSubtask"
           >
-            {{ $t('common.add') }}
+            {{ $t("common.add") }}
           </dao-text-button>
 
           <template #error>
@@ -539,7 +539,7 @@ const onSubmit = handleSubmit(async (values) => {
             class="kpd-form-block__add-btn"
             @click="handleAddRule"
           >
-            {{ $t('views.Dataset.addDatasetInfoConfig') }}
+            {{ $t("views.Dataset.addDatasetInfoConfig") }}
           </dao-text-button>
         </div>
         <template #error>
@@ -615,5 +615,4 @@ $form-width: 500px;
   margin-left: 10px;
   font-size: 16px;
 }
-
 </style>

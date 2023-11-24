@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Hyperparameter } from '@/api/finetune';
 import { PropType } from 'vue';
+import { Theme as hyperparameterTheme } from '@/api/hyperparameter';
 
 const props = defineProps({
   data: {
@@ -12,9 +13,10 @@ const props = defineProps({
 
 <template>
   <dao-tooltip placement="right-start">
-    <dao-tag>
+    <dao-label-extend :color="hyperparameterTheme">
       {{ props.data.hyperparameterRef }}
-    </dao-tag>
+    </dao-label-extend>
+
     <template #content>
       <span class="font-bold">Overrides</span>
       <div class="flex flex-col">

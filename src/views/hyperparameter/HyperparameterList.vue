@@ -3,13 +3,13 @@ import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
 import {
-  type Hyperparameter, hyperparameterClient, Parameters,
+  type Hyperparameter, Theme, hyperparameterClient, Parameters,
 } from '@/api/hyperparameter';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useDateFormat } from '@dao-style/extend';
-import { omit } from 'lodash';
+import omit from 'lodash/omit';
 import { generateQueryString } from '@/utils/queryString';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { retrieveQuantization, useDeleteHyperparameter } from './composition/hyperparameter';
@@ -75,7 +75,6 @@ const onCreate = () => {
     name: 'HyperparameterCreate',
   });
 };
-
 </script>
 
 <template>
@@ -124,24 +123,30 @@ const onCreate = () => {
       </template>
 
       <template #td-parameters="{ row }">
-        <dao-hover-card :data="regroupParameters(row.spec.parameters)" />
+        <dao-hover-card :data="regroupParameters(row.spec.parameters)">
+          <template #item="{ text }">
+            <dao-label-extend :color="Theme">
+              {{ text }}
+            </dao-label-extend>
+          </template>
+        </dao-hover-card>
       </template>
 
       <template #td-action-menu="{ row }">
         <dao-dropdown-item @click="onUpdate(row.metadata.name as string)">
-          {{ t('common.edit') }}
+          {{ t("common.edit") }}
         </dao-dropdown-item>
         <dao-dropdown-item
           color="red"
           @click="onConfirmDelete(row.metadata.name as string)"
         >
-          {{ t('common.delete') }}
+          {{ t("common.delete") }}
         </dao-dropdown-item>
       </template>
 
       <template #action>
         <dao-button @click="onCreate">
-          {{ t('common.create') }}
+          {{ t("common.create") }}
         </dao-button>
       </template>
     </dao-table>

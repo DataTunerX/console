@@ -1,6 +1,8 @@
+/* eslint-disable no-use-before-define */
 import { K8sClient } from '@/plugins/axios/client';
 import { ObjectMeta } from 'kubernetes-types/meta/v1';
-/* eslint-disable no-use-before-define */
+
+export const Theme = 'green-ecology';
 
 /**
  * LLM is the Schema for the llms API

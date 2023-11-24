@@ -44,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
             component: FinetuneExperimentDetail,
           },
           {
-            path: ':name/job/:jobname',
+            path: ':name/job/:jobName',
             name: 'FinetuneExperimentJobDetail',
             component: FinetuneExperimentJobDetail,
           },

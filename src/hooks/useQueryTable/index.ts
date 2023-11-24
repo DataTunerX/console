@@ -1,5 +1,6 @@
 import { useI18n } from 'vue-i18n';
-import { get, merge } from 'lodash';
+import get from 'lodash/get';
+import merge from 'lodash/merge';
 import { nError } from '@/utils/useNoty';
 import {
   onBeforeMount,
@@ -14,10 +15,12 @@ import {
   watch,
   ComputedRef,
 } from 'vue';
+import { AxiosResponse } from 'axios';
+import { List } from '@/plugins/axios/client';
 
-interface TemplateAny {
+interface AxiosResponseTemplate<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (): Promise<any>;
+  (): Promise<AxiosResponse<List<T>, any>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +92,7 @@ interface ReturnData<T> extends ToRefs<UnwrapNestedRefs<StateType<T>>> {
  * @param delay 通过延时启动loading动画尽量规避loading动画过短
  */
 export function useQueryTable<T>(
-  api: TemplateAny,
+  api: AxiosResponseTemplate<T>,
   options?: DefaultParams,
   { immediate = true, delay = 400 } = {},
 ) :ReturnData<T> {
@@ -171,10 +174,10 @@ export function useQueryTable<T>(
     const loadingTime = 0.5 * 1200;
 
     try {
-      const data = await api();
-      const { items = [] } = data.data;
+      const { data } = await api();
+      const { items } = data;
 
-      state.items = items;
+      state.items = ref(items).value;
     } catch (e) {
       nError(t('common.error'), e);
     } finally {

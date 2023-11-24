@@ -3,6 +3,8 @@ import type { Condition, ListMeta, ObjectMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
 import { FinetuneJob, Status as FinetuneJobStatus, ScoringConfig } from './finetune-job';
 
+export const Theme = 'canary';
+
 export interface FinetuneExperimentList {
   apiVersion: string;
   items: FinetuneExperiment[];
@@ -69,6 +71,7 @@ export interface Status {
   conditions: Condition[];
   jobsStatus: FinetuneJobStatusWithName[];
   state: State;
+  stats?: string;
 }
 
 /**

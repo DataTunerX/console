@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { DaoSelect } from '@dao-style/core';
-import { useFieldArray, useForm } from 'vee-validate';
+import { useFieldArray, useFieldError, useForm } from 'vee-validate';
 import {
   string, object, array, number,
 } from 'yup';
 import {
-  markRaw, onMounted, ref, computed,
+  markRaw, ref, computed, watch,
+  onBeforeMount,
 } from 'vue';
-import { FinetuneJob } from '@/api/finetune-job';
-import { finetuneExperimentClient } from '@/api/finetune-experiment';
+import { FinetuneJobWithName, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
 import { nError } from '@/utils/useNoty';
@@ -46,16 +46,7 @@ const { scoringConfigs, fetchScoringConfigs } = useScoringConfig();
 
 const { finetuneJob } = useFinetuneJob();
 
-onMounted(() => {
-  Promise.all([
-    fetchLargeLanguageModels(namespace.value),
-    fetchDatasets(namespace.value),
-    fetchHyperparameters(namespace.value),
-    fetchScoringConfigs(namespace.value),
-  ]);
-});
-
-const componentRef = ref<typeof KeyValueForm>();
+const componentRef = ref<typeof KeyValueForm >();
 
 const validationSchema = markRaw(
   object({
@@ -63,11 +54,9 @@ const validationSchema = markRaw(
       name: string().RFC1123Label().required().label(t('views.FinetuneExperiment.experimentName')),
     }),
     spec: object({
-      finetuneJobs: array().of(
+      finetuneJobs: array<FinetuneJobWithName>().of(
         object({
-          metadata: object({
-            name: string().required().label(t('views.FinetuneExperiment.taskName')),
-          }),
+          name: string().required().label(t('views.FinetuneExperiment.taskName')),
           spec: object({
             finetune: object({
               finetuneSpec: object({
@@ -92,7 +81,7 @@ const validationSchema = markRaw(
             }),
           }),
         }),
-      ),
+      ).min(1).unique((job) => job.name, t('views.FinetuneExperiment.taskName')),
       scoringConfig: object({
         name: string().required().label(t('views.FinetuneExperiment.scoringConfig')),
         parameters: object().test('parameters', '', async () => {
@@ -124,17 +113,38 @@ const useBuildInPlugin = computed(() => !values.spec.scoringConfig.name || value
 
 const hasError = (index: number) => Object.keys(errorBag.value).some((key) => key.startsWith(`spec.finetuneJobs[${index}]`));
 
-const { push, remove, fields: jobs } = useFieldArray<FinetuneJob>('spec.finetuneJobs');
+const { push, remove, fields: jobs } = useFieldArray<FinetuneJobWithName>('spec.finetuneJobs');
 
 const onAdd = () => {
   push(finetuneJob.value);
 };
+
+const onlyOneJob = computed(() => jobs.value.length === 1);
+
+const jobDuplicateError = useFieldError('spec.finetuneJobs');
+
+const init = () => {
+  Promise.all([
+    fetchLargeLanguageModels(namespace.value),
+    fetchDatasets(namespace.value),
+    fetchHyperparameters(namespace.value),
+    fetchScoringConfigs(namespace.value),
+  ]);
+};
+
+onBeforeMount(() => {
+  init();
+});
+
+const activeSection = ref([`${jobs.value[0].key}`]);
 
 const toList = () => {
   router.push({
     name: 'FinetuneExperimentList',
   });
 };
+
+watch(namespace, toList);
 
 const onSubmit = async () => {
   const { valid } = await validate();
@@ -206,6 +216,7 @@ const onSubmit = async () => {
 
       <dao-form-group :title="$t('views.FinetuneExperiment.configuration')">
         <dao-expansion
+          :model-value="activeSection"
           type="box"
           class="mb-[20px]"
         >
@@ -214,9 +225,9 @@ const onSubmit = async () => {
             :key="job.key"
             class="job-item relative"
             :name="`${job.key}`"
-            :title="job.value.metadata?.name"
+            :title="job.value.name"
           >
-            <FinetuneJobComponent
+            <finetune-job-component
               :llms="largeLanguageModels"
               :datasets="datasets"
               :hyperparameters="hyperparameters"
@@ -230,6 +241,7 @@ const onSubmit = async () => {
                 use-font
               />
               <dao-icon
+                v-if="!onlyOneJob"
                 class="mr-[3px] job-item__remove-btn"
                 name="icon-close"
                 use-font
@@ -237,6 +249,9 @@ const onSubmit = async () => {
               />
             </template>
           </dao-expansion-item>
+          <dao-error-text class="mt-[10px]">
+            {{ jobDuplicateError }}
+          </dao-error-text>
         </dao-expansion>
         <dao-text-button
           :prop="{

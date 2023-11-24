@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import { storeToRefs } from 'pinia';
@@ -11,6 +11,7 @@ const router = useRouter();
 const route = useRoute();
 
 const { namespace } = storeToRefs(useNamespaceStore());
+
 const name = route.params.name as string;
 
 const { dataset, fetchDataset } = useDataset();
@@ -28,7 +29,7 @@ const infos = computed(() => {
       value: languages,
     },
     {
-      label: t('views.Dataset.license'),
+      label: t('views.Dataset.licenseInformation'),
       value: dataset.value?.spec?.datasetMetadata.license,
     },
     {
@@ -93,6 +94,8 @@ const onEdit = () => {
 const toList = () => {
   router.push({ name: 'DatasetList' });
 };
+
+watch(namespace, toList);
 
 const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
 

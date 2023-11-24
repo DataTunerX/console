@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { i18n } from '@/plugins';
-import { getActiveRouteFold } from '@/lib/util';
 import { NavRoute } from '@/types/common';
+import { getActiveRouteFold } from '@/utils/util';
 
 const routes = computed<NavRoute[]>(() => {
   const items = [
     {
       to: { name: 'FinetuneExperimentList' },
       display: i18n.t('components.AnakinHeader.menu.fineTuningExperiment'),
-      icon: 'icon-registry',
+      icon: 'icon-engine',
     },
     {
       to: { name: 'DatasetList' },
       display: i18n.t('components.AnakinHeader.menu.dataset'),
-      icon: 'icon-apps',
+      icon: 'icon-mspider',
     },
     {
       to: { name: 'HyperparameterList' },
       display: i18n.t('components.AnakinHeader.menu.hyperparameterGroup'),
-      icon: 'icon-config-file',
+      icon: 'icon-cluster',
     },
   ] as NavRoute[];
 

@@ -16,9 +16,9 @@
 import {
   defineEmits, defineProps, PropType, ref, watch,
 } from 'vue';
-import { formatKeyValueListToObj, formatLabelToKeyValueList } from '@/lib/util';
 import isEqual from 'lodash/isEqual';
 import { KeyValue, LabelType } from '@/types/common';
+import { formatKeyValueListToObj, formatLabelToKeyValueList } from '@/utils/util';
 
 const props = defineProps({
   modelValue: {

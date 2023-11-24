@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable max-len */
 import { reactive } from 'vue';
 import { useField } from 'vee-validate';
 import type { DeepRequired } from 'utility-types';
-import { get, set } from 'lodash';
+import get from 'lodash/get';
+import set from 'lodash/set';
+
 import {
   GetKey, KeyValOptions, KeyValRuleExpression, UseFieldReturn,
 } from './types';
+
+import './rules';
 
 export * as yup from 'yup';
 

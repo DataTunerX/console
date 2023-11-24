@@ -3,6 +3,9 @@ import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
 import { Toleration } from 'kubernetes-types/core/v1';
 import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
+
+export const Theme = 'canary';
+
 /**
  * FinetuneJob is the Schema for the finetunejobs API
  */
@@ -115,7 +118,5 @@ export enum State {
 
 export const kind = 'FinetuneJob';
 export const apiVersion = 'finetune.datatunerx.io/v1beta1';
-
-// const jsonpath = '{.items[?(@.spec.finetune.finetuneSpec.hyperparameter.hyperparameterRef=="hyperparameter")].metadata.name}';
 
 export const finetuneJobClient = new K8sClient<FinetuneJob>(apiVersion, kind);

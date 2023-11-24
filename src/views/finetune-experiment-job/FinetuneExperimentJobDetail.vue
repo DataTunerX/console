@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
-
+import { computed, ref, watch } from 'vue';
+import { Theme as datasetTheme } from '@/api/dataset';
+import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
-import { FinetuneJob, finetuneJobClient } from '@/api/finetune-job';
+import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
+import { storeToRefs } from 'pinia';
+import { useRelativeTime } from '@/utils/useRelativeTime';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 
@@ -15,17 +18,17 @@ const router = useRouter();
 const route = useRoute();
 
 const name = route.params.name as string;
-const jobName = route.params.jobname as string;
+const jobName = route.params.jobName as string;
 
-const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(useNamespaceStore());
 
 const finetuneJob = ref<FinetuneJob>({});
 
 const fetchDataset = () => {
   finetuneJobClient
-    .read(namespaceStore.namespace, jobName)
-    .then((res) => {
-      finetuneJob.value = res.data;
+    .read(namespace.value, jobName)
+    .then(({ data }) => {
+      finetuneJob.value = data;
     });
 };
 
@@ -35,6 +38,13 @@ fetchDataset();
 // 显示基本信息
 const infos = computed(() => {
   const finetuneSpec = finetuneJob.value.spec?.finetune.finetuneSpec;
+  const creationTimestamp = finetuneJob.value?.metadata?.creationTimestamp;
+
+  let to: string | undefined;
+
+  if (finetuneJob.value.status?.state !== State.Init) {
+    to = finetuneJob.value.status?.stats;
+  }
 
   const items = [
     {
@@ -50,8 +60,8 @@ const infos = computed(() => {
       value: finetuneJob.value.spec?.scoringConfig?.name,
     },
     {
-      label: t('views.FinetuneExperiment.time'),
-      value: '-',
+      label: t('views.FinetuneExperiment.duration'),
+      value: useRelativeTime(creationTimestamp, to),
     },
     {
       label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -73,12 +83,18 @@ const infos = computed(() => {
     },
     {
       label: t('common.createTime'),
-      value: useDateFormat(finetuneJob.value?.metadata?.creationTimestamp),
+      value: useDateFormat(creationTimestamp),
     },
   ];
 
   return items;
 });
+
+const toList = () => {
+  router.push({ name: 'FinetuneExperimentList' });
+};
+
+watch(namespace, toList);
 
 </script>
 
@@ -91,12 +107,9 @@ const infos = computed(() => {
           @navigate="router.push"
         >
           <dao-breadcrumb-item
-            :label="t('views.FinetuneExperiment.finetuneExperiment')"
-            :to="{ name: 'FinetuneExperimentList' }"
-          />
-          <dao-breadcrumb-item
-            :label="name"
-            :to="{ name: 'FinetuneExperimentDetail' }"
+            :label="t('views.FinetuneExperiment.finetuneExperimentTitle')"
+            :value="name"
+            :to="{ name: 'FinetuneExperimentDetail', }"
           />
           <dao-breadcrumb-item
             :label="t('views.FinetuneExperiment.finetuneJob')"
@@ -125,12 +138,16 @@ const infos = computed(() => {
           </template>
           <template #kv-llm="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-tag>{{ row.value }}</dao-tag>
+              <dao-label-extend :color="llmTheme">
+                {{ row.value }}
+              </dao-label-extend>
             </dao-key-value-layout-item>
           </template>
           <template #kv-dataset="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <dao-tag>{{ row.value }}</dao-tag>
+              <dao-label-extend :color="datasetTheme">
+                {{ row.value }}
+              </dao-label-extend>
             </dao-key-value-layout-item>
           </template>
           <template #kv-hyperparameter="{ row }">
