@@ -159,7 +159,9 @@ watch(namespace, toList);
       <template #action>
         <dao-button
           :disabled="canStop"
+          use-font
           type="tertiary"
+          icon-left="icon-stopped"
           @click="onConfirmStop"
         >
           {{ t("common.stop") }}

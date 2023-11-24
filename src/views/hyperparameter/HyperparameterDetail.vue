@@ -180,18 +180,31 @@ const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
       </template>
 
       <template #action>
-        <dao-button
-          type="tertiary"
-          @click="onEdit"
+        <dao-dropdown
+          placement="bottom-start"
         >
-          {{ t("common.edit") }}
-        </dao-button>
-        <dao-button
-          type="danger"
-          @click="onConfirmDelete(hyperparameter?.metadata.name)"
-        >
-          {{ t("common.delete") }}
-        </dao-button>
+          <template #default>
+            <dao-button
+              type="tertiary"
+              icon-left="icon-more-horizontal"
+              use-font
+            />
+          </template>
+          <template #menu>
+            <dao-dropdown-menu>
+              <dao-dropdown-item @click="onEdit">
+                {{ t('common.edit') }}
+              </dao-dropdown-item>
+              <dao-dropdown-item type="divider" />
+              <dao-dropdown-item
+                color="red"
+                @click="onConfirmDelete(hyperparameter?.metadata.name)"
+              >
+                {{ t('common.delete') }}
+              </dao-dropdown-item>
+            </dao-dropdown-menu>
+          </template>
+        </dao-dropdown>
       </template>
     </dao-header>
 
