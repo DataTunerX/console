@@ -12,6 +12,11 @@ const routes = computed<NavRoute[]>(() => {
       icon: 'icon-engine',
     },
     {
+      to: { name: 'FinetuneRegistryList' },
+      display: i18n.t('components.AnakinHeader.menu.fineTuningRegistry'),
+      icon: 'icon-registry',
+    },
+    {
       to: { name: 'DatasetList' },
       display: i18n.t('components.AnakinHeader.menu.dataset'),
       icon: 'icon-mspider',
