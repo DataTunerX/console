@@ -126,13 +126,13 @@ const {
   handleSubmit,
   resetForm,
   setFieldError,
-  defineComponentBinds,
+  defineField,
 } = useForm<DatasetForRender>({
   initialValues: dataset.value,
   validationSchema: schema,
 });
 
-const parameters = defineComponentBinds('spec.datasetMetadata.plugin.parameters', {
+const parameters = defineField('spec.datasetMetadata.plugin.parameters', {
   validateOnModelUpdate: false,
 });
 

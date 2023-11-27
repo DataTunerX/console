@@ -1,28 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { findDuplicateIndices } from '@/utils/findDuplicate';
 import { useI18n } from 'vue-i18n';
-import {
-  addMethod, array, string, Flags,
-} from 'yup'; // Import the ArraySchema type
+import { addMethod, array, string } from 'yup';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MapperFunction = (item: any) => any;
-
-declare module 'yup' {
-  // Ensure that the type parameters match the original ArraySchema declaration
-  interface ArraySchema<
-    TIn extends any[] | null | undefined = any[],
-    TContext = Record<string, any>,
-    TDefault = undefined,
-    TFlags extends Flags = ''
-  > {
-    unique(mapper: MapperFunction, label?: string): ArraySchema;
-  }
-
-  interface StringSchema {
-    s3(): StringSchema;
-  }
-}
 
 addMethod(array, 'unique', function unique(mapper: MapperFunction, label: string) {
   const { t } = useI18n();
