@@ -13,13 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Node.js
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --force
+        run: npm ci --force
 
       - name: Build
         run: yarn build
