@@ -84,10 +84,13 @@ const schema = markRaw(
                 name: string().required().max(63),
                 splits: object({
                   train: object({
-                    file: string().required(),
+                    file: string().s3().required(),
+                  }),
+                  test: object({
+                    file: string().s3().required(),
                   }),
                   validate: object({
-                    file: string().required(),
+                    file: string().s3().required(),
                   }),
                 }),
               }),
@@ -501,6 +504,7 @@ const onSubmit = handleSubmit(async (values) => {
               :control-props="{
                 class: 'input-form-width',
                 disabled: loadPlugin,
+                placeholder: 's3://mybucket/myfile.txt'
               }"
             />
             <dao-form-item-validate

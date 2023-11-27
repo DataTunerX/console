@@ -52,7 +52,6 @@ const isDatasetDisabled = (dataset: Dataset) => dataset.status?.state !== State.
   <dao-form-item-validate
     :label="$t('views.FinetuneExperiment.taskName')"
     :name="`${name}.name`"
-    required
     :control-props="{
       class: 'input-form-width',
     }"

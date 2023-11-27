@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { findDuplicateIndices } from '@/utils/findDuplicate';
 import { useI18n } from 'vue-i18n';
-import { addMethod, array, Flags } from 'yup'; // Import the ArraySchema type
+import {
+  addMethod, array, string, Flags,
+} from 'yup'; // Import the ArraySchema type
 
 type MapperFunction = (item: any) => any;
 
@@ -15,6 +17,10 @@ declare module 'yup' {
     TFlags extends Flags = ''
   > {
     unique(mapper: MapperFunction, label?: string): ArraySchema;
+  }
+
+  interface StringSchema {
+    s3(): StringSchema;
   }
 }
 
@@ -44,5 +50,19 @@ addMethod(array, 'unique', function unique(mapper: MapperFunction, label: string
 
       return true;
     },
+  });
+});
+
+addMethod(string, 's3', function s3(message?: string) {
+  const { t } = useI18n();
+
+  return this.matches(/^s3:\/\//, {
+    name: 's3',
+    message:
+      message
+      ?? function pathErrorMessage({ label }) {
+        return t('validate.s3', { label });
+      },
+    excludeEmptyString: true,
   });
 });
