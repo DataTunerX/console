@@ -46,8 +46,8 @@ export default defineComponent({
 <template>
   <component
     :is="isA"
-    class="ghippo-header-button"
-    :class="{'ghippo-header-button-icon': type === 'icon'}"
+    class="datatunerx-header-button"
+    :class="{'datatunerx-header-button-icon': type === 'icon'}"
     :disabled="disabled"
     @click="emitClick($event)"
   >
@@ -67,16 +67,16 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-$ghippo-header-button-hover-bg: var(--dao-top-gray-020);
-$ghippo-header-button-icon-active: rgba(var(--dao-pure-black-rgb), 0);
+$datatunerx-header-button-hover-bg: var(--dao-top-gray-020);
+$datatunerx-header-button-icon-active: rgba(var(--dao-pure-black-rgb), 0);
 
-.ghippo-header-button {
+.datatunerx-header-button {
   font-size: 13px;
   line-height: 32px;
   color: var(--dao-navigation-090);
   text-decoration: none;
   cursor: pointer;
-  background: $ghippo-header-button-icon-active;
+  background: $datatunerx-header-button-icon-active;
   border: 0;
   border-radius: 5px;
   transition: background-color 0.3s ease-in-out;
@@ -88,19 +88,19 @@ $ghippo-header-button-icon-active: rgba(var(--dao-pure-black-rgb), 0);
   }
 
   &:hover {
-    background-color: $ghippo-header-button-hover-bg;
+    background-color: $datatunerx-header-button-hover-bg;
   }
 
   &-icon:hover {
-    background-color: $ghippo-header-button-icon-active;
+    background-color: $datatunerx-header-button-icon-active;
   }
 
   &:active {
-    background-color: $ghippo-header-button-hover-bg;
+    background-color: $datatunerx-header-button-hover-bg;
   }
 
   &-icon:active {
-    background-color: $ghippo-header-button-icon-active;
+    background-color: $datatunerx-header-button-icon-active;
   }
 }
 </style>

@@ -1,12 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 
 export type GhippoAnakinConfig = {
-  ghippo_anakin_doc_url: string
+  datatunerx_anakin_doc_url: string
 };
 
 const useConfigStore = defineStore('config', {
   state: (): GhippoAnakinConfig => ({
-    ghippo_anakin_doc_url: 'https://docs.daocloud.io/dce/what/',
+    datatunerx_anakin_doc_url: 'https://docs.daocloud.io/dce/what/',
   }),
 });
 

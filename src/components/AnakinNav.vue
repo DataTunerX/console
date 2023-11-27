@@ -32,7 +32,6 @@ const activeOpened = computed(() => getActiveRouteFold(routes.value));
 <template>
   <dao-nav
     ref="navRef"
-    class="console__nav"
     type="2nd"
     :active-opened="activeOpened"
   >
@@ -73,56 +72,3 @@ const activeOpened = computed(() => getActiveRouteFold(routes.value));
     </router-link>
   </dao-nav>
 </template>
-
-<style lang="scss">
-$ghippo-header-height: 50px;
-$ghippo-header-aside-button-padding: 2px;
-
-.console {
-  &__nav {
-    z-index: 99;
-    flex: none;
-    padding-top: 10px;
-
-    //   .dao-icon.icon-new-tab {
-    //     color: var(--dao-gray-blue-040);
-    //   }
-
-    //   &-title-wrap {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: space-between;
-    //     height: 30px;
-    //     margin-right: 12px;
-    //     margin-left: 12px;
-    //     line-height: 30px;
-    //   }
-
-    //   &-title {
-    //     overflow: hidden;
-    //     font-size: 15px;
-    //     font-weight: 600;
-    //     text-overflow: ellipsis;
-    //     white-space: nowrap;
-    //   }
-
-    //   &-exchange {
-    //     margin-left: 4px;
-    //     font-size: 16px;
-    //     font-weight: 400;
-    //     cursor: pointer;
-    //   }
-
-    //   &__menu {
-    //     width: 250px !important;
-    //     margin-left: 41px !important;
-    //   }
-    // }
-
-    // &__content {
-    //   flex: 1 1 0;
-    //   height: 100%;
-    //   overflow: auto;
-  }
-}
-</style>

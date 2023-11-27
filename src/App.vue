@@ -1,8 +1,8 @@
 <template>
-  <anakin-header class="ghippo-header" />
+  <anakin-header />
 
   <div id="container">
-    <anakin-nav />
+    <anakin-nav class="console-sidebar" />
     <router-view class="console-content" />
 
     <dialog-wrapper />
@@ -13,36 +13,4 @@
 import AnakinNav from '@/components/AnakinNav.vue';
 import AnakinHeader from '@/components/AnakinHeader.vue';
 import { DialogWrapper } from '@dao-style/extend';
-
 </script>
-
-<style lang="scss">
-html,
-body {
-  height: 100%;
-}
-
-/* stylelint-disable-next-line selector-max-id */
-#app {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-width: 1280px;
-  height: 100%;
-  background: var(--dao-bg);
-}
-
-/* stylelint-disable-next-line selector-max-id */
-#container {
-  display: flex;
-  flex: 1 1 0;
-  width: 100%;
-  overflow: auto;
-}
-
-.console-content{
-  flex: 1 1 0px;
-  height: 100%;
-  overflow: auto;
-}
-</style>
