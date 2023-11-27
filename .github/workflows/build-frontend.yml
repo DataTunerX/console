@@ -1,3 +1,5 @@
+name: CI/CD Pipeline
+
 on:
   push:
     branches: ["main"]
@@ -5,49 +7,23 @@ on:
     branches: ["main"]
 
 jobs:
-  # install-cache:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Checkout 🛎️
-  #       uses: actions/checkout@v3
-
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-
-  #     - name: Cache yarn dependencies
-  #       uses: actions/cache@v2
-  #       id: cache-dependencies
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-yarn-
-  #     - name: Install Dependencies
-  #       # Check for `cache-hit` (`steps.cache-dependencies.cache-hit != 'true'`)
-  #       # If there's a cache hit, we skip this step (the dependencies are already available)
-  #       # If there's no cache hit, we run "yarn install"
-  #       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-  #       run: |
-  #         yarn install --force --non-interactive
-  # This job requires some dependencies to be installed to run. Thus we'll restore
-  # the dependencies that have been previously cached and use them here.
-
-  lint:
+  common-setup:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: "npm"
+          cache: 'npm'
 
+  lint:
+    runs-on: ubuntu-latest
+    needs: common-setup
+
+    steps:
       - name: Install dependencies 🔧
         run: npm ci --force
 
@@ -56,17 +32,9 @@ jobs:
 
   unit-test:
     runs-on: ubuntu-latest
+    needs: common-setup
 
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16
-          cache: 'npm'
-
       - name: Install dependencies 🔧
         run: npm ci --force
 
@@ -75,19 +43,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
     needs: [lint, unit-test]
 
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16
-          cache: 'npm'
-
       - name: Install dependencies 🔧
         run: npm ci --force
 
