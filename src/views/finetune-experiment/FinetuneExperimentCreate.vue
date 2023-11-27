@@ -105,7 +105,7 @@ const {
   validationSchema,
 });
 
-const parameters = defineField('spec.scoringConfig.parameters', {
+const [parameters] = defineField('spec.scoringConfig.parameters', {
   validateOnModelUpdate: false,
 });
 
