@@ -7,15 +7,18 @@ import { useQueryTable } from '@/hooks/useQueryTable';
 import { useI18n } from 'vue-i18n';
 import { createDialog } from '@dao-style/extend';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
+import CardLayoutContainer from '@/components/CardLayoutContainer.vue';
 
-import FinetuneRegistryItem from './components/FinetuneRegistryItem.vue';
+import FinetuneRegistryCard from './components/FinetuneRegistryCard.vue';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable(async () => llmCheckpointClient.list(namespace.value));
+} = useQueryTable(
+  async () => llmCheckpointClient.list(namespace.value),
+);
 
 watch(namespace, handleRefresh);
 
@@ -33,7 +36,6 @@ const onConfirmDelete = (name: string) => {
     deleteFn,
   });
 };
-
 </script>
 
 <template>
@@ -48,21 +50,15 @@ const onConfirmDelete = (name: string) => {
       @refresh="handleRefresh"
     />
 
-    <dao-empty v-if="!pagedData.length" />
-
-    <div
-      v-else
-      v-loading="isLoading"
-      class="mt-[20px]"
-    >
-      <div class="registry-content">
-        <FinetuneRegistryItem
+    <div v-loading="isLoading">
+      <card-layout-container :cards="total">
+        <finetune-registry-card
           v-for="registry in pagedData"
           :key="registry.metadata?.name"
           :data="registry"
           @on-delete="onConfirmDelete"
         />
-      </div>
+      </card-layout-container>
 
       <dao-pagination
         v-if="total"
@@ -71,14 +67,11 @@ const onConfirmDelete = (name: string) => {
         class="mt-[20px]"
         :total="total"
       />
+
+      <dao-empty
+        v-else
+        class="mt-[20px]"
+      />
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.registry-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px 30px;
-}
-</style>

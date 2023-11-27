@@ -56,7 +56,7 @@ const validationSchema = markRaw(
     spec: object({
       finetuneJobs: array<FinetuneJobWithName>().of(
         object({
-          name: string().required().label(t('views.FinetuneExperiment.taskName')),
+          name: string().RFC1123Label().label(t('views.FinetuneExperiment.taskName')),
           spec: object({
             finetune: object({
               finetuneSpec: object({

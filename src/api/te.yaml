@@ -1,0 +1,97 @@
+metadata: 
+  name: llama2-7b
+  namespace: datatunerx
+spec:
+  checkpointImage:
+    imagePullPolicy: IfNotPresent
+    checkPointPath: s3://asdf.asdf.md
+    llmPath: s3://asdf.asdf.md
+    name: test2
+  dataset:
+    spec:
+      datasetCard:
+        datasetCardRef: configmap-dataset-readme
+      datasetFiles:
+        source: ""
+      datasetMetadata:
+        datasetInfo:
+          features:
+          - dataType: string
+            mapTo: Content
+            name: instruction
+          - dataType: string
+            mapTo: Result
+            name: response
+          subsets:
+          - name: alpaca_data_en_52k_test.csv
+            splits:
+              test:
+                file: http://10.29.205.33:7501/datatunerx/DataSet/alpaca_data_en_52k_test.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=K9GZU3E918K576N7MX8A%2F20231124%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231124T094340Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJLOUdaVTNFOTE4SzU3Nk43TVg4QSIsImV4cCI6MTcwMDgyMjU3OSwicGFyZW50IjoiYWlnYyJ9.vJF1ltyT8Rdlkh65VKCoTFaeX4rvQi8BjPBeiEiQw2R8QFzOiOeThNigU-aBEiBzIKMqwob3DcL-vmVfiUXNFQ&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=22e287e3932abd6e130a05f5d0a774bfdea255b8944a3a1b370c9670e79bc9f6
+              train:
+                file: http://10.29.205.33:7501/datatunerx/DataSet/alpaca_data_en_52k_Training.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=K9GZU3E918K576N7MX8A%2F20231124%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231124T094309Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJLOUdaVTNFOTE4SzU3Nk43TVg4QSIsImV4cCI6MTcwMDgyMjU3OSwicGFyZW50IjoiYWlnYyJ9.vJF1ltyT8Rdlkh65VKCoTFaeX4rvQi8BjPBeiEiQw2R8QFzOiOeThNigU-aBEiBzIKMqwob3DcL-vmVfiUXNFQ&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=51bcb3ab9600a40f39f5a7e8535bb0fe219ba7052e7e93b5e70d86d2fddc2830
+              validate:
+                file: http://10.29.205.33:7501/datatunerx/DataSet/alpaca_data_en_52k_Validation.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=K9GZU3E918K576N7MX8A%2F20231124%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231124T094407Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJLOUdaVTNFOTE4SzU3Nk43TVg4QSIsImV4cCI6MTcwMDgyMjU3OSwicGFyZW50IjoiYWlnYyJ9.vJF1ltyT8Rdlkh65VKCoTFaeX4rvQi8BjPBeiEiQw2R8QFzOiOeThNigU-aBEiBzIKMqwob3DcL-vmVfiUXNFQ&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=dd7e09fd811f8556c67039394d6e7701c0d9595fe3dc536da4e2cf59cbefdbb7
+        languages:
+        - zh-CN
+        license: CC BY
+        plugin:
+          loadPlugin: false
+          name: ""
+          parameters: '{}'
+        size: n < 1K
+        tags: []
+        task:
+          name: Text Generation
+          subTasks: []
+    datasetRef: 'llama2-7b'
+  hyperparameter:
+    spec:
+      objective:
+        type: SFT
+      parameters:
+        FP16: true
+        PEFT: true
+        batchSize: 32
+        blockSize: 512
+        epochs: 10
+        gradAccSteps: 1
+        int4: false
+        int8: false
+        learningRate: '0.001'
+        loRA_Alpha: '32.0'
+        loRA_Dropout: '0.1'
+        loRA_R: '4'
+        optimizer: Adam
+        scheduler: Cosine
+        trainerType: Standard
+        warmupRatio: '0.1'
+        weightDecay: '0.0001'
+    hyperparameterRef: llama2-7b
+  image:
+    imagePullPolicy: IfNotPresent
+  llm:
+    llmRef: llama2-7b
+    spec:
+      llmMetdata:
+        computeInfrastructure:
+          hardware:
+            cpu: 4
+            memory: 28Gi
+            vRam: 6Gi
+        domain:
+        - NLP
+        frameworks:
+        - PyTorch
+        languages:
+        - English
+        license:
+        - https://ai.meta.com/resources/models-and-libraries/llama-downloads/
+        llmImageConfig:
+          image: harobor.custome.com/llama2-7b:v1
+          path: /data/llama2-7b
+        name: Llama-2-7b
+        tasks:
+        - Text Generation
+  checkpoint: asdf.asdf.md
+apiVersion: core.datatunerx.io/v1beta1
+kind: LLMCheckpoint

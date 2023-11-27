@@ -1,6 +1,6 @@
 {
   "finetuneRegistry": "Fine-tune Registry",
-  "modelfileaddress": "Model file address",
+  "modelfileaddress": "Model file address:",
   "deploy": "Deploy",
 
   "deleteFinetuneRegistry": "Delete Fine-tune Registry",
