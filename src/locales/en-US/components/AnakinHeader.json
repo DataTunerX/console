@@ -7,6 +7,7 @@
   },
   "menu": {
     "fineTuningExperiment": "Fine-tune Experiment",
+    "fineTuningRegistry": "Fine Tuning Registry",
     "dataset": "Dataset",
     "hyperparameterGroup": "Hyperparameter"
   },

@@ -7,6 +7,7 @@
   },
   "menu": {
     "fineTuningExperiment": "微调实验",
+    "fineTuningRegistry": "微调仓库",
     "dataset": "数据集",
     "hyperparameterGroup": "参数组"
   },
