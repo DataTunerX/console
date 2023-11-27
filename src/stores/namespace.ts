@@ -1,3 +1,4 @@
+import { nError } from '@/utils/useNoty';
 import { NAMESPACE } from '@/utils/constant';
 import { Namespace } from 'kubernetes-types/core/v1';
 import { defineStore } from 'pinia';
@@ -22,7 +23,7 @@ export const useNamespaceStore = defineStore('namespace', {
           this.setNamespace(firstNamespace.metadata?.name || '');
         }
       } catch (error) {
-        console.error('接口请求失败：', error);
+        nError('接口请求失败：', error);
       }
     },
     setNamespace(val: string) {

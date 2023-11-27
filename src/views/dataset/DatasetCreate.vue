@@ -126,13 +126,13 @@ const {
   handleSubmit,
   resetForm,
   setFieldError,
-  defineComponentBinds,
+  defineField,
 } = useForm<DatasetForRender>({
-  initialValues: dataset,
+  initialValues: dataset.value,
   validationSchema: schema,
 });
 
-const parameters = defineComponentBinds('spec.datasetMetadata.plugin.parameters', {
+const [parameters] = defineField('spec.datasetMetadata.plugin.parameters', {
   validateOnModelUpdate: false,
 });
 
@@ -476,8 +476,8 @@ const onSubmit = handleSubmit(async (values) => {
             <dao-form-item :label="$t('views.Dataset.pluginParameters')">
               <key-value-form
                 ref="componentRef"
+                v-model="parameters"
                 name="spec.datasetMetadata.plugin.parameters"
-                v-bind="parameters"
               />
             </dao-form-item>
           </template>

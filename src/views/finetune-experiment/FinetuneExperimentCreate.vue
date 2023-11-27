@@ -99,13 +99,13 @@ const validationSchema = markRaw(
 );
 
 const {
-  validate, errorBag, values, defineComponentBinds,
+  validate, errorBag, values, defineField,
 } = useForm<FinetuneExperimentForRender>({
-  initialValues: finetuneExperiment,
+  initialValues: finetuneExperiment.value,
   validationSchema,
 });
 
-const parameters = defineComponentBinds('spec.scoringConfig.parameters', {
+const [parameters] = defineField('spec.scoringConfig.parameters', {
   validateOnModelUpdate: false,
 });
 

@@ -1,5 +1,3 @@
-name: Build Frontend on PR
-
 on:
   push:
     branches: ["main"]
@@ -7,20 +5,61 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: 16
+          cache: "npm"
 
-      - name: Install dependencies
+      - name: Install dependencies 🔧
         run: npm ci --force
 
-      - name: Build
-        run: yarn build
+      - name: Lint
+        run: npm run lint
+
+  unit-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 🔧
+        run: npm ci --force
+
+      - name: Test
+        run: npm run test:unit
+
+  build:
+    runs-on: ubuntu-latest
+
+    needs: [lint, unit-test]
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 🔧
+        run: npm ci --force
+
+      - name: Build 🏗️
+        run: npm run build
