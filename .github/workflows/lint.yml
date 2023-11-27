@@ -1,4 +1,4 @@
-name: Build Frontend on PR
+name: Lint
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,9 +22,6 @@ jobs:
 
       - name: Install dependencies 🔧
         run: npm ci --force
-        
-      - name: Test
-        run: npm run test:unit
 
-      - name: Build 🏗️
-        run: npm run build
+      - name: Lint
+        run: npm run lint
