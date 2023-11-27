@@ -10,13 +10,13 @@ const userOperation = computed(() => [
   {
     label: i18n.t('components.AnakinHeader.user.personal-center'),
     icon: 'icon-user',
-    href: './ghippo/profile',
+    href: './profile',
     operate: noop,
   },
   {
     label: i18n.t('components.AnakinHeader.user.setting'),
     icon: 'icon-setting',
-    href: './ghippo/settings',
+    href: './settings',
     operate: noop,
   },
   {
@@ -39,16 +39,16 @@ const namespace = computed({
 </script>
 
 <template>
-  <header class="ghippo-header">
+  <header class="datatunerx-header">
     <!-- <div class="" /> -->
-    <div class="ghippo-header-logo">
+    <div class="datatunerx-header-logo">
       <img
-        class="ghippo-header-logo-img"
+        class="datatunerx-header-logo-img"
         src="@/assets/logo.png"
       >
     </div>
 
-    <!-- <span class="ghippo-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span> -->
+    <!-- <span class="datatunerx-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span> -->
     <dao-select
       v-model="namespace"
       search
@@ -62,23 +62,24 @@ const namespace = computed({
       />
     </dao-select>
 
-    <div class="ghippo-toolbox">
-      <div class="ghippo-toolbox-item">
+    <div class="datatunerx-toolbox">
+      <div class="datatunerx-toolbox-item">
         <dao-dropdown
+          v-if="false"
           trigger="click"
           :offset="5"
         >
-          <anakin-header-button class="ghippo-user-trigger">
+          <anakin-header-button class="datatunerx-user-trigger">
             <img
-              class="ghippo-user-avatar"
+              class="datatunerx-user-avatar"
               :src="Avatar"
               alt="user.username"
             >
-            <span class="ghippo-user-username"> Max </span>
+            <span class="datatunerx-user-username"> Max </span>
             <dao-icon
               use-font
               name="icon-dropdown-line"
-              class="ghippo-user-drop-icon"
+              class="datatunerx-user-drop-icon"
             />
           </anakin-header-button>
           <template #menu>
@@ -91,7 +92,7 @@ const namespace = computed({
                 <dao-history-link
                   :href="operate.href"
                   :icon="operate.icon"
-                  class="ghippo-user-drop--item"
+                  class="datatunerx-user-drop--item"
                 >
                   {{ operate.label }}
                 </dao-history-link>
@@ -105,15 +106,19 @@ const namespace = computed({
 </template>
 
 <style lang="scss" scoped>
-$ghippo-header-background: var(--dao-top-gray-010);
-$ghippo-header-color: var(--dao-navigation-090);
+$datatunerx-header-background: var(--dao-top-gray-010);
+$datatunerx-header-color: var(--dao-navigation-090);
 
-.ghippo-header {
+.datatunerx-header {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+
   display: flex;
   align-items: center;
   height: 50px;
-  color: $ghippo-header-color;
-  background-color: $ghippo-header-background;
+  color: $datatunerx-header-color;
+  background-color: $datatunerx-header-background;
 
   &__product {
     width: 210px;
@@ -132,33 +137,33 @@ $ghippo-header-color: var(--dao-navigation-090);
   }
 }
 
-.ghippo-header-logo {
+.datatunerx-header-logo {
   width: 210px;
   text-align: center;
 }
 
-.ghippo-header-logo-img {
+.datatunerx-header-logo-img {
   height: 36px;
   vertical-align: bottom;
   transform: scale(1.7);
 }
 
-.ghippo-toolbox {
+.datatunerx-toolbox {
   display: flex;
   align-items: center;
   margin-left: auto;
 
-  .ghippo-toolbox-item {
+  .datatunerx-toolbox-item {
     margin-right: 10px;
   }
 
-  .ghippo-icon-trigger {
+  .datatunerx-icon-trigger {
     position: relative;
     display: flex;
     padding: 0;
   }
 
-  .ghippo-operate-icon {
+  .datatunerx-operate-icon {
     width: 34px;
     height: 34px;
     font-size: 21px;
@@ -166,7 +171,7 @@ $ghippo-header-color: var(--dao-navigation-090);
     text-align: center;
   }
 
-  .ghippo-message-count-box {
+  .datatunerx-message-count-box {
     position: absolute;
     top: -1px;
     right: -2px;
@@ -178,7 +183,7 @@ $ghippo-header-color: var(--dao-navigation-090);
     background-color: var(--dao-orange-030);
     border-radius: 50%;
 
-    .ghippo-message-count {
+    .datatunerx-message-count {
       font-size: 20px;
       font-weight: 600;
       color: var(--dao-pure-white);
@@ -186,28 +191,28 @@ $ghippo-header-color: var(--dao-navigation-090);
     }
   }
 
-  .ghippo-user-trigger {
+  .datatunerx-user-trigger {
     display: flex;
     align-items: center;
   }
 
-  .ghippo-user-avatar {
+  .datatunerx-user-avatar {
     height: 36px;
     margin-right: 8px;
     vertical-align: middle;
   }
 
-  .ghippo-user-default-avatar {
+  .datatunerx-user-default-avatar {
     width: 24px;
     height: 24px;
     font-size: 24px;
   }
 
-  .ghippo-user-username {
+  .datatunerx-user-username {
     margin-right: 14px;
   }
 
-  .ghippo-user-drop-icon {
+  .datatunerx-user-drop-icon {
     width: 14px;
     height: 14px;
     font-size: 14px;
@@ -215,7 +220,7 @@ $ghippo-header-color: var(--dao-navigation-090);
   }
 }
 
-.ghippo-user-drop--item {
+.datatunerx-user-drop--item {
   display: flex;
   margin: 0 -20px 0 -5px;
   color: var(--dao-gray-010);

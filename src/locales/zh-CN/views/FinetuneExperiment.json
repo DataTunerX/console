@@ -53,11 +53,11 @@
   "finetuneStatus": "微调状态",
   "spreadPolicies": "分布策略",
   "jobState": {
-    "buildimage": "构建镜像",
+    "buildimage": "构建模型镜像中",
     "failed": "失败",
-    "finetune": "微调",
-    "init": "初始化",
-    "serve": "工作",
+    "finetune": "模型微调中",
+    "init": "初始化中",
+    "serve": "模型服务中",
     "successful": "成功",
     "unknown": "未知状态"
   }

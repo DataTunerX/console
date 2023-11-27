@@ -448,7 +448,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item>
 
       <dao-form-item :label="$t('views.Dataset.datasetInformation')">
-        <div class="kpd-form-block">
+        <div class="datatunerx-form-block">
           <dao-form-item-validate
             :label="$t('views.Dataset.pluginConfiguration')"
             name="spec.datasetMetadata.plugin.loadPlugin"
@@ -482,7 +482,7 @@ const onSubmit = handleSubmit(async (values) => {
           <div
             v-for="(field, index) in subsets"
             :key="field.key"
-            class="kpd-form-block__item"
+            class="datatunerx-form-block__item"
             :class="{ 'mb-[20px]': field.isLast && hasMarginBottom }"
           >
             <dao-form-item-validate
@@ -523,7 +523,7 @@ const onSubmit = handleSubmit(async (values) => {
             />
             <dao-icon
               v-if="canRemove"
-              class="kpd-form-block__remove-btn"
+              class="datatunerx-form-block__remove-btn"
               name="icon-remove"
               use-font
               @click="handleDeleteRule(index)"
@@ -536,7 +536,7 @@ const onSubmit = handleSubmit(async (values) => {
               type: 'action',
               icon: 'icon-add',
             }"
-            class="kpd-form-block__add-btn"
+            class="datatunerx-form-block__add-btn"
             @click="handleAddRule"
           >
             {{ $t("views.Dataset.addDatasetInfoConfig") }}
@@ -585,24 +585,14 @@ const onSubmit = handleSubmit(async (values) => {
 <style lang="scss" scoped>
 $form-width: 500px;
 
-:deep(.kpd-form-block) {
-  display: inline-block;
-
-  .kpd-form-block__item {
-    padding-right: 20px;
-  }
-}
-
 :deep(.input-form-width.dao-input),
 :deep(.select-form-width.dao-select) {
   width: $form-width;
 }
 
-:deep {
-  .no-padding {
-    .dao-form-item__label {
-      padding: 0;
-    }
+.no-padding {
+  :deep(.dao-form-item__label) {
+    padding: 0;
   }
 }
 

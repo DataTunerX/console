@@ -1,7 +1,7 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import 'form-block';
+@import 'form';
 @import 'layout';
 
 .redirect-link {
@@ -65,13 +65,6 @@
   .dao-form-item__content {
     padding-bottom: 0 !important;
   }
-}
-
-.form-label {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 25px;
-  color: var(--dao-gray-010);
 }
 
 // dao-table link 样式
@@ -166,28 +159,6 @@
   }
 }
 
-// 文字按钮
-.text-btn {
-  display: inline-block;
-  font-size: 13px;
-  line-height: 20px;
-  color: var(--dao-primary-blue-040);
-  cursor: pointer;
-
-  &:hover {
-    color: var(--dao-primary-blue-060);
-  }
-
-  &-disabled {
-    color: var(--dao-gray-120);
-    cursor: not-allowed;
-
-    &:hover {
-      color: var(--dao-gray-120);
-    }
-  }
-}
-
 .list-name-link {
   font-weight: 700;
   color: var(--dao-text-primary);
@@ -198,9 +169,11 @@
   }
 }
 
-.form-item__card {
-  padding: 20px 20px 0;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.16);
+// dao-style extends
+.dao-card-header-title {
+  overflow: hidden;
+}
+
+.dao-breadcrumb__label {
+  word-break: break-all;
 }

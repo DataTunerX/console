@@ -1,4 +1,5 @@
-.kpd-form-block {
+.datatunerx-form-block {
+  display: inline-block;
   padding: 20px 40px 0 20px;
   border: 1px dashed var(--dao-gray-blue-050);
   border-radius: 10px;
@@ -6,6 +7,7 @@
   &__item {
     position: relative;
     padding-top: 20px;
+    padding-right: 20px;
     background: var(--dao-gray-blue-110);
     border: 1px solid var(--dao-gray-blue-050);
     border-radius: 10px;
@@ -42,4 +44,18 @@
   background: var(--dao-gray-blue-110);
   border: 1px solid var(--dao-gray-blue-050);
   border-radius: 8px;
+}
+
+.form-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 25px;
+  color: var(--dao-gray-010);
+}
+
+.form-item__card {
+  padding: 20px 20px 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.16);
 }
