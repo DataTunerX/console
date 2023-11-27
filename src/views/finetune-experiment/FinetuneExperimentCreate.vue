@@ -101,7 +101,7 @@ const validationSchema = markRaw(
 const {
   validate, errorBag, values, defineComponentBinds,
 } = useForm<FinetuneExperimentForRender>({
-  initialValues: finetuneExperiment,
+  initialValues: finetuneExperiment.value,
   validationSchema,
 });
 

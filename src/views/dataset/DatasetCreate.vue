@@ -128,7 +128,7 @@ const {
   setFieldError,
   defineComponentBinds,
 } = useForm<DatasetForRender>({
-  initialValues: dataset,
+  initialValues: dataset.value,
   validationSchema: schema,
 });
 
