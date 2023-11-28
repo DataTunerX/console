@@ -28,6 +28,7 @@ e2e-test:
 .PHONY: build-image
 build-image:
 	ls
+	echo ${REGISTRY_SERVER_ADDRESS}
 	export DOCKER_CLI_EXPERIMENTAL=enabled ;\
 	! ( docker buildx ls | grep ${PKGNAME}-platform-builder ) && docker buildx create --use --platform=linux/arm64,linux/amd64 --name ${PKGNAME}-platform-builder ;\
 	docker buildx build \

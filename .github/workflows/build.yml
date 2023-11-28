@@ -26,4 +26,4 @@ jobs:
         run: npm run build
 
       - name: Docker
-        run: make build-image
+        run: make release
