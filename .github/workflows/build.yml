@@ -26,4 +26,7 @@ jobs:
         run: npm run build
 
       - name: Docker
+        env:
+          REGISTRY_USER_NAME: ${{ secrets.REGISTRY_USER_NAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: make release

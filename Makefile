@@ -28,7 +28,9 @@ e2e-test:
 .PHONY: build-image
 build-image:
 	ls
-	echo ${REGISTRY_SERVER_ADDRESS}
+	echo "${REGISTRY_SERVER_ADDRESS}"
+	echo "${REGISTRY_USER_NAME}"
+	echo "${REGISTRY_PASSWORD}"
 	export DOCKER_CLI_EXPERIMENTAL=enabled ;\
 	! ( docker buildx ls | grep ${PKGNAME}-platform-builder ) && docker buildx create --use --platform=linux/arm64,linux/amd64 --name ${PKGNAME}-platform-builder ;\
 	docker buildx build \
@@ -41,7 +43,11 @@ build-image:
 
 .PHONY: docker-login
 docker-login:
-	docker login -u ${REGISTRY_USER_NAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_SERVER_ADDRESS}
+	docker login -u "${REGISTRY_USER_NAME}" -p "${REGISTRY_PASSWORD}" "${REGISTRY_SERVER_ADDRESS}"
 
 .PHONY: release
 release: docker-login build-image
+
+.PHONY: deploy-dev
+deploy-dev:
+	kubectl -n datatunerx --kube-config ~/.kube/datatunerx set image deployment/datatunerx-ui datatunerx-ui=$(REGISTRY_REPO)/${PKGNAME}:$(IMAGE_VERSION)
