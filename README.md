@@ -1,6 +1,6 @@
 # DataTunerX console
 
-![Logo](./src/assets//logo/Logo_DataTunerX%20-%20Horizontal%20-%20Color%20Light.png)
+![Logo](./src/assets//logo/Logo_DataTunerX%20-%20Horizontal%20-%20Color%20Dark.png)
 
 The DatatunerX Console Project is designed for conducting fine-tuning experiments.
 This project provides a flexible environment for experimenting with fine-tuning in various scenarios.
