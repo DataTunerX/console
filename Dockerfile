@@ -4,8 +4,6 @@ FROM docker.m.daocloud.io/nginx:${NGINX_IMAGE_VERSION}
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk -U upgrade
 
-RUN  ls dist
-
 COPY dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY startup.sh /usr/share
