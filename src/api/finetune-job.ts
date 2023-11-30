@@ -101,10 +101,11 @@ export interface Status {
 }
 
 export interface Result {
-  dashboard: string;
-  image: string;
+  dashboard?: string;
+  image?: string;
   modelExportResult: boolean;
-  serve: string;
+  score?: string;
+  serve?: string;
 }
 
 export enum State {

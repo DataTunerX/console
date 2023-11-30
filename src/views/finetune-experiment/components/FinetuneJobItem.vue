@@ -21,15 +21,15 @@ const props = defineProps({
 const { t } = useI18n();
 
 const infos = computed(() => {
-  const { data: { spec } } = props;
+  const { data: { spec, status } } = props;
   const llms = spec?.finetune?.finetuneSpec.llm;
   const datasets = spec?.finetune.finetuneSpec.dataset;
 
   const items = [
     {
       label: t('views.FinetuneExperiment.results'),
-      value: spec?.finetune.finetuneSpec.hyperparameter?.hyperparameterRef,
-      slotId: 'hyperparameterRef',
+      value: status?.result?.score ?? '0',
+      slotId: 'score',
     },
     {
       label: t('views.FinetuneExperiment.basicLargeModel'),
@@ -80,6 +80,14 @@ const infos = computed(() => {
         :column="1"
         :data="infos"
       >
+        <template #kv-score="{ row }">
+          <dao-key-value-layout-item :label="row.label">
+            <span class="font-bold">
+              {{ row.value }}
+            </span>
+          </dao-key-value-layout-item>
+        </template>
+
         <template #kv-llm="{ row }">
           <dao-key-value-layout-item :label="row.label">
             <dao-hover-card :data="row.value?.split(',')">
@@ -107,11 +115,6 @@ const infos = computed(() => {
         <template #kv-hyperparameter="{ row }">
           <dao-key-value-layout-item :label="row.label">
             <hyperparameter-with-overrides :data="props.data.spec?.finetune.finetuneSpec.hyperparameter" />
-          </dao-key-value-layout-item>
-        </template>
-        <template #kv-hyperparameterRef="{ row }">
-          <dao-key-value-layout-item :label="row.label">
-            🐛
           </dao-key-value-layout-item>
         </template>
       </dao-key-value-layout>
