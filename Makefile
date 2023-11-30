@@ -46,4 +46,4 @@ release: docker-login build-image
 
 .PHONY: deploy-dev
 deploy-dev:
-	kubectl -n datatunerx --kube-config ~/.kube/datatunerx set image deployment/datatunerx-ui datatunerx-ui=$(REGISTRY_REPO)/${PKGNAME}:$(IMAGE_VERSION)
+	kubectl -n datatunerx --kubeconfig ~/.kube/datatunerx set image deployment/datatunerx-ui datatunerx-ui=$(REGISTRY_REPO)/${PKGNAME}:$(IMAGE_VERSION)
