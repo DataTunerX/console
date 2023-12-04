@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Hyperparameter } from '@/api/finetune';
-import { PropType } from 'vue';
 import { Theme as hyperparameterTheme } from '@/api/hyperparameter';
 
 const props = defineProps({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+
 import { noop } from '@vueuse/core';
 import { i18n } from '@/plugins';
 import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
@@ -43,6 +43,7 @@ const namespace = computed({
     <!-- <div class="" /> -->
     <div class="datatunerx-header-logo">
       <img
+        alt="logo"
         class="datatunerx-header-logo-img"
         src="@/assets/logo.png"
       >

@@ -1,15 +1,6 @@
 <script setup lang="ts">
-import {
-  useForm, useFieldArray, useFieldError, useField,
-} from 'vee-validate';
-
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
-import {
-  computed, markRaw, reactive, onMounted, ref, watch,
-} from 'vue';
 import { object, array, string } from 'yup';
-import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 import {
   LicenseType,
   SizeType,

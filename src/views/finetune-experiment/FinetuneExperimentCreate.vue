@@ -4,19 +4,15 @@ import { useFieldArray, useFieldError, useForm } from 'vee-validate';
 import {
   string, object, array, number,
 } from 'yup';
-import {
-  markRaw, ref, computed, watch,
-  onBeforeMount,
-} from 'vue';
 import { FinetuneJobWithName, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useNamespaceStore } from '@/stores/namespace';
-import { storeToRefs } from 'pinia';
+
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
 import KeyValueForm from '@/components/KeyValueForm.vue';
 import { FinetuneExperimentForRender, convertFinetuneExperimentForPost } from '@/api/finetune-experiment-for-render';
 import { BuildInScoringPlugin } from '@/api/scoring-plugin';
-import { useI18n } from 'vue-i18n';
+
 import FinetuneJobComponent from './components/FinetuneJobComponent.vue';
 
 import {

@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { watch } from 'vue';
+
 import { useRouter } from 'vue-router';
 import { defineColumns } from '@dao-style/core';
 import {
   type Hyperparameter, Theme, hyperparameterClient, Parameters,
 } from '@/api/hyperparameter';
 import { useNamespaceStore } from '@/stores/namespace';
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
+
 import { useDateFormat } from '@dao-style/extend';
 import omit from 'lodash/omit';
 import { generateQueryString } from '@/utils/queryString';

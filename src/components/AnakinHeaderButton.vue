@@ -1,6 +1,4 @@
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue';
-
 const buttonType = ['button', 'icon', 'link'] as const;
 
 type ButtonType = typeof buttonType[number];

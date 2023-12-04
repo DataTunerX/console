@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { PropType } from 'vue';
+
 import { LLMCheckpoint } from '@/api/checkpoint';
-import { useI18n } from 'vue-i18n';
+
 import { Theme as llmTheme } from '@/api/large-language-model';
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as hyperparameterTheme } from '@/api/hyperparameter';
@@ -39,6 +39,7 @@ const copy = async () => {
   <div class="registry-card">
     <div class="registry-card__metadata">
       <img
+        alt="llama2"
         class="registry-card__metadata-logo"
         src="@/assets/images/llama.jpeg"
       >

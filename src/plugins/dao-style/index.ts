@@ -1,5 +1,3 @@
-import type { App } from 'vue';
-
 import daoStyle from '@dao-style/core';
 import '@dao-style/core/dist/style.css';
 
@@ -23,6 +21,7 @@ import {
   registerAllValidations,
   type VueI18nLike,
 } from '@dao-style/extend';
+import { App } from 'vue';
 
 const components = {
   DaoHistoryLink,

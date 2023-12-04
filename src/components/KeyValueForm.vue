@@ -13,9 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  defineEmits, defineProps, PropType, ref, watch,
-} from 'vue';
 import isEqual from 'lodash/isEqual';
 import { KeyValue, LabelType } from '@/types/common';
 import { formatKeyValueListToObj, formatLabelToKeyValueList } from '@/utils/util';

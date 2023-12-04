@@ -1,20 +1,7 @@
-import { useI18n } from 'vue-i18n';
 import get from 'lodash/get';
 import merge from 'lodash/merge';
 import { nError } from '@/utils/useNoty';
-import {
-  onBeforeMount,
-  reactive,
-  ref,
-  Ref,
-  UnwrapNestedRefs,
-  computed,
-  watchEffect,
-  toRefs,
-  ToRefs,
-  watch,
-  ComputedRef,
-} from 'vue';
+import { UnwrapNestedRefs, ToRefs } from 'vue';
 import { AxiosResponse } from 'axios';
 import { List } from '@/plugins/axios/client';
 

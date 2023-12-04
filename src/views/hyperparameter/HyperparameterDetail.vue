@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount, watch } from 'vue';
 import { useDateFormat } from '@dao-style/extend';
-import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { storeToRefs } from 'pinia';
 import filter from 'lodash/filter';
 import { Theme } from '@/api/finetune-job';
 import {

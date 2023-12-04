@@ -1,0 +1,18 @@
+{
+  "title": "Logs",
+  "moreInfo": "Display 100 lines, to view more log information or download the log, please go to",
+  "filters": {
+    "last30d": "Last 30 Days",
+    "last7d": "Last 7 Days",
+    "last1d": "Last 1 Days",
+    "last1h": "Last 1 Hour",
+    "last5m": "Last 5 Minutes",
+    "realTime": "Real Time"
+  },
+  "tools": {
+    "autoRefresh": "Auto Refresh",
+    "refreshBtnTip": "Automatically refresh every 5 seconds, click to enable",
+    "pauseBtnTip": "Automatically refresh every 5 seconds, click to pause"
+  },
+  "fetchErrorText": "Failed to get logs. Reason: "
+}

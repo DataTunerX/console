@@ -1,5 +1,5 @@
 import type { StateIconType } from '@dao-style/extend';
-import type { ComponentPublicInstance } from 'vue';
+
 import type { LocationAsRelativeRaw } from 'vue-router';
 
 export interface StatusMap {

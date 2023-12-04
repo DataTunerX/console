@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
-import { computed, onBeforeMount, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
-import { storeToRefs } from 'pinia';
+
 import { useDataset, useDeleteDataset } from './composition/dataset';
 
 const { t } = useI18n();

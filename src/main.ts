@@ -1,4 +1,3 @@
-import { createApp } from 'vue';
 import 'normalize.css/normalize.css';
 import pluginInstall, { loadDayjsLanguageAsync, loadLanguageAsync } from './plugins';
 

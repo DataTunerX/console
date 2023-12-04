@@ -9,7 +9,6 @@ UI 所有的新版本开发（功能迭代）都在主分支（master） 上进�
 
 Minor release 和 Patch release 流程已经变为 GitLab Pipeline 自动化流程，流程执行步骤如下
 
-
 ### RC Release
 
 1. 手动在 master 分支上新增 tag v0.10.0-rc.x（x 从 1 开始自增），并推送到远程

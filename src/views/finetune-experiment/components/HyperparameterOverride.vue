@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch, PropType, ref } from 'vue';
 import { DaoSelect } from '@dao-style/core';
 import {
   type Hyperparameter,
@@ -10,7 +9,6 @@ import {
   Quantization,
   StringParameters,
 } from '@/api/hyperparameter';
-import { useField } from 'vee-validate';
 import { retrieveQuantization } from '@/views/hyperparameter/composition/hyperparameter';
 import { diff } from '@/utils/diff';
 

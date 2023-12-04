@@ -1,4 +1,4 @@
-import type { App } from 'vue';
+import { App } from 'vue';
 import routerInstall from '@/router';
 import { errorHandlers, type ErrorHandler } from './fetch';
 import daoStyleInstall from './dao-style';

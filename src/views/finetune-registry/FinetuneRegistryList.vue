@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { useNamespaceStore } from '@/stores/namespace';
 import { llmCheckpointClient } from '@/api/checkpoint';
 import { useQueryTable } from '@/hooks/useQueryTable';
-import { useI18n } from 'vue-i18n';
+
 import { createDialog } from '@dao-style/extend';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import CardLayoutContainer from '@/components/CardLayoutContainer.vue';

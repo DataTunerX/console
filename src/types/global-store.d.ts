@@ -1,4 +1,3 @@
-import type { App } from 'vue';
 import type { Store, defineStore } from 'pinia';
 
 type GProduct = {

@@ -1,0 +1,10 @@
+apiVersion: cloudshell.cloudtty.io/v1alpha1
+kind: CloudShell
+metadata:
+  name: xspider-ui-5d8fd69dcb-7k4l7-1701410128804
+  namespace: datatunerx
+spec:
+  cleanup: false
+  commandAction: >-
+    kubectl logs -f --tail 100 datatunerx-ui-67f464c958-9n6ff -n datatunerx -c datatunerx-ui
+  ttl: 3600

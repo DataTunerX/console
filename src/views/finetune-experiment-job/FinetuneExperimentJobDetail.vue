@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import { computed, ref, watch } from 'vue';
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
 import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
-import { storeToRefs } from 'pinia';
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';

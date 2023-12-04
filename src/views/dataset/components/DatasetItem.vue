@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDateFormat } from '@dao-style/extend';
-import { useI18n } from 'vue-i18n';
 import { Dataset } from '@/api/dataset';
 import DatasetStatus from './DatasetStatus.vue';
 
