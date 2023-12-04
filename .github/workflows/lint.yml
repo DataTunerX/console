@@ -17,13 +17,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies 🔧
-        run: npm ci --force
+        run: yarn install
 
       - name: Lint
-        run: npm run lint
+        run: yarn lint
 
   unit-test:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies 🔧
-        run: npm ci --force
+        run: yarn install
 
       - name: Test
-        run: npm run test:unit
+        run: yarn test:unit

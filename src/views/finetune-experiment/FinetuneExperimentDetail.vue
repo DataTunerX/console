@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useNamespaceStore } from '@/stores/namespace';
 import {
   FinetuneJobWithName,
@@ -10,7 +7,7 @@ import {
   State as FinetuneExperimentState,
 } from '@/api/finetune-experiment';
 import { useDateFormat } from '@dao-style/extend';
-import { storeToRefs } from 'pinia';
+
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import { AxiosResponse } from 'axios';

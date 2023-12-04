@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
+
 import { useNamespaceStore } from '@/stores/namespace';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import { FinetuneExperiment, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { createDialog } from '@dao-style/extend';
-import { useI18n } from 'vue-i18n';
 
 import FinetuneExperimentItem from './components/FinetuneExperimentItem.vue';
 import { useFinetuneExperiment } from './composition/finetune';

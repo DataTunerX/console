@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
 import { useDateFormat } from '@dao-style/extend';
 import { FinetuneExperiment, State as FinetuneExperimentState } from '@/api/finetune-experiment';
-import { useI18n } from 'vue-i18n';
+
 import { State as FinetuneJobState } from '@/api/finetune-job';
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import ExperimentStatus from './ExperimentStatus.vue';

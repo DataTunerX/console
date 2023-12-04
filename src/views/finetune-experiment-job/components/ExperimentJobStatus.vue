@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
 import { FinetuneJob, State as FinetuneJobState } from '@/api/finetune-job';
-import { useI18n } from 'vue-i18n';
 import type { StateIconType } from '@dao-style/extend';
 
 const props = defineProps({

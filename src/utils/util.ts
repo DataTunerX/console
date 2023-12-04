@@ -1,4 +1,3 @@
-import { getCurrentInstance } from 'vue';
 import { useRoute } from 'vue-router';
 import type { KeyValue, LabelType, NavRoute } from '@/types/common';
 

@@ -1,16 +1,3 @@
-const path = require("path");
-
-const vuejsAccessibilityOff = Object.keys(
-  require(path.resolve(
-    path.dirname(require.resolve("eslint-plugin-vuejs-accessibility")),
-    "../dist/index"
-  )).rules
-).reduce((rules, rule) => {
-  rules[`vuejs-accessibility/${rule}`] = 0;
-
-  return rules;
-}, {});
-
 module.exports = {
   root: true,
   env: {
@@ -25,13 +12,15 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     sourceType: "module",
     extraFileExtensions: [".vue"],
+    warnOnUnsupportedTypeScriptVersion: false,
   },
   plugins: ["vue", "@typescript-eslint"],
   extends: [
-    "plugin:jsonc/recommended-with-json",
+    "plugin:json/recommended",
     "plugin:vue/vue3-recommended",
     "@vue/airbnb",
     "@vue/typescript/recommended",
+    './.eslintrc-auto-import.json',
   ],
   rules: {
     "@typescript-eslint/padding-line-between-statements": [
@@ -97,7 +86,7 @@ module.exports = {
     "comma-dangle": ["error", "always-multiline"], // 最后一个对象元素加逗号
     "object-property-newline": ["error", { allowAllPropertiesOnSameLine: false }],
     "vue/object-property-newline": ["error", { allowAllPropertiesOnSameLine: false }],
-    "vue/space-infix-ops": ["error", { int32Hint: true }],
+    // 'vue/space-infix-ops': ['error', { int32Hint: true }],
     "vue/multi-word-component-names": 0,
 
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
@@ -120,28 +109,40 @@ module.exports = {
     "@typescript-eslint/no-shadow": "error",
     curly: "error", // 强制if括号包裹，无效
     "max-len": ["error", { code: 150, ignoreStrings: true }],
-    "jsonc/indent": ["error",
-        2,
-        {}
-    ],
-    // "jsonc/auto": true,
-    ...vuejsAccessibilityOff,
+    "vuejs-accessibility/click-events-have-key-events": "off",
   },
   overrides: [
+    {
+      files: ["**/*.vue"],
+      rules: {
+        "max-len": "off",
+        "vue/max-len": [
+          "error",
+          {
+            code: 200,
+            template: 150,
+            ignoreStrings: true,
+          },
+        ],
+      },
+    },
     {
       files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
       env: {
         jest: true,
       },
     },
-    {
-      files: ["*.json", "*.json5", "*.jsonc"],
-      parser: "jsonc-eslint-parser",
-    },
   ],
   globals: {
+    CustomRequired: true,
+    CustomPartial: true,
+    ListFormType: true,
+    LabelType: true,
+    KeyValue: true,
+    ErrorType: true,
     defineProps: true,
     defineEmits: true,
     defineExpose: true,
+    RemoteCompoentRef: true,
   },
 };

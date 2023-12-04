@@ -6,11 +6,9 @@ import {
   datasetClient,
   TaskName,
 } from '@/api/dataset';
-import { reactive, ref, toRefs } from 'vue';
 import { DatasetForRender, convertDatasetForRender } from '@/api/dataset-for-render';
 import { createDialog } from '@dao-style/extend';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
-import { useI18n } from 'vue-i18n';
 
 const initialValue: DatasetForRender = {
   apiVersion: 'extension.datatunerx.io/v1beta1',

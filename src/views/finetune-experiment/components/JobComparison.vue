@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { FinetuneJobWithName } from '@/api/finetune-experiment';
-import { PropType, ref } from 'vue';
 
 defineProps({
   jobs: {

@@ -29,7 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, computed } from 'vue';
 
 interface NumberProp {
   data: number

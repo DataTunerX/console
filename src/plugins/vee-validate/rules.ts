@@ -1,5 +1,5 @@
 import { findDuplicateIndices } from '@/utils/findDuplicate';
-import { useI18n } from 'vue-i18n';
+
 import { addMethod, array, string } from 'yup';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

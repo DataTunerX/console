@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
 import { FinetuneExperiment, State as FinetuneExperimentState } from '@/api/finetune-experiment';
-import { useI18n } from 'vue-i18n';
+
 import type { StateIconType } from '@dao-style/extend';
 
 const props = defineProps({

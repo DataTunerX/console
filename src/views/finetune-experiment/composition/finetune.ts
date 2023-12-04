@@ -1,4 +1,3 @@
-import { reactive, ref, toRefs } from 'vue';
 import {
   apiVersion,
   kind,

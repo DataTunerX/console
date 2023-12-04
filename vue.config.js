@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service');
+const unpluginPlugin = require('unplugin-auto-import/webpack');
 
 const proxyConfig = {
   target: process.env.VUE_APP_API_URL,
@@ -24,6 +25,35 @@ module.exports = defineConfig({
       compositionOnly: false,
       fullInstall: false,
     },
+  },
+
+  configureWebpack: {
+    plugins: [
+      unpluginPlugin.default({
+        include: [
+          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+          /\.vue$/,
+          /\.vue\?vue/, // .vue
+          /\.md$/, // .md
+        ],
+        // global imports to register
+        imports: [
+          // presets
+          'vue',
+          'vue-router',
+          'vue-i18n',
+          'vee-validate',
+          'pinia',
+        ],
+        dts: './src/auto-imports.d.ts',
+        eslintrc: {
+          enabled: true, // Default `false`
+          filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
+          // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+          globalsPropValue: true,
+        },
+      }),
+    ],
   },
 
   devServer: {

@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { FinetuneJobWithName } from '@/api/finetune-experiment';
-import { PropType, computed } from 'vue';
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
-import { useI18n } from 'vue-i18n';
 import ExperimentJobStatus from '@/views/finetune-experiment-job/components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from '@/views/finetune-experiment-job/components/HyperparameterWithOverrides.vue';
 

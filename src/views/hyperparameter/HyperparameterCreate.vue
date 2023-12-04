@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import {
-  computed, watch, onMounted, markRaw,
-} from 'vue';
-import { useForm } from 'vee-validate';
-import { storeToRefs } from 'pinia';
 import { DaoSelect } from '@dao-style/core';
 import { object, string, number } from 'yup';
 import cloneDeep from 'lodash/cloneDeep';
-import { useI18n } from 'vue-i18n';
+
 import {
   type Hyperparameter,
   type StringParameters,

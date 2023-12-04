@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
+
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
 import { useQueryTable } from '@/hooks/useQueryTable';
+import CloudShell from '@/components/cloud-shell/CloudShell.vue';
+import { CommandType } from '@/components/cloud-shell/CloudShellService';
+
 import DatasetItem from './components/DatasetItem.vue';
 import { useDeleteDataset } from './composition/dataset';
 
@@ -40,6 +41,13 @@ const onCreate = () => router.push({ name: 'DatasetCreate' });
         </dao-button>
       </template>
     </dao-toolbar>
+
+    <cloud-shell
+      namespace="datatunerx"
+      pod-name="datatunerx-ui-67f464c958-9n6ff"
+      container="datatunerx-ui"
+      :type="CommandType.CommandTypeLogs"
+    />
 
     <div v-loading="isLoading">
       <dao-empty v-if="!pagedData.length" />

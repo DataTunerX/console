@@ -1,5 +1,5 @@
-import type { App } from 'vue';
 import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n';
+import { App } from 'vue';
 import { loadExternalLanguage, setI18nLanguageExternal } from './external';
 
 function getRegisterMap(path: string[], map: Record<string | symbol, unknown>) {

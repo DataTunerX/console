@@ -1,7 +1,7 @@
 import {
   createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHistory,
 } from 'vue-router';
-import type { App } from 'vue';
+
 import RouterContent from '@/views/RouterContent.vue';
 
 import DatasetList from '@/views/dataset/DatasetList.vue';
@@ -18,6 +18,7 @@ import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperi
 import FinetuneExperimentJobDetail from '@/views/finetune-experiment-job/FinetuneExperimentJobDetail.vue';
 
 import FinetuneRegistryList from '@/views/finetune-registry/FinetuneRegistryList.vue';
+import { App } from 'vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

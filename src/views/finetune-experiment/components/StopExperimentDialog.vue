@@ -17,8 +17,6 @@
 <script setup lang="ts">
 import { FinetuneExperiment, finetuneExperimentClient } from '@/api/finetune-experiment';
 import { nError, nSuccess } from '@/utils/useNoty';
-import { PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   workload: {

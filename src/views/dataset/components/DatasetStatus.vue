@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { StateIconType } from '@dao-style/extend';
 import { Dataset, State as DatasetState } from '@/api/dataset';
 

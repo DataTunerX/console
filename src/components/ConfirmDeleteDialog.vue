@@ -20,10 +20,8 @@
   </dao-dialog>
 </template>
 <script lang="ts" setup>
-import { PropType, ref } from 'vue';
 import { DaoConfirmDialogFooter } from '@dao-style/extend';
 import { noty } from '@/plugins/dao-style';
-import { useI18n } from 'vue-i18n';
 import { nError } from '@/utils/useNoty';
 
 const props = defineProps({
