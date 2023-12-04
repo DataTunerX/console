@@ -17,13 +17,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: 'npm'
 
       - name: Install dependencies 🔧
-        run: npm ci --force
+        run: yarn install
 
       - name: Build 🏗️
-        run: npm run build
+        run: yarn build
 
       - name: Docker
         env:
