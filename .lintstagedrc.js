@@ -26,7 +26,7 @@ const removeEslintIgnored = async (stagedFilenames) => {
   );
   const filteredFiles = stagedFilenames.filter((_, i) => !isIgnored[i]);
 
-  // console.log("filteredFiles:"+filteredFiles)
+  console.log("filteredFiles:"+filteredFiles)
   return `eslint --max-warnings=0   ${filteredFiles.join(' ')}`;
 };
 
