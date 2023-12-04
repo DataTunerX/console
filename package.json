@@ -15,7 +15,8 @@
     "lint:type": "vue-tsc -noEmit",
     "postinstall": "lint-inject-vscode && i18n-inject-vscode",
     "report": "vue-cli-service build --report",
-    "test:unit:ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit"
+    "test:unit:ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit",
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@dao-style/core": "1.9.0",

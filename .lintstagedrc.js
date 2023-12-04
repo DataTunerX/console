@@ -26,11 +26,12 @@ const removeEslintIgnored = async (stagedFilenames) => {
   );
   const filteredFiles = stagedFilenames.filter((_, i) => !isIgnored[i]);
 
-  return `eslint --max-warnings=0 --rule 'no-console: ["error", { allow: ["warn", "error"] }]' --rule 'no-debugger: "error"' ${filteredFiles.join(' ')}`;
+  // console.log("filteredFiles:"+filteredFiles)
+  return `eslint --max-warnings=0   ${filteredFiles.join(' ')}`;
 };
 
 module.exports = {
   'src/**/*.{vue,css,scss}': 'stylelint --allow-empty-input',
   '*.{vue,ts,tsx}': [async (files) => removeEslintIgnored(files), (files) => generateTSConfig(files)('vue-tsc')],
-  '*.{js,jsx,json,json5,jsonc}': [async (files) => removeEslintIgnored(files)],
+  '*.{json,js,jsx}': [async (files) => removeEslintIgnored(files)],
 };

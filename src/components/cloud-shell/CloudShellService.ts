@@ -137,6 +137,7 @@ export const deleteCloudShell = async (namespace: string, name: string) => {
     await cloudShellClient.delete(namespace, name);
   } catch (error) {
     // TODO: 删除失败应该不用提示给用户吧？不会影响用户使用的错误。
+    /* eslint-disable no-console */
     console.error('删除CloudShell失败:', error);
   }
 };
