@@ -127,8 +127,6 @@ const infos = computed(() => {
 <style lang="scss" scoped>
 .finetune-job-item {
   margin-top: 20px;
-  margin-right: 15px;
-  margin-left: 15px;
 
   &__header {
     display: flex;

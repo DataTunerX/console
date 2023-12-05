@@ -100,13 +100,6 @@ watch(
         label="Scheduler"
         :name="`${name}.scheduler`"
       >
-        <template #helper="{ meta: { dirty } }">
-          <dao-state-icon
-            v-if="dirty"
-            type="warning"
-          />
-        </template>
-
         <dao-option
           v-for="n in Scheduler"
           :key="n"

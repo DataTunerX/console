@@ -6,6 +6,10 @@ import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
 
 import { useRelativeTime } from '@/utils/useRelativeTime';
+import { nError } from '@/utils/useNoty';
+import isEmpty from 'lodash/isEmpty';
+import CloudShell from '@/components/cloud-shell/CloudShell.vue';
+import { CommandType } from '@/components/cloud-shell/CloudShellService';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 
@@ -20,12 +24,14 @@ const { namespace } = storeToRefs(useNamespaceStore());
 
 const finetuneJob = ref<FinetuneJob>({});
 
-const fetchDataset = () => {
-  finetuneJobClient
-    .read(namespace.value, jobName)
-    .then(({ data }) => {
-      finetuneJob.value = data;
-    });
+const fetchDataset = async () => {
+  try {
+    const { data } = await finetuneJobClient.read(namespace.value, name);
+
+    finetuneJob.value = data;
+  } catch (error) {
+    nError(t('common.fetchFailed'), error);
+  }
 };
 
 // 调用接口
@@ -92,6 +98,16 @@ const toList = () => {
 
 watch(namespace, toList);
 
+const isShow = ref(false);
+
+const onHandleClose = () => {
+  isShow.value = false;
+};
+
+const onHandleOpen = () => {
+  isShow.value = true;
+};
+
 </script>
 
 <template>
@@ -115,8 +131,19 @@ watch(namespace, toList);
           />
         </dao-breadcrumb>
       </template>
+
+      <template #action>
+        <dao-button
+          type="tertiary"
+          @click="onHandleOpen"
+        >
+          查看日志
+        </dao-button>
+      </template>
     </dao-header>
+    <dao-empty v-if="isEmpty(finetuneJob)" />
     <dao-card
+      v-else
       class="finetuneJob"
       type="simple"
       :title="t('views.Dataset.basicInformation')"
@@ -154,5 +181,21 @@ watch(namespace, toList);
         </dao-key-value-layout>
       </dao-card-item>
     </dao-card>
+
+    <dao-drawer
+      v-if="isShow"
+      v-model="isShow"
+      title="Header"
+      @close="onHandleClose"
+    >
+      <cloud-shell
+        :url-params="{
+          namespace: namespace,
+          podName: 'datatunerx-ui-6f6b867467-nnpdh',
+          container: 'datatunerx-ui',
+          type: CommandType.CommandTypeLogs
+        }"
+      />
+    </dao-drawer>
   </div>
 </template>

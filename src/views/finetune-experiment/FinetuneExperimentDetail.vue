@@ -203,7 +203,7 @@ watch(namespace, toList);
 
     <dao-tabs
       v-model="curTab"
-      class="mt-[20px]"
+      class="mt-[20px] finetune-experiment-detail__tabs"
     >
       <dao-tab-item
         value="profile"
@@ -235,9 +235,22 @@ watch(namespace, toList);
       <dao-tab-item
         value="detail"
         :label="$t('views.FinetuneExperiment.jobComparison')"
+        class="bg-white"
       >
         <job-comparison :jobs="jobsWithStatus" />
       </dao-tab-item>
     </dao-tabs>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.finetune-experiment-detail {
+  &__tabs {
+    margin-top: 20px;
+
+    :deep(.dao-tabs__body) {
+      background: transparent;
+    }
+  }
+}
+</style>

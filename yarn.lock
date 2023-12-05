@@ -1297,10 +1297,10 @@
     ohmyfetch "^0.4.19"
     vue-virtual-scroller "^2.0.0-beta.8"
 
-"@dao-style/extend@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.npmmirror.com/@dao-style/extend/-/extend-1.7.1.tgz#97a3b7cddb72f79fb9ac39f7d6755d8a36f4a79a"
-  integrity sha512-/pVYnSrBlpGEue/5714sgnaeSv2cwkY+jfq4VzIkoU3iL41pyK7dPCEvLJD89J752E0tucnoSVl0/0jyOv+aWQ==
+"@dao-style/extend@1.7.2-beta.3":
+  version "1.7.2-beta.3"
+  resolved "https://registry.yarnpkg.com/@dao-style/extend/-/extend-1.7.2-beta.3.tgz#ee2234a0ebe0a7ad6c1772a44f02274cdbde6bcb"
+  integrity sha512-Dz6CFO5yAsIYAHr1UCxn1HO1rwuxgc8LbadGTSnLD2gXrgg/CTO4iYcawaLBlvjx7wAPO4FZ1uPUQEkuqCYU/A==
   dependencies:
     "@vueuse/components" "^9.3.0"
     "@vueuse/core" "^9.3.0"

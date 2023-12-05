@@ -4,14 +4,6 @@ import {
   cloudShellClient, CloudShell, Spec as CloudShellSpec, apiVersion, kind,
 } from '@/api/cloudshell';
 
-/**
- * 后端返回的是相对路径，需要转换成绝对路径
- * @param url
- */
-function getCorrectURL(url = '') {
-  return url.startsWith('./') ? url : `.${url}`;
-}
-
 const ttl = 3600; // shell过期时间(s)
 const once = false; // shell页面，是否刷新后则不可访问
 const cleanup = true; // 后端自动清除长时间未使用的shell
@@ -37,9 +29,8 @@ export interface CloudShellRequest {
 }
 
 export interface TerminalState {
-  metadataName?: string; // 查询、删除CloudShell时使用
   shellName: string; // tab显示名
-  shellUrl?: string; // iframe地址
+  accessUrl?: string; // iframe地址
   urlParams: CloudShellRequest;
   config?: CloudShellSpec;
 }
@@ -92,7 +83,7 @@ export const createCloudShell = async (
     namespace, podName, container, type,
   }: CloudShellRequest,
   config?: CloudShellSpec,
-): Promise<CloudShell & { shellUrl?: string }> => {
+): Promise<CloudShell> => {
   const spec = {
     ttl,
     once,
@@ -112,15 +103,9 @@ export const createCloudShell = async (
   };
 
   try {
-    const res = await cloudShellClient.create(namespace, params);
+    const { data } = await cloudShellClient.create(namespace, params);
 
-    // subpath 需要加上 `./`
-    const readyUrl = getCorrectURL(res.data.status?.accessURL);
-
-    return {
-      ...res,
-      shellUrl: readyUrl,
-    } as CloudShell & { shellUrl: string };
+    return data;
   } catch (error) {
     nError(i18n.t('components.cloud-shell.CloudShell.fetchShellErrorText'), error);
 
@@ -142,50 +127,30 @@ export const deleteCloudShell = async (namespace: string, name: string) => {
   }
 };
 
-/**
- * 查询 CloudShell(检查是否已存在，目前暂未使用到)
- * @param shellName
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getCloudShell = (namespace: string, name: string) => cloudShellClient.read(namespace, name);
-
 const MAX_DETECT_TIMES = 25; // 最大ping html次数
 
-/**
- * Istio 注册路由映射是分布式的
- * 后端返回了CloudShell的路径时，可能index.html还不能马上访问到，前端轮询ping一下
- * @param url
- * @param curTimes
- */
-export function detectHtmlReadiness(url: string | undefined, curTimes = 0) {
-  if (!url) return Promise.reject();
+export async function detectCloudShellReady(namespace: string, name: string, curTimes = 0) :Promise<string|undefined> {
+  if (curTimes >= MAX_DETECT_TIMES) {
+    throw new Error('Max detect times reached');
+  }
 
-  // eslint-disable-next-line
-  // @ts-ignore
-  const fetch = window.originFetch || window.fetch;
+  try {
+    const { data } = await cloudShellClient.read(namespace, name);
 
-  return fetch(url).then((res: Response) => {
-    if (res.ok) {
-      return Promise.resolve();
+    console.log('data', data);
+
+    console.log(data.status?.phase === 'Ready' && data.status.accessUrl);
+    if (data.status?.phase === 'Ready' && data.status.accessUrl) {
+      return data.status.accessUrl;
     }
+  } catch (error) {
+    console.error('Error detecting CloudShell readiness:', error);
+  }
 
-    if (!res.ok && curTimes === MAX_DETECT_TIMES) {
-      return Promise.reject();
-    }
-
-    const timeout = 200;
-
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        detectHtmlReadiness(url, curTimes + 1).then(
-          () => {
-            resolve(true);
-          },
-          () => {
-            reject();
-          },
-        );
-      }, timeout);
-    });
+  // If not ready, wait for 200ms and try again
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1000);
   });
+
+  return detectCloudShellReady(namespace, name, curTimes + 1);
 }

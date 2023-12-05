@@ -262,6 +262,6 @@ export interface VirtualServiceConfig {
 * Most recently observed status of the cloudshell.
 */
 export interface Status {
-  accessURL?: string;
+  accessUrl?: string;
   phase?: string;
 }

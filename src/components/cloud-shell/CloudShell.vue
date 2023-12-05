@@ -1,14 +1,14 @@
 <template>
   <div
-    v-if="state.shellUrl || isLoading"
+    v-if="state.accessUrl || isLoading"
     v-loading="isLoading"
     class="cloud-shell__iframe"
   >
     <iframe
-      v-if="state.shellUrl"
+      v-if="state.accessUrl"
       ref="iframeRef"
       title="cloud shell"
-      :src="state.shellUrl"
+      :src="state.accessUrl"
       frameborder="0"
       @load="handleIframeLoaded"
     />
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { Spec as CloudShellSpec } from '@/api/cloudshell';
 import {
-  CloudShellRequest, TerminalState, createCloudShell, deleteCloudShell, detectHtmlReadiness,
+  CloudShellRequest, TerminalState, createCloudShell, deleteCloudShell, detectCloudShellReady,
 } from './CloudShellService';
 
 const props = defineProps({
@@ -45,7 +45,7 @@ const emits = defineEmits(['update:terminal']);
 const isLoading = ref(false);
 
 const state = reactive<TerminalState>({
-  shellName: props.urlParams.podName,
+  shellName: '',
   urlParams: props.urlParams,
   config: props.config,
 });
@@ -57,16 +57,12 @@ const handleCreate = async () => {
     const { urlParams, config } = props;
     const res = await createCloudShell(urlParams, config);
 
-    if (res.status?.accessURL) {
-      await detectHtmlReadiness(`${res.shellUrl}/token`);
+    const accessUrl = await detectCloudShellReady(res.metadata?.namespace as string, res.metadata?.name as string);
 
-      state.metadataName = res.metadata?.name as string;
-      state.shellUrl = res.shellUrl;
+    state.accessUrl = `http://${accessUrl}`;
+    state.shellName = res.metadata?.name as string;
 
-      emits('update:terminal', { ...state });
-    } else {
-      isLoading.value = false;
-    }
+    emits('update:terminal', { ...state });
   } catch {
     isLoading.value = false;
   }
@@ -77,8 +73,8 @@ onBeforeMount(() => {
 });
 
 const handleDelete = () => {
-  if (state.metadataName) {
-    deleteCloudShell(props.urlParams.namespace, state.metadataName);
+  if (state.shellName) {
+    deleteCloudShell(props.urlParams.namespace, state.shellName);
   }
 };
 
