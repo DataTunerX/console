@@ -4,6 +4,7 @@ import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
 import ExperimentJobStatus from '@/views/finetune-experiment-job/components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from '@/views/finetune-experiment-job/components/HyperparameterWithOverrides.vue';
+import { Chart } from '@/plugins/g2';
 
 const props = defineProps({
   data: {
@@ -46,6 +47,34 @@ const infos = computed(() => {
   ];
 
   return items;
+});
+
+onMounted(() => {
+  const chart = new Chart({
+    container: `container-${props.data.name}`,
+    // height: 200,
+    autoFit: true,
+    marginTop: 40,
+    marginBottom: 0,
+  });
+
+  chart
+    .line()
+    .data({
+      type: 'fetch',
+      value: './train.json',
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .encode('x', 'current_steps')
+    .encode('y', 'loss')
+    .axis('x', { title: '步长' })
+    .axis('y', { title: '训练集损失' });
+
+  chart.render();
+
+  onUnmounted(() => {
+    chart.destroy();
+  });
 });
 </script>
 
@@ -118,9 +147,10 @@ const infos = computed(() => {
       </dao-key-value-layout>
     </dao-card-item>
 
-    <dao-card-item class="!grow-[2]">
-      Working hard on this.
-    </dao-card-item>
+    <dao-card-item
+      :id="`container-${props.data.name}`"
+      class="!grow-[2]"
+    />
   </dao-card>
 </template>
 

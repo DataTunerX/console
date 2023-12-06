@@ -4,7 +4,6 @@ import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
 import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
 import { useDateFormat } from '@dao-style/extend';
-
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import { nError } from '@/utils/useNoty';
 import isEmpty from 'lodash/isEmpty';
@@ -26,7 +25,7 @@ const finetuneJob = ref<FinetuneJob>({});
 
 const fetchDataset = async () => {
   try {
-    const { data } = await finetuneJobClient.read(namespace.value, name);
+    const { data } = await finetuneJobClient.read(namespace.value, jobName);
 
     finetuneJob.value = data;
   } catch (error) {
@@ -81,7 +80,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.finetuneStatus'),
-      value: finetuneJob.value.status?.finetuneState,
+      value: finetuneJob.value.status?.finetuneStatus?.state,
     },
     {
       label: t('common.createTime'),
@@ -107,7 +106,6 @@ const onHandleClose = () => {
 const onHandleOpen = () => {
   isShow.value = true;
 };
-
 </script>
 
 <template>
@@ -134,6 +132,8 @@ const onHandleOpen = () => {
 
       <template #action>
         <dao-button
+          v-if="finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName
+            && finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName"
           type="tertiary"
           @click="onHandleOpen"
         >
@@ -141,7 +141,9 @@ const onHandleOpen = () => {
         </dao-button>
       </template>
     </dao-header>
+
     <dao-empty v-if="isEmpty(finetuneJob)" />
+
     <dao-card
       v-else
       class="finetuneJob"
@@ -189,10 +191,12 @@ const onHandleOpen = () => {
       @close="onHandleClose"
     >
       <cloud-shell
+        v-if="finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName
+          && finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName"
         :url-params="{
           namespace: namespace,
-          podName: 'datatunerx-ui-6f6b867467-nnpdh',
-          container: 'datatunerx-ui',
+          podName: finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName,
+          container: finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName,
           type: CommandType.CommandTypeLogs
         }"
       />

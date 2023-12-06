@@ -54,6 +54,19 @@ module.exports = defineConfig({
         },
       }),
     ],
+
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          g2: {
+            test: /[\\/]node_modules[\\/]@antv/,
+            name: 'g2',
+            chunks: 'all',
+            priority: 20,
+          },
+        },
+      },
+    },
   },
 
   devServer: {

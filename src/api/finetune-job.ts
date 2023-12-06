@@ -2,7 +2,7 @@ import { Condition, ObjectMeta } from 'kubernetes-types/meta/v1';
 /* eslint-disable no-use-before-define */
 import { K8sClient } from '@/plugins/axios/client';
 import { Toleration } from 'kubernetes-types/core/v1';
-import { Spec as FinetuneSpec, State as FinetuneState } from './finetune';
+import { Spec as FinetuneSpec, Status as FinetuneStatus } from './finetune';
 
 export const Theme = 'canary';
 
@@ -94,7 +94,7 @@ export interface ServeConfig {
  */
 export interface Status {
   conditions?: Condition[];
-  finetuneState?: FinetuneState;
+  finetuneStatus?: FinetuneStatus;
   result?: Result;
   state: State;
   stats?: string;
