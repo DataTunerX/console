@@ -11,6 +11,8 @@ export const useNamespaceStore = defineStore('namespace', {
   }),
   actions: {
     async fetchNamespace() {
+      const { t } = useI18n();
+
       try {
         const { data } = await listNamespaces(); // 请求数据
 
@@ -23,7 +25,7 @@ export const useNamespaceStore = defineStore('namespace', {
           this.setNamespace(firstNamespace.metadata?.name || '');
         }
       } catch (error) {
-        nError('接口请求失败：', error);
+        nError(t('common.fetchFailed'), error);
       }
     },
     setNamespace(val: string) {

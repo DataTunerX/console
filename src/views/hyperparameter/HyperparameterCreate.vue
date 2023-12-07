@@ -68,7 +68,14 @@ const toList = () => {
 const onSubmit = handleSubmit(async () => {
   const model: Hyperparameter = cloneDeep(formModel);
 
-  const keys: (keyof StringParameters)[] = ['learningRate', 'loRA_Alpha', 'loRA_Dropout', 'loRA_R', 'warmupRatio', 'weightDecay'];
+  const keys: (keyof StringParameters)[] = [
+    'learningRate',
+    'loRA_Alpha',
+    'loRA_Dropout',
+    'loRA_R',
+    'warmupRatio',
+    'weightDecay',
+  ];
 
   keys.forEach((key) => {
     model.spec.parameters[key] = `${model.spec.parameters[key]}`;
@@ -385,7 +392,7 @@ $form-width: 400px;
   display: inline-flex;
   flex-direction: column;
   padding: 20px 20px 0;
+  border: 1px solid var(--dao-gray-blue-050);
   border-radius: 15px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

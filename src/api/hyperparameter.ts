@@ -2,7 +2,7 @@
 import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
 
-export const Theme = 'purple';
+export const Theme = 'purple' as const;
 
 export enum FineTuningType {
   // SFT：生成模型GPT的有监督精调 (supervised fine-tuning)

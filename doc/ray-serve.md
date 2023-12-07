@@ -53,8 +53,7 @@ spec:
       template:
         spec:
           containers:
-            - env:
-              image: rayproject/ray271-llama2-7b-finetune:20231129
+            - image: rayproject/ray271-llama2-7b-finetune:20231129
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -84,6 +83,11 @@ spec:
         template:
           spec:
             containers:
+            - env:
+                - name: 'BASE_MODEL_DIR'
+                  value:
+                - name: 'CHECKPOINT_DIR'
+                  value:
               image: rayproject/ray271-llama2-7b-finetune:20231129
               lifecycle:
                 preStop:
@@ -172,7 +176,7 @@ curl -X "POST" "http://10.29.26.43:30961/apis/rayservice/qa-service-chatglm3/emb
 ```
 
 ```bash
-curl -X "POST" "http://10.29.26.43:30961/apis/rayservice/qa-service-chatglm3/inference" \
+curl -X "POST" "http://10.33.1.10:32246/inference" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
   "input": "你好",

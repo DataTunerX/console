@@ -37,8 +37,6 @@ spec:
                 requests:
                   cpu: 1000m
                   memory: 4Gi
-          nodeSelector:
-            kubernetes.io/hostname: 10-29-100-31
     rayVersion: 2.7.1
     workerGroupSpecs:
       - groupName: group
@@ -49,13 +47,13 @@ spec:
         template:
           spec:
             containers:
-              - name: ray-worker
-                image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-job1:20231206
+              - name: 'ray-worker'
                 env:
-                  - name: BASE_MODEL_DIR
-                    value: /tmp/llama2-7b/
-                  - name: CHECKPOINT_DIR
-                    value:
+                  - name: "BASE_MODEL_DIR"
+                    value: "/tmp/llama2-7b/"
+                  - name: "CHECKPOINT_DIR"
+                    value: "/checkpoint/tuning/TorchTrainer_2023-12-05_20-36-02/TorchTrainer_02738_00000_0_2023-12-05_20-36-29/checkpoint_000000"
+                image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-job1:20231206
                 lifecycle:
                   preStop:
                     exec:
@@ -65,14 +63,12 @@ spec:
                         - ray stop
                 resources:
                   limits:
-                    cpu: 2000m
+                    cpu: 8000m
                     memory: 48Gi
                     nvidia.com/gpu: "1"
                   requests:
                     cpu: 1000m
                     memory: 48Gi
-            nodeSelector:
-              kubernetes.io/hostname: 10-29-100-31
   serveConfig:
     deployments:
       - name: LlamaDeployment

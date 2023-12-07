@@ -2,7 +2,7 @@
 import { K8sClient } from '@/plugins/axios/client';
 import { ObjectMeta } from 'kubernetes-types/meta/v1';
 
-export const Theme = 'green-ecology';
+export const Theme = 'green-ecology' as const;
 
 /**
  * LLM is the Schema for the llms API

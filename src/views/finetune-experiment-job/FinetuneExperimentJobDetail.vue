@@ -187,6 +187,7 @@ const onHandleOpen = () => {
     <dao-drawer
       v-if="isShow"
       v-model="isShow"
+      size="xl"
       title="Header"
       @close="onHandleClose"
     >
