@@ -1,6 +1,6 @@
 {
-  "name": "mspider-ui",
-  "version": "0.19.0",
+  "name": "datatunerx-ui",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -18,8 +18,9 @@
     "test:unit:ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
+    "@antv/g2": "^5.1.10",
     "@dao-style/core": "1.9.0",
-    "@dao-style/extend": "1.7.1",
+    "@dao-style/extend": "1.7.2-beta.3",
     "@vueuse/core": "^8.5.0",
     "@vueuse/shared": "^8.5.0",
     "axios": "^1.6.2",

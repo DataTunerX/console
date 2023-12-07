@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: datatunerx-ui
-  namespace: datatunerx
+  namespace: datatunerx-dev
   labels:
     app: datatunerx-ui
 spec:
@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
         - name: datatunerx-ui
-          image: release.daocloud.io/datatunerx/datatunerx-console:v0.0.1-dev-1765f8b
+          image: release.daocloud.io/datatunerx/datatunerx-ui:v0.0.1-dev-91deb6a
           env:
           - name: 'API_URL'
-            value: "https://10.29.26.43:6443"
+            value: "https://10.33.1.10:6443"
           imagePullPolicy: Always
           ports:
           - containerPort: 8443

@@ -56,23 +56,18 @@ $border-radius: 10px;
 .job-comparison {
   display: flex;
   height: 600px;
-  padding: 20px;
-
-  .job-list, .job-chart {
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-  }
 
   .job-name-search, .job-name {
     padding: 10px 12px;
-    border-bottom: 1px solid $dao-gray-160;
   }
 
   .job-list {
     display: flex;
     flex-direction: column;
     width: 240px;
+    padding: 10px 0;
     background: #fff;
+    border-right: 1px solid $dao-gray-160;
   }
 
   .job-name-list{
@@ -90,7 +85,6 @@ $border-radius: 10px;
   .job-chart {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 20px;
   }
 }
 </style>

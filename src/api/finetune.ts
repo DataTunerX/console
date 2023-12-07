@@ -145,7 +145,22 @@ export interface Requests {
  * FinetuneStatus defines the observed state of Finetune
  */
 export interface Status {
+  llmCheckpoint?: LlmCheckpoint;
+  rayJobInfo?: RayJobInfo;
   state: State;
+}
+
+export interface LlmCheckpoint {
+  checkpointPath: string;
+  llmCheckpointRef: string;
+}
+
+/**
+ * RayJobInfo describes the rayjob.
+ */
+export interface RayJobInfo {
+  rayJobPodContainerName?: string;
+  rayJobPodName?: string;
 }
 
 export enum State {

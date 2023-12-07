@@ -26,7 +26,7 @@
   "hyperparameter": "参数组",
   "modifyHyperparameterGroup": "修改参数组后，将会覆盖原有参数组的超参值。",
 
-  "error":{
+  "error": {
     "duplicateName": "第 {items} 项{label}重复"
   },
 

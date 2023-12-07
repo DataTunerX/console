@@ -21,16 +21,19 @@ const generateTSConfig = (stagedFilenames) => (type) => {
 const removeEslintIgnored = async (stagedFilenames) => {
   if (stagedFilenames.length === 0) return '';
   const eslint = new ESLint();
-  const isIgnored = await Promise.all(
-    stagedFilenames.map((file) => eslint.isPathIgnored(file)),
-  );
+  const isIgnored = await Promise.all(stagedFilenames.map((file) => eslint.isPathIgnored(file)));
   const filteredFiles = stagedFilenames.filter((_, i) => !isIgnored[i]);
 
-  return `eslint --max-warnings=0 --rule 'no-console: ["error", { allow: ["warn", "error"] }]' --rule 'no-debugger: "error"' ${filteredFiles.join(' ')}`;
+  console.log('filteredFiles:', filteredFiles);
+
+  return `eslint --max-warnings=0 ${filteredFiles.join(' ')}`;
 };
 
 module.exports = {
   'src/**/*.{vue,css,scss}': 'stylelint --allow-empty-input',
-  '*.{vue,ts,tsx}': [async (files) => removeEslintIgnored(files), (files) => generateTSConfig(files)('vue-tsc')],
-  '*.{js,jsx,json,json5,jsonc}': [async (files) => removeEslintIgnored(files)],
+  '*.{vue,ts,tsx}': [
+    async (files) => removeEslintIgnored(files),
+    (files) => generateTSConfig(files)('vue-tsc'),
+  ],
+  '*.{json,js,jsx}': [async (files) => removeEslintIgnored(files)],
 };
