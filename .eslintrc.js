@@ -143,6 +143,6 @@ module.exports = {
     defineProps: true,
     defineEmits: true,
     defineExpose: true,
-    RemoteCompoentRef: true,
+    RemoteComponentRef: true,
   },
 };
