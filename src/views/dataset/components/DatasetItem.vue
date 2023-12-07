@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useDateFormat } from '@dao-style/extend';
 import { Dataset } from '@/api/dataset';
+import { PropType } from 'vue';
 import DatasetStatus from './DatasetStatus.vue';
 
 const { t } = useI18n();
@@ -9,6 +10,10 @@ const props = defineProps({
   data: {
     type: Object as PropType<Dataset>,
     default: () => ({}),
+  },
+  referencedByExperiments: {
+    type: Array as PropType<string[]>,
+    default: () => [],
   },
 });
 
@@ -77,6 +82,9 @@ const languages = computed(() => {
 
   return langs?.map((lang) => t(`views.Dataset.${lang}`)).join(',') ?? '-';
 });
+
+const canDelete = computed(() => props.referencedByExperiments.length === 0);
+
 </script>
 
 <template>
@@ -97,7 +105,6 @@ const languages = computed(() => {
         >
           {{ props.data.metadata?.name }}
         </router-link>
-
         <dataset-status :data="props.data" />
       </div>
     </template>
@@ -113,15 +120,29 @@ const languages = computed(() => {
         <template #menu>
           <dao-dropdown-menu>
             <dao-dropdown-item @click="editDataset">
-              {{ t('common.edit') }}
+              {{ t("common.edit") }}
             </dao-dropdown-item>
             <dao-dropdown-item type="divider" />
-            <dao-dropdown-item
-              color="red"
-              @click="onDelete"
+            <dao-popover
+              placement="left"
+              :disabled="canDelete"
             >
-              {{ t('common.delete') }}
-            </dao-dropdown-item>
+              <dao-dropdown-item
+                :disabled="!canDelete"
+                color="red"
+                @click="onDelete"
+              >
+                {{ t("common.delete") }}
+              </dao-dropdown-item>
+
+              <template #content>
+                <dao-message
+                  simple
+                  type="error"
+                  :content="`该数据集被实验 ${ referencedByExperiments } 使用，无法删除`"
+                />
+              </template>
+            </dao-popover>
           </dao-dropdown-menu>
         </template>
       </dao-dropdown>
@@ -151,10 +172,10 @@ const languages = computed(() => {
         <div class="dataset-status__card">
           <div class="dataset-status__num">
             <span>
-              {{ props.data.spec?.datasetMetadata.license ?? '-' }}
+              {{ props.data.spec?.datasetMetadata.license ?? "-" }}
             </span>
             <span class="dataset-status__tip">
-              {{ t('views.Dataset.licenseInformation') }}
+              {{ t("views.Dataset.licenseInformation") }}
             </span>
           </div>
         </div>
@@ -162,10 +183,10 @@ const languages = computed(() => {
         <div class="dataset-status__card">
           <div class="dataset-status__num">
             <span class="dataset-status__size">
-              {{ props.data.spec?.datasetMetadata.size ?? '-' }}
+              {{ props.data.spec?.datasetMetadata.size ?? "-" }}
             </span>
             <span class="dataset-status__tip">
-              {{ t('views.Dataset.size') }}
+              {{ t("views.Dataset.size") }}
             </span>
           </div>
         </div>
@@ -175,7 +196,7 @@ const languages = computed(() => {
               {{ languages }}
             </span>
             <span class="dataset-status__tip">
-              {{ t('views.Dataset.language') }}
+              {{ t("views.Dataset.language") }}
             </span>
           </div>
         </div>
@@ -241,7 +262,7 @@ const languages = computed(() => {
       justify-content: center;
     }
 
-    &__size{
+    &__size {
       color: var(--dao-green-030);
     }
 
@@ -253,6 +274,5 @@ const languages = computed(() => {
       color: var(--dao-gray-070);
     }
   }
-
 }
 </style>

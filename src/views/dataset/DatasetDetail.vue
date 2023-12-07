@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useNamespaceStore } from '@/stores/namespace';
 
+import { useExperimentStore } from '@/stores/experiment';
 import { useDataset, useDeleteDataset } from './composition/dataset';
 
 const { t } = useI18n();
@@ -13,9 +14,21 @@ const name = route.params.name as string;
 
 const { dataset, fetchDataset } = useDataset();
 
-onBeforeMount(() => {
-  fetchDataset(namespace.value, name);
+fetchDataset(namespace.value, name);
+
+const { fetchExperiment } = useExperimentStore();
+const { datasetWithExperiment } = storeToRefs(useExperimentStore());
+
+const referencedByExperiments = computed(() => datasetWithExperiment.value[name]);
+const canDelete = computed(() => {
+  if (!referencedByExperiments.value) {
+    return true;
+  }
+
+  return referencedByExperiments.value?.length === 0;
 });
+
+fetchExperiment(namespace.value);
 
 const infos = computed(() => {
   const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.Dataset.${lang}`)).join(', ') ?? '-';
@@ -131,12 +144,27 @@ const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
                 {{ t('common.edit') }}
               </dao-dropdown-item>
               <dao-dropdown-item type="divider" />
-              <dao-dropdown-item
-                color="red"
-                @click="onConfirmDelete(dataset?.metadata?.name)"
+
+              <dao-popover
+                placement="left"
+                :disabled="canDelete"
               >
-                {{ t('common.delete') }}
-              </dao-dropdown-item>
+                <dao-dropdown-item
+                  :disabled="!canDelete"
+                  color="red"
+                  @click="onConfirmDelete(dataset?.metadata?.name)"
+                >
+                  {{ t('common.delete') }}
+                </dao-dropdown-item>
+
+                <template #content>
+                  <dao-message
+                    simple
+                    type="error"
+                    :content="`该数据集被实验 ${ referencedByExperiments } 使用，无法删除`"
+                  />
+                </template>
+              </dao-popover>
             </dao-dropdown-menu>
           </template>
         </dao-dropdown>

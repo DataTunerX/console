@@ -1,3 +1,4 @@
+import { nError } from '@/utils/useNoty';
 import {
   type Dataset,
   FeatureName,
@@ -9,6 +10,7 @@ import {
 import { DatasetForRender, convertDatasetForRender } from '@/api/dataset-for-render';
 import { createDialog } from '@dao-style/extend';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
+import { i18n } from '@/plugins/vue-i18n';
 
 const initialValue: DatasetForRender = {
   apiVersion: 'extension.datatunerx.io/v1beta1',
@@ -79,15 +81,23 @@ export function useDataset() {
   });
 
   const fetchDataset = async (namespace: string, name: string) => {
-    await datasetClient.read(namespace, name).then(({ data }) => {
-      state.dataset = convertDatasetForRender(data);
-    });
+    try {
+      await datasetClient.read(namespace, name).then(({ data }) => {
+        state.dataset = convertDatasetForRender(data);
+      });
+    } catch (error) {
+      nError(i18n.t('common.fetchFailed'), error);
+    }
   };
 
   const fetchDatasets = async (namespace: string) => {
-    await datasetClient.list(namespace).then(({ data }) => {
-      state.datasets = data.items;
-    });
+    try {
+      await datasetClient.list(namespace).then(({ data }) => {
+        state.datasets = data.items;
+      });
+    } catch (error) {
+      nError(i18n.t('common.fetchFailed'), error);
+    }
   };
 
   return {

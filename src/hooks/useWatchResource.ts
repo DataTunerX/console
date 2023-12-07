@@ -1,5 +1,3 @@
-//
-
 // const lastResourceVersion = ref();
 
 // function streamUpdates() {

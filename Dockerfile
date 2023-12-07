@@ -6,7 +6,7 @@ RUN apk -U upgrade
 
 COPY dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY startup.sh /usr/share
+COPY ./scripts/startup.sh /usr/share
 
 RUN chown -R nginx:nginx /var/cache/nginx && \
         chown -R nginx:nginx /var/log/nginx && \

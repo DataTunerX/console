@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-
 import { useNamespaceStore } from '@/stores/namespace';
 import { Dataset, datasetClient } from '@/api/dataset';
 import { useQueryTable } from '@/hooks/useQueryTable';
+import { useExperimentStore } from '@/stores/experiment';
 import DatasetItem from './components/DatasetItem.vue';
 import { useDeleteDataset } from './composition/dataset';
 
@@ -12,6 +12,11 @@ const { namespace } = storeToRefs(useNamespaceStore());
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable<Dataset>(async () => datasetClient.list(namespace.value));
+
+const { fetchExperiment } = useExperimentStore();
+const { datasetWithExperiment } = storeToRefs(useExperimentStore());
+
+fetchExperiment(namespace.value);
 
 const { onConfirmDelete } = useDeleteDataset(namespace.value, handleRefresh);
 
@@ -47,6 +52,7 @@ const onCreate = () => router.push({ name: 'DatasetCreate' });
         :key="dataset.metadata?.name"
         class="mt-[20px]"
         :data="dataset"
+        :referenced-by-experiments="datasetWithExperiment[dataset.metadata?.name as string]"
         @on-delete="onConfirmDelete(dataset.metadata?.name)"
       />
       <dao-pagination
