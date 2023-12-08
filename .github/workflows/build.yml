@@ -1,9 +1,11 @@
-name: Lint and test
+name: Build and Upload Artifact
 
 on:
   push:
     branches:
       - main
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -24,6 +26,12 @@ jobs:
 
       - name: Build 🏗️
         run: yarn build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: dist/
 
       - name: Docker
         env:
