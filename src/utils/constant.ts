@@ -1,4 +1,4 @@
-export const TOKEN = 'ANAKIN_TOKEN';
+export const TOKEN = 'ACCESS_TOKEN';
 export const REFRESH_TOKEN = 'ANAKIN_REFRESH_TOKEN';
 export const USERNAME = 'ANAKIN_USERNAME';
 export const FAVICON = 'ANAKIN_FAVICON';

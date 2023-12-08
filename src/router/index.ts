@@ -2,6 +2,9 @@ import { App } from 'vue';
 import {
   createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHistory,
 } from 'vue-router';
+import Guards from '@/router/guards/index';
+
+import Login from '@/views/login/Login.vue';
 
 import RouterContent from '@/views/RouterContent.vue';
 
@@ -24,9 +27,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: {
-      name: 'FinetuneExperimentList',
+      name: 'Login',
     },
     children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: Login,
+      },
       {
         path: 'fine-tune',
         component: RouterContent,
@@ -123,4 +131,5 @@ export default (app: App) => {
     routes,
   });
   app.use(router);
+  Guards(router);
 };

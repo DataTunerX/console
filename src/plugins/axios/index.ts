@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TOKEN } from '@/utils/constant';
 
 export interface KubernetesError {
   kind: string
@@ -17,8 +18,22 @@ export {
 
 const httpClient = axios.create({
   baseURL: '/',
-  headers: { Authorization: `Bearer ${process.env.VUE_APP_AUTH}` },
+  // headers: { Authorization: `Bearer ${process.env.VUE_APP_AUTH}` },
 });
+
+httpClient.interceptors.request.use(
+  (config) => {
+    const token:string|null = localStorage.getItem(TOKEN);
+
+    if (!config.headers.Authorization && token) {
+      // eslint-disable-next-line no-param-reassign
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error.response?.data),
+);
 
 httpClient.interceptors.response.use(
   (response) => response,

@@ -1,28 +1,37 @@
 <script setup lang="ts">
 
-import { noop } from '@vueuse/core';
+// import { noop } from '@vueuse/core';
 import { i18n } from '@/plugins';
 import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
 import Avatar from '@/assets/avatar.webp';
 import { useNamespaceStore } from '@/stores/namespace';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const router = useRouter();
+
+const logout = async () => {
+  await userStore.logout();
+  router.push('/');
+};
 
 const userOperation = computed(() => [
-  {
-    label: i18n.t('components.AnakinHeader.user.personal-center'),
-    icon: 'icon-user',
-    href: './profile',
-    operate: noop,
-  },
-  {
-    label: i18n.t('components.AnakinHeader.user.setting'),
-    icon: 'icon-setting',
-    href: './settings',
-    operate: noop,
-  },
+  // {
+  //   label: i18n.t('components.AnakinHeader.user.personal-center'),
+  //   icon: 'icon-user',
+  //   href: './profile',
+  //   operate: noop,
+  // },
+  // {
+  //   label: i18n.t('components.AnakinHeader.user.setting'),
+  //   icon: 'icon-setting',
+  //   href: './settings',
+  //   operate: noop,
+  // },
   {
     label: i18n.t('components.AnakinHeader.user.logout'),
     icon: 'icon-logout',
-    operate: noop,
+    operate: logout,
   },
 ]);
 
@@ -66,7 +75,6 @@ const namespace = computed({
     <div class="datatunerx-toolbox">
       <div class="datatunerx-toolbox-item">
         <dao-dropdown
-          v-if="false"
           trigger="click"
           :offset="5"
         >
@@ -90,13 +98,22 @@ const namespace = computed({
                 :key="operate.label"
                 @click="operate.operate"
               >
-                <dao-history-link
+                <dao-button
+                  size="sm"
+                  use-font
+                  :icon-left="operate.icon"
+                  type="ghost"
+                  @click="operate.operate"
+                >
+                  {{ operate.label }}
+                </dao-button>
+                <!-- <dao-history-link
                   :href="operate.href"
                   :icon="operate.icon"
                   class="datatunerx-user-drop--item"
                 >
                   {{ operate.label }}
-                </dao-history-link>
+                </dao-history-link> -->
               </dao-dropdown-item>
             </dao-dropdown-menu>
           </template>
