@@ -1,0 +1,23 @@
+{
+  "fetchShellErrorText": "获取控制台错误，原因：",
+  "winMax": "最大化",
+  "winStore": "还原",
+  "winMin": "最小化",
+  "newTab": "浏览器Tab新开窗口",
+  "closeAll": "关闭所有控制台",
+  "file": {
+    "targetContainer": "目标容器",
+    "upload": "上传文件",
+    "uploadPath": "上传路径",
+    "download": "下载文件",
+    "downloadPath": "下载路径",
+    "downloadPathError": "请输入下载文件的完整 Path",
+    "pathPrefixError": "路径需要以 / 开头",
+    "fileSizeWarning": "推荐上传小于 1 MB 大小的文件，当文件大小超过 1MB 时，可能由于网络等原因导致数据丢失。"
+  },
+  "execDialog": {
+    "title": "打开控制台 {name}",
+    "pod": "容器组",
+    "container": "容器"
+  }
+}

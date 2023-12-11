@@ -3,14 +3,14 @@ import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
 import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
-import { useDateFormat } from '@dao-style/extend';
+import { useDateFormat, createDialog } from '@dao-style/extend';
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import { nError } from '@/utils/useNoty';
 import isEmpty from 'lodash/isEmpty';
-import CloudShell from '@/components/cloud-shell/CloudShell.vue';
-import { CommandType } from '@/components/cloud-shell/CloudShellService';
+
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
+import WorkloadLogsDialog from './components/WorkloadLogsDialog.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -97,15 +97,16 @@ const toList = () => {
 
 watch(namespace, toList);
 
-const isShow = ref(false);
+const viewWorkloadLogs = () => {
+  const dialog = createDialog(WorkloadLogsDialog);
+  const { status } = finetuneJob.value;
 
-const onHandleClose = () => {
-  isShow.value = false;
+  return dialog.show({
+    podName: status?.finetuneStatus?.rayJobInfo?.rayJobPodName,
+    container: status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName,
+  });
 };
 
-const onHandleOpen = () => {
-  isShow.value = true;
-};
 </script>
 
 <template>
@@ -135,9 +136,9 @@ const onHandleOpen = () => {
           v-if="finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName
             && finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName"
           type="tertiary"
-          @click="onHandleOpen"
+          @click="viewWorkloadLogs"
         >
-          查看日志
+          {{ t('views.FinetuneExperiment.viewWorkloadLogs') }}
         </dao-button>
       </template>
     </dao-header>
@@ -183,24 +184,5 @@ const onHandleOpen = () => {
         </dao-key-value-layout>
       </dao-card-item>
     </dao-card>
-
-    <dao-drawer
-      v-if="isShow"
-      v-model="isShow"
-      size="xl"
-      title="Header"
-      @close="onHandleClose"
-    >
-      <cloud-shell
-        v-if="finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName
-          && finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName"
-        :url-params="{
-          namespace: namespace,
-          podName: finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName,
-          container: finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName,
-          type: CommandType.CommandTypeLogs
-        }"
-      />
-    </dao-drawer>
   </div>
 </template>

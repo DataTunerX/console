@@ -1,6 +1,6 @@
 {
   "title": "Logs",
-  "moreInfo": "Display 100 lines, to view more log information or download the log, please go to",
+  "moreInfo": "By default, 100 rows are displayed. To view more log information or download logs, please contact the administrator.",
   "filters": {
     "last30d": "Last 30 Days",
     "last7d": "Last 7 Days",

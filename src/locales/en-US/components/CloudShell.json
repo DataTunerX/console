@@ -1,0 +1,23 @@
+{
+  "fetchShellErrorText": "Failed to get Shell. Reason:",
+  "winMax": "Maximize",
+  "winStore": "Restore",
+  "winMin": "Minimize",
+  "newTab": "New Tab",
+  "closeAll": "Close all consoles",
+  "file": {
+    "upload": "Upload Files",
+    "uploadPath": "File Path",
+    "download": "Download Files",
+    "downloadPath": "Storage Path",
+    "downloadPathError": "Enter the complete path of the file to be downloaded",
+    "pathPrefixError": "Begin with /",
+    "targetContainer": "Target Container",
+    "fileSizeWarning": "It is recommended to upload files smaller than 1 MB in size, as there is a possibility of data loss due to network or other reasons when the file size exceeds 1 MB."
+  },
+  "execDialog": {
+    "title": "Open Shell: {name}",
+    "pod": "Pod",
+    "container": "Container"
+  }
+}

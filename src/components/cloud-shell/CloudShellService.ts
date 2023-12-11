@@ -107,7 +107,7 @@ export const createCloudShell = async (
 
     return data;
   } catch (error) {
-    nError(i18n.t('components.cloud-shell.CloudShell.fetchShellErrorText'), error);
+    nError(i18n.t('components.CloudShell.fetchShellErrorText'), error);
 
     return {};
   }
@@ -137,13 +137,11 @@ export async function detectCloudShellReady(namespace: string, name: string, cur
   try {
     const { data } = await cloudShellClient.read(namespace, name);
 
-    console.log('data', data);
-
-    console.log(data.status?.phase === 'Ready' && data.status.accessUrl);
     if (data.status?.phase === 'Ready' && data.status.accessUrl) {
       return data.status.accessUrl;
     }
   } catch (error) {
+    /* eslint-disable no-console */
     console.error('Error detecting CloudShell readiness:', error);
   }
 

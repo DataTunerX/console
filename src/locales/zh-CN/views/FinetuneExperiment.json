@@ -10,7 +10,6 @@
   "contrast": "对比",
   "taskList": "任务列表",
   "stopConfirm": "确认停止微调实验 {finetuneToShop} 吗？",
-
   "createFineTuningExperiment": "创建微调实验",
   "basicInformation": "基本信息",
   "experimentName": "实验名称",
@@ -19,17 +18,14 @@
   "parameters": "运行参数",
   "configuration": "配置",
   "add": "添加任务",
-
   "taskName": "任务名称",
   "baseLargeModel": "基础大模型",
   "dataset": "数据集",
   "hyperparameter": "参数组",
   "modifyHyperparameterGroup": "修改参数组后，将会覆盖原有参数组的超参值。",
-
   "error": {
     "duplicateName": "第 {items} 项{label}重复"
   },
-
   "StopWorkloadDialog": {
     "header": "确定停止微调实验 {name} 吗？",
     "content": "停止微调实验可能导致实验数据丢失，在停止负载 “{name}” 前，请确保业务数据保存在存储中。实验停止后，无法再次启动",
@@ -60,5 +56,6 @@
     "serve": "模型服务中",
     "successful": "成功",
     "unknown": "未知状态"
-  }
+  },
+  "viewWorkloadLogs": "查看日志"
 }
