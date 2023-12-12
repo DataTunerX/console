@@ -1,8 +1,8 @@
 /* stylelint-disable scss/at-rule-no-unknown */
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import 'form';
-@import 'layout';
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "form";
+@import "layout";
 
 .redirect-link {
   overflow: hidden;
@@ -154,7 +154,7 @@
     position: absolute;
     top: 0;
     color: var(--dao-red-040);
-    content: '*';
+    content: "*";
     transform: translate(7px, 3px);
   }
 }

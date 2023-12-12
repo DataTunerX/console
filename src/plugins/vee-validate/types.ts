@@ -7,6 +7,7 @@ import {
 import type { DeepRequired, DeepPartial } from 'utility-types';
 import { FieldContext } from 'vee-validate';
 import { MaybeRef } from '@vueuse/core';
+import { UnwrapNestedRefs } from 'vue';
 
 export interface FieldValidationMetaInfo {
   field: string;
@@ -63,8 +64,8 @@ export type KeyValOptions<T extends object, K extends string> = {
 
 export interface UseFieldReturn<T extends object, K extends string> {
   formData: T,
-  errorMessage: Partial<Record<K, string>>,
-  fieldErrors: Partial<Record<K, string[]>>,
+  errorMessage: UnwrapNestedRefs<Partial<Record<K, string>>>,
+  fieldErrors: UnwrapNestedRefs<Partial<Record<K, string[]>>>,
   originFieldInfo: KeyValFieldContext<T, K>
 }
 

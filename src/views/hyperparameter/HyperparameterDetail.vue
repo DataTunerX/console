@@ -165,20 +165,21 @@ const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-cluster"
+          :list="[
+            {
+              label: t('views.Hyperparameter.hyperparameterGroup'),
+              to: { name: 'HyperparameterList' },
+            },
+            {
+              value: name,
+            },
+          ]"
           @navigate="router.push"
-        >
-          <dao-breadcrumb-item
-            :label="t('views.Hyperparameter.hyperparameterGroup')"
-            :to="{ name: 'HyperparameterList' }"
-          />
-          <dao-breadcrumb-item :label="name" />
-        </dao-breadcrumb>
+        />
       </template>
 
       <template #action>
-        <dao-dropdown
-          placement="bottom-start"
-        >
+        <dao-dropdown placement="bottom-start">
           <template #default>
             <dao-button
               type="tertiary"
@@ -189,14 +190,14 @@ const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
           <template #menu>
             <dao-dropdown-menu>
               <dao-dropdown-item @click="onEdit">
-                {{ t('common.edit') }}
+                {{ t("common.edit") }}
               </dao-dropdown-item>
               <dao-dropdown-item type="divider" />
               <dao-dropdown-item
                 color="red"
                 @click="onConfirmDelete(hyperparameter?.metadata.name)"
               >
-                {{ t('common.delete') }}
+                {{ t("common.delete") }}
               </dao-dropdown-item>
             </dao-dropdown-menu>
           </template>

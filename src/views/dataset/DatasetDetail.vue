@@ -31,7 +31,9 @@ const canDelete = computed(() => {
 fetchExperiment(namespace.value);
 
 const infos = computed(() => {
-  const languages = dataset.value?.spec?.datasetMetadata.languages?.map((lang) => t(`views.Dataset.${lang}`)).join(', ') ?? '-';
+  const languages = dataset.value?.spec?.datasetMetadata.languages
+    ?.map((lang) => t(`views.Dataset.${lang}`))
+    .join(', ') ?? '-';
 
   const items = [
     {
@@ -108,7 +110,6 @@ const toList = () => {
 watch(namespace, toList);
 
 const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
-
 </script>
 
 <template>
@@ -117,20 +118,21 @@ const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-cluster"
+          :list="[
+            {
+              label: t('views.Dataset.header'),
+              to: { name: 'DatasetList' },
+            },
+            {
+              value: name,
+            },
+          ]"
           @navigate="router.push"
-        >
-          <dao-breadcrumb-item
-            :label="t('views.Dataset.header')"
-            :to="{ name: 'DatasetList' }"
-          />
-          <dao-breadcrumb-item :label="name" />
-        </dao-breadcrumb>
+        />
       </template>
 
       <template #action>
-        <dao-dropdown
-          placement="bottom-start"
-        >
+        <dao-dropdown placement="bottom-start">
           <template #default>
             <dao-button
               type="tertiary"
@@ -141,7 +143,7 @@ const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
           <template #menu>
             <dao-dropdown-menu>
               <dao-dropdown-item @click="onEdit">
-                {{ t('common.edit') }}
+                {{ t("common.edit") }}
               </dao-dropdown-item>
               <dao-dropdown-item type="divider" />
 
@@ -154,14 +156,14 @@ const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
                   color="red"
                   @click="onConfirmDelete(dataset?.metadata?.name)"
                 >
-                  {{ t('common.delete') }}
+                  {{ t("common.delete") }}
                 </dao-dropdown-item>
 
                 <template #content>
                   <dao-message
                     simple
                     type="error"
-                    :content="`该数据集被实验 ${ referencedByExperiments } 使用，无法删除`"
+                    :content="`该数据集被实验 ${referencedByExperiments} 使用，无法删除`"
                   />
                 </template>
               </dao-popover>

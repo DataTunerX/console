@@ -106,7 +106,6 @@ const viewWorkloadLogs = () => {
     container: status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName,
   });
 };
-
 </script>
 
 <template>
@@ -115,30 +114,31 @@ const viewWorkloadLogs = () => {
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-engine"
+          :list="[
+            {
+              label: t('views.FinetuneExperiment.finetuneExperimentTitle'),
+              value: name,
+              to: { name: 'FinetuneExperimentDetail', params: { name } },
+            },
+            {
+              label: t('views.FinetuneExperiment.finetuneJob'),
+              value: jobName,
+            },
+          ]"
           @navigate="router.push"
-        >
-          <dao-breadcrumb-item
-            :label="t('views.FinetuneExperiment.finetuneExperimentTitle')"
-            :value="name"
-            :to="{ name: 'FinetuneExperimentDetail', }"
-          />
-          <dao-breadcrumb-item
-            :label="t('views.FinetuneExperiment.finetuneJob')"
-          />
-          <dao-breadcrumb-item
-            :label="jobName"
-          />
-        </dao-breadcrumb>
+        />
       </template>
 
       <template #action>
         <dao-button
-          v-if="finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName
-            && finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName"
+          v-if="
+            finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodName &&
+              finetuneJob.status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName
+          "
           type="tertiary"
           @click="viewWorkloadLogs"
         >
-          {{ t('views.FinetuneExperiment.viewWorkloadLogs') }}
+          {{ t("views.FinetuneExperiment.viewWorkloadLogs") }}
         </dao-button>
       </template>
     </dao-header>
@@ -178,7 +178,9 @@ const viewWorkloadLogs = () => {
           </template>
           <template #kv-hyperparameter="{ row }">
             <dao-key-value-layout-item :label="row.label">
-              <hyperparameter-with-overrides :data="finetuneJob.spec?.finetune.finetuneSpec.hyperparameter" />
+              <hyperparameter-with-overrides
+                :data="finetuneJob.spec?.finetune.finetuneSpec.hyperparameter"
+              />
             </dao-key-value-layout-item>
           </template>
         </dao-key-value-layout>

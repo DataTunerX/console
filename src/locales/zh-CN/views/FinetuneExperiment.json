@@ -45,7 +45,7 @@
   },
   "deleteFineTuningExperiment": "删除微调实验",
   "deleteFineTuningExperimentContent": "确定删除微调实验 {name} 吗？移除后对应的数据将会全部丢失且无法恢复，请谨慎操作。",
-  "finetuneJob": "微调任务",
+  "finetuneJob": "微调任务:",
   "finetuneStatus": "微调状态",
   "spreadPolicies": "分布策略",
   "jobState": {

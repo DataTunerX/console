@@ -45,7 +45,7 @@
   },
   "deleteFineTuningExperiment": "Delete Fine-tune Experiment",
   "deleteFineTuningExperimentContent": "Are you sure you want to delete the fine-tune experiment {name}? Removing it will result in the loss of all corresponding data, and it cannot be recovered. Please proceed with caution.",
-  "finetuneJob": "Fine-tune Job",
+  "finetuneJob": "Fine-tune Job:",
   "finetuneStatus": "Fine-tune Status",
   "spreadPolicies": "Distribution Policies",
   "jobState": {

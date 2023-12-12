@@ -143,14 +143,17 @@ watch(namespace, toList);
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-engine"
+          :list="[
+            {
+              label: t('views.FinetuneExperiment.finetuneExperiment'),
+              to: { name: 'FinetuneExperimentList' },
+            },
+            {
+              value: name,
+            },
+          ]"
           @navigate="router.push"
-        >
-          <dao-breadcrumb-item
-            :label="t('views.FinetuneExperiment.finetuneExperiment')"
-            :to="{ name: 'FinetuneExperimentList' }"
-          />
-          <dao-breadcrumb-item :label="name" />
-        </dao-breadcrumb>
+        />
       </template>
 
       <template #action>
