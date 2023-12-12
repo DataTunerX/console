@@ -10,7 +10,6 @@
   "contrast": "Contrast",
   "taskList": "Task List",
   "stopConfirm": "Confirm to stop fine-tune experiment {finetuneToShop}?",
-
   "createFineTuningExperiment": "Create Fine-tune Experiment",
   "basicInformation": "Basic Information",
   "experimentName": "Experiment Name",
@@ -19,17 +18,14 @@
   "parameters": "Runtime Parameters",
   "configuration": "Configuration",
   "add": "Add Task",
-
   "taskName": "Task Name",
   "baseLargeModel": "Basic Large Model",
   "dataset": "Dataset",
   "hyperparameter": "Hyperparameter",
   "modifyHyperparameterGroup": "Modifying the hyperparameter group will overwrite the hyperparameter values of the original group.",
-
   "error": {
     "duplicateName": "Item {items} {label} is duplicated"
   },
-
   "StopWorkloadDialog": {
     "header": "Are you sure you want to stop the fine-tune experiment {name}?",
     "content": "Stopping the fine-tune experiment may result in the loss of experimental data. Before stopping the workload \"{name}\", please ensure that business data is saved in storage. Once the experiment is stopped, it cannot be restarted.",
@@ -49,7 +45,7 @@
   },
   "deleteFineTuningExperiment": "Delete Fine-tune Experiment",
   "deleteFineTuningExperimentContent": "Are you sure you want to delete the fine-tune experiment {name}? Removing it will result in the loss of all corresponding data, and it cannot be recovered. Please proceed with caution.",
-  "finetuneJob": "Fine-tune Job",
+  "finetuneJob": "Fine-tune Job:",
   "finetuneStatus": "Fine-tune Status",
   "spreadPolicies": "Distribution Policies",
   "jobState": {
@@ -60,5 +56,6 @@
     "serve": "Serving",
     "successful": "Successful",
     "unknown": "Unknown"
-  }
+  },
+  "viewWorkloadLogs": "View logs"
 }

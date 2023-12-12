@@ -85,6 +85,7 @@ onBeforeUnmount(() => {
 const iframeRef = ref();
 
 const handleIframeLoaded = () => {
+  // FIXME: 现在跨域，这个隐藏不了
   isLoading.value = false;
   const operatorNode = iframeRef.value?.contentDocument?.querySelector?.('.terminal-operator');
 

@@ -25,6 +25,11 @@ const routes = computed<NavRoute[]>(() => {
       display: i18n.t('components.AnakinHeader.menu.hyperparameterGroup'),
       icon: 'icon-cluster',
     },
+    {
+      to: { name: 'InferenceList' },
+      display: i18n.t('components.AnakinHeader.menu.inference'),
+      icon: 'icon-cluster',
+    },
   ] as NavRoute[];
 
   return items;

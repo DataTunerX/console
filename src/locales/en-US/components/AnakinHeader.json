@@ -9,7 +9,8 @@
     "fineTuningExperiment": "Fine-tune Experiment",
     "fineTuningRegistry": "Fine Tuning Registry",
     "dataset": "Dataset",
-    "hyperparameterGroup": "Hyperparameter"
+    "hyperparameterGroup": "Hyperparameter",
+    "inference": "Inference"
   },
   "feedback": "Feedback",
   "help": "Help",

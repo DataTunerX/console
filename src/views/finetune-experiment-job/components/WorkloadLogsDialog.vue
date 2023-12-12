@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import CloudShell from '@/components/cloud-shell/CloudShell.vue';
-import useLoadingPromise from '@/hooks/useLoadingPromise';
 import { CommandType } from '@/components/cloud-shell/CloudShellService';
 import { useNamespaceStore } from '@/stores/namespace';
 
@@ -18,27 +17,6 @@ const props = defineProps({
 const { namespace } = storeToRefs(useNamespaceStore());
 
 defineEmits(['reject']);
-
-// const selectedTimePeriod = ref('realTime');
-
-// const isSelectedRealTime = computed(() => selectedTimePeriod.value === 'realTime');
-
-/**
- * 查询日志
- */
-const isLoading = useLoadingPromise();
-
-/**
- * 实时日志
- */
-const repaintedShell = ref(false);
-
-// const fetchRealTimeLogs = () => {
-//   repaintedShell.value = false;
-//   nextTick(() => {
-//     repaintedShell.value = true;
-//   });
-// };
 
 /**
  * 全屏、取消全屏
@@ -66,7 +44,7 @@ const handleFullScreen = () => {
     >
       <!-- tip: link insight -->
       <dao-message
-        ype="info"
+        class="mb-[10px]"
         :is-close-show="false"
       >
         <template #default="{ className }">
@@ -77,10 +55,7 @@ const handleFullScreen = () => {
       </dao-message>
 
       <!-- 日志搜索结果详情 -->
-      <div
-        v-loading="isLoading"
-        class="workload-logs__detail"
-      >
+      <div class="workload-logs__detail">
         <div class="workload-logs__detail-tools">
           <!-- FIXME: When is fullscreen state, change the icon -->
           <dao-button
@@ -94,7 +69,6 @@ const handleFullScreen = () => {
         </div>
 
         <cloud-shell
-          v-if="repaintedShell"
           :url-params="{
             type: CommandType.CommandTypeLogs,
             namespace,
@@ -121,10 +95,6 @@ const handleFullScreen = () => {
         display: flex;
         align-items: center;
       }
-    }
-
-    :deep(.dao-message-section :first-child) {
-      padding-right: 3px;
     }
   }
 
@@ -176,14 +146,6 @@ const handleFullScreen = () => {
     }
   }
 
-  &__time {
-    margin-right: 5px;
-  }
-
-  &__info {
-    word-break: break-all;
-  }
-
   // 全屏
   &__fullscreen {
     .workload-logs__detail {
@@ -197,9 +159,4 @@ const handleFullScreen = () => {
   }
 }
 
-.workload-logs__pods {
-  .select-container {
-    margin-left: 0;
-  }
-}
 </style>
