@@ -9,7 +9,8 @@
     "fineTuningExperiment": "微调实验",
     "fineTuningRegistry": "微调仓库",
     "dataset": "数据集",
-    "hyperparameterGroup": "参数组"
+    "hyperparameterGroup": "参数组",
+    "inference": "推理服务"
   },
   "feedback": "建议反馈",
   "help": "帮助文档",

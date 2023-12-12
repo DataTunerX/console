@@ -1,0 +1,72 @@
+<script lang="ts" setup>
+import { rayServiceClient } from '@/api/ray-service';
+import { useNamespaceStore } from '@/stores/namespace';
+import { useQueryTable } from '@/hooks/useQueryTable';
+import { defineColumns } from '@dao-style/core';
+
+const { namespace } = storeToRefs(useNamespaceStore());
+const { t } = useI18n();
+
+const columns = defineColumns([
+  {
+    id: 'name',
+    header: t('views.Inference.list.table.header.name'),
+  },
+  {
+    id: 'fineTuningType',
+    header: t('views.Hyperparameter.fineTuningType'),
+  },
+  {
+    id: 'parameters',
+    header: t('views.Hyperparameter.parameters'),
+  },
+  {
+    id: 'createAt',
+    header: t('common.createTime'),
+  },
+  {
+    id: 'action',
+    header: '',
+    defaultWidth: '60px',
+  },
+]);
+
+const {
+  isLoading, pagedData, page, pageSize, total, handleRefresh, search,
+} = useQueryTable(async () => rayServiceClient.list(namespace.value));
+</script>
+
+<template>
+  <div class="inference-list console-main-container">
+    <dao-header
+      type="2nd"
+      :title="$t('views.Inference.list.header')"
+    />
+
+    <dao-table
+      v-model:page-size="pageSize"
+      v-model:current-page="page"
+      v-model:search="search.keywords"
+      :loading="isLoading"
+      :fuzzy="{ key: 'fuzzy', single: true }"
+      :columns="columns"
+      :data="pagedData"
+      :total="total"
+      @refresh="handleRefresh"
+    >
+      <template #td-name="{ row }">
+        <router-link
+          class="list-name-link"
+          :to="{
+            name: 'HyperparameterDetail',
+            params: {
+              name: row.metadata?.name,
+            },
+          }"
+        >
+          {{ row.metadata?.name }}
+        </router-link>
+      </template>
+    </dao-table>
+  </div>
+</template>

@@ -4,11 +4,6 @@ const unpluginPlugin = require('unplugin-auto-import/webpack');
 const proxyConfig = {
   target: process.env.VUE_APP_API_URL,
   changeOrigin: true,
-  bypass: (req) => {
-    Object.assign(req.headers, {
-      Authorization: `Bearer ${process.env.VUE_APP_AUTH}`,
-    });
-  },
 };
 
 module.exports = defineConfig({

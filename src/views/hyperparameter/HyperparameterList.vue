@@ -84,7 +84,6 @@ const onCreate = () => {
     />
 
     <dao-table
-      id="demo"
       v-model:page-size="pageSize"
       v-model:current-page="page"
       v-model:search="search.keywords"
@@ -95,10 +94,6 @@ const onCreate = () => {
       :total="total"
       @refresh="handleRefresh"
     >
-      <template #th-action="{ column }">
-        <div>{{ column.header }}</div>
-      </template>
-
       <template #td-name="{ row }">
         <router-link
           class="list-name-link"

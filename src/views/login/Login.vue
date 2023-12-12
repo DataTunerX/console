@@ -1,19 +1,31 @@
 <script lang="ts" setup>
-
 import { useUserStore } from '@/stores/user';
+import { object, string } from 'yup';
 
 const router = useRouter();
-const token = ref<string>('');
 
 const userStore = useUserStore();
 const loginSuccess = computed(() => userStore.isLoginSuccess());
 
-const onSubmit = async () => {
-  await userStore.login(token.value);
+interface ServiceAccount {
+  token: string;
+}
+
+const { handleSubmit } = useForm<ServiceAccount>({
+  initialValues: {
+    token: '',
+  },
+  validationSchema: object({
+    token: string().required('Token is required'),
+  }),
+});
+
+const onSubmit = handleSubmit(async (values) => {
+  await userStore.login(values.token);
   router.push({
     name: 'FinetuneExperimentList',
   });
-};
+});
 
 onMounted(async () => {
   if (loginSuccess.value) {
@@ -22,17 +34,20 @@ onMounted(async () => {
     });
   }
 });
-
 </script>
 
 <template>
   <div class="login-container">
     <dao-form label-width="60px">
-      <dao-form-item
+      <dao-form-item-validate
+        name="token"
         label="Token"
-      >
-        <dao-input v-model="token" />
-      </dao-form-item>
+        tag="textarea"
+        :control-props="{
+          rows:10,
+          class: 'w-[500px]'
+        }"
+      />
       <dao-form-item>
         <dao-button
           type="primary"

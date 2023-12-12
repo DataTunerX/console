@@ -23,6 +23,8 @@ import FinetuneExperimentJobDetail from '@/views/finetune-experiment-job/Finetun
 
 import FinetuneRegistryList from '@/views/finetune-registry/FinetuneRegistryList.vue';
 
+import InferenceList from '@/views/inference/InferenceList.vue';
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -115,6 +117,18 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
 
+      },
+
+      {
+        path: 'inference',
+        component: RouterContent,
+        children: [
+          {
+            path: '',
+            name: 'InferenceList',
+            component: InferenceList,
+          },
+        ],
       },
 
     ],
