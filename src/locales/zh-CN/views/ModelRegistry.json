@@ -3,6 +3,6 @@
   "modelfileaddress": "模型文件地址:",
   "deploy": "部署",
 
-  "deleteFinetuneRegistry": "删除模型",
-  "deleteFinetuneRegistryContent": "确定删除模型 {name} 吗？"
+  "deleteModelRegistry": "删除模型",
+  "deleteModelRegistryContent": "确定删除模型 {name} 吗？"
 }

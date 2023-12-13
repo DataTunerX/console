@@ -51,7 +51,7 @@ interface RayActorOptions {
   runtimeEnv?: string;
 }
 
-interface Status {
+export interface Status {
   activeServiceStatus?: ActiveServiceStatus;
   observedGeneration?: number;
   pendingServiceStatus?: PendingServiceStatus;
@@ -148,6 +148,28 @@ interface PendingServiceStatusRayClusterStatus {
 interface Head {
   podIP?: string;
   serviceIP?: string;
+}
+
+export enum ServiceStatus {
+  FailedToGetOrCreateRayCluster = 'FailedToGetOrCreateRayCluster',
+  WaitForDashboard = 'WaitForDashboard',
+  WaitForServeDeploymentReady = 'WaitForServeDeploymentReady',
+  FailedToGetServeDeploymentStatus = 'FailedToGetServeDeploymentStatus',
+  Running = 'Running',
+  Restarting = 'Restarting',
+  FailedToUpdateIngress = 'FailedToUpdateIngress',
+  FailedToUpdateServingPodLabel = 'FailedToUpdateServingPodLabel',
+  FailedToUpdateService = 'FailedToUpdateService',
+}
+
+export enum ApplicationStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  DEPLOYING = 'DEPLOYING',
+  RUNNING = 'RUNNING',
+  DEPLOY_FAILED = 'DEPLOY_FAILED',
+  DELETING = 'DELETING',
+  UNHEALTHY = 'UNHEALTHY',
+  UNKNOWN = 'UNKNOWN',
 }
 
 const apiVersion = 'ray.io/v1';

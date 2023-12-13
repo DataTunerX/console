@@ -46,7 +46,7 @@ const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable<Hyperparameter>(async () => hyperparameterClient.list(namespace.value));
 
-const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, handleRefresh);
+const { onConfirmDelete } = useDeleteHyperparameter(namespace, handleRefresh);
 
 // 监听命名空间变化，重新加载数据集
 watch(namespace, handleRefresh);
@@ -96,7 +96,7 @@ const onCreate = () => {
     >
       <template #td-name="{ row }">
         <router-link
-          class="list-name-link"
+          class="dao-table-td__link"
           :to="{
             name: 'HyperparameterDetail',
             params: {

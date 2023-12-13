@@ -64,7 +64,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.highestScore'),
-      value: '-',
+      value: finetuneExperiment.value.status?.bestVersion?.score,
     },
     {
       label: t('views.FinetuneExperiment.duration'),
@@ -240,7 +240,10 @@ watch(namespace, toList);
         :label="$t('views.FinetuneExperiment.jobComparison')"
         class="bg-white"
       >
-        <job-comparison :jobs="jobsWithStatus" />
+        <job-comparison
+          v-if="curTab === 'detail'"
+          :jobs="jobsWithStatus"
+        />
       </dao-tab-item>
     </dao-tabs>
   </div>

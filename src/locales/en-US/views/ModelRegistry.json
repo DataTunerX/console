@@ -3,6 +3,6 @@
   "modelfileaddress": "Model file address:",
   "deploy": "Deploy",
 
-  "deleteFinetuneRegistry": "Delete Model",
-  "deleteFinetuneRegistryContent": "Are you sure you want to delete the model {name}?？"
+  "deleteModelRegistry": "Delete Model",
+  "deleteModelRegistryContent": "Are you sure you want to delete the model {name}?"
 }

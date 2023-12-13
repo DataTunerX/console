@@ -26,7 +26,7 @@ const routes = computed<NavRoute[]>(() => {
       icon: 'icon-cluster',
     },
     {
-      to: { name: 'InferenceList' },
+      to: { name: 'InferenceApplicationList' },
       display: i18n.t('components.AnakinHeader.menu.inference'),
       icon: 'icon-book',
     },

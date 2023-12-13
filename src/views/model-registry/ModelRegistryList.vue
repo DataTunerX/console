@@ -28,8 +28,8 @@ const onConfirmDelete = (name: string) => {
   const dialog = createDialog(ConfirmDeleteDialog);
 
   return dialog.show({
-    header: t('views.ModelRegistry.deleteFinetuneRegistry'),
-    content: t('views.ModelRegistry.deleteFinetuneRegistryContent'),
+    header: t('views.ModelRegistry.deleteModelRegistry'),
+    content: t('views.ModelRegistry.deleteModelRegistryContent'),
     name,
     deleteFn,
   });
