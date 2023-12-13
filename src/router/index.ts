@@ -21,7 +21,7 @@ import FinetuneExperimentDetail from '@/views/finetune-experiment/FinetuneExperi
 import FinetuneExperimentCreate from '@/views/finetune-experiment/FinetuneExperimentCreate.vue';
 import FinetuneExperimentJobDetail from '@/views/finetune-experiment-job/FinetuneExperimentJobDetail.vue';
 
-import FinetuneRegistryList from '@/views/finetune-registry/FinetuneRegistryList.vue';
+import ModelRegistryList from '@/views/model-registry/ModelRegistryList.vue';
 
 import InferenceList from '@/views/inference/InferenceList.vue';
 
@@ -70,8 +70,8 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: '',
-            name: 'FinetuneRegistryList',
-            component: FinetuneRegistryList,
+            name: 'ModelRegistryList',
+            component: ModelRegistryList,
           },
         ],
       },

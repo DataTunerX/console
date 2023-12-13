@@ -58,14 +58,14 @@ interface Status {
   serviceStatus?: string;
 }
 
-interface ActiveServiceStatus {
+export interface ActiveServiceStatus {
   applicationStatuses?: { [key: string]: ActiveServiceStatusApplicationStatus };
   dashboardStatus?: ActiveServiceStatusDashboardStatus;
   rayClusterName?: string;
   rayClusterStatus?: ActiveServiceStatusRayClusterStatus;
 }
 
-interface ActiveServiceStatusApplicationStatus {
+export interface ActiveServiceStatusApplicationStatus {
   healthLastUpdateTime?: Date;
   lastUpdateTime?: Date;
   message?: string;

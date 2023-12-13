@@ -5,9 +5,21 @@
     "table": {
       "header": {
         "name": "Inference Service Name",
-        "status": "Status",
-        "created": "Created"
+        "checkpoint": "Checkpoint",
+        "llm": "LLM",
+        "hyperparameter": "Hyperparameter",
+        "status": "Status"
       }
     }
+  },
+
+  "status": {
+    "NOT_STARTED": "Not Started",
+    "DEPLOYING": "DEPLOYING",
+    "RUNNING": "RUNNING",
+    "DEPLOY_FAILED": "DEPLOY_FAILED",
+    "DELETING": "DELETING",
+    "UNHEALTHY": "UNHEALTHY",
+    "unknown": "Unknown"
   }
 }

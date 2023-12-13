@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { rayServiceClient } from '@/api/ray-service';
+import { RayService, rayServiceClient } from '@/api/ray-service';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { defineColumns } from '@dao-style/core';
+import ApplicationStatus from './components/application-status.vue';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
@@ -13,12 +14,20 @@ const columns = defineColumns([
     header: t('views.Inference.list.table.header.name'),
   },
   {
-    id: 'fineTuningType',
-    header: t('views.Hyperparameter.fineTuningType'),
+    id: 'checkpoint',
+    header: t('views.Inference.list.table.header.checkpoint'),
   },
   {
-    id: 'parameters',
-    header: t('views.Hyperparameter.parameters'),
+    id: 'llm',
+    header: t('views.Inference.list.table.header.llm'),
+  },
+  {
+    id: 'hyperparameter',
+    header: t('views.Inference.list.table.header.hyperparameter'),
+  },
+  {
+    id: 'status',
+    header: t('views.Inference.list.table.header.status'),
   },
   {
     id: 'createAt',
@@ -34,6 +43,9 @@ const columns = defineColumns([
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable(async () => rayServiceClient.list(namespace.value));
+
+const selectedRows = ref<RayService[]>([]);
+
 </script>
 
 <template>
@@ -47,6 +59,8 @@ const {
       v-model:page-size="pageSize"
       v-model:current-page="page"
       v-model:search="search.keywords"
+      selectable
+      :selected-rows="selectedRows"
       :loading="isLoading"
       :fuzzy="{ key: 'fuzzy', single: true }"
       :columns="columns"
@@ -54,6 +68,12 @@ const {
       :total="total"
       @refresh="handleRefresh"
     >
+      <template #batch-action>
+        <dao-button>
+          对比
+        </dao-button>
+      </template>
+
       <template #td-name="{ row }">
         <router-link
           class="list-name-link"
@@ -66,6 +86,18 @@ const {
         >
           {{ row.metadata?.name }}
         </router-link>
+      </template>
+
+      <template #td-status="{ row }">
+        <template
+          v-for="(value, key) in row.status?.activeServiceStatus?.applicationStatuses"
+          :key="key"
+        >
+          {{ key }}
+          <application-status
+            :application-status="value"
+          />
+        </template>
       </template>
     </dao-table>
   </div>
