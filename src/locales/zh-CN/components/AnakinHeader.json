@@ -7,7 +7,7 @@
   },
   "menu": {
     "fineTuningExperiment": "微调实验",
-    "fineTuningRegistry": "微调仓库",
+    "modeRegistry": "模型仓库",
     "dataset": "数据集",
     "hyperparameterGroup": "参数组",
     "inference": "推理服务"

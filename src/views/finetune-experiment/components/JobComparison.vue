@@ -1,90 +1,103 @@
 <script lang="ts" setup>
 import { FinetuneJobWithName } from '@/api/finetune-experiment';
+import { TransferActionDirection } from '@dao-style/core';
+import JobChart from './JobChart.vue';
 
-defineProps({
+const props = defineProps({
   jobs: {
     type: Array as PropType<FinetuneJobWithName[]>,
-    required: true,
+    default: () => ([]),
   },
 });
 
-const modelArr = ref([]);
+const selectedKeys = ref<string[]>([]);
+
+type Row = {
+  key: string;
+  label?: string;
+  desc?: string;
+};
+
+const data = computed(() => props.jobs.map((job) => ({
+  key: job.name,
+  label: job.name,
+  desc: job.spec?.finetune.finetuneSpec.llm,
+})));
+
+const onChange = ({ direction, row }: { direction: TransferActionDirection; row: Row }) => {
+  const { key } = row;
+  const index = selectedKeys.value.indexOf(key);
+
+  switch (direction) {
+    case 'left':
+      if (index > -1) {
+        selectedKeys.value.splice(index, 1);
+      }
+      break;
+
+    case 'right':
+      if (index > -1) {
+        selectedKeys.value.push(key);
+      }
+      break;
+
+    default:
+      console.warn(`${direction} callback is not defined`);
+      break;
+  }
+};
+
+const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableList: string[] }) => {
+  console.log(checked);
+  if (checked) {
+    // 去除重复的key
+    selectedKeys.value = [...new Set(selectedKeys.value.concat(checkableList))];
+  } else {
+    selectedKeys.value = selectedKeys.value.filter((key) => !checkableList.includes(key));
+  }
+};
 </script>
 
 <template>
   <div class="job-comparison">
     <div class="job-list">
-      <div class="job-name-search">
-        <dao-input
-          block
-          type="search"
-        />
-      </div>
-
-      <dao-checkbox-group
-        v-model="modelArr"
-        class="job-name-list"
+      <dao-transfer-panel
+        type="source"
+        :data="data"
+        :checked-keys="selectedKeys"
+        filterable
+        @selected-change="onChange"
+        @check-all="onCheckAll"
       >
-        <dao-checkbox
-          v-for="job in jobs"
-          :key="job.name"
-          class="job-name"
-          :value="job.name"
-        >
-          {{ job.name }}
-        </dao-checkbox>
-      </dao-checkbox-group>
+        <template #check-all />
+      </dao-transfer-panel>
     </div>
-    <div class="job-chart">
-      <dao-select>
-        <dao-option
-          label="you will get me by this"
-          value="hhhhh"
-        >
-          我是中文但是你搜索不到我
-        </dao-option>
-      </dao-select>
-    </div>
+    <job-chart class="flex-1" />
   </div>
 </template>
 
 <style lang="scss" scoped>
-$dao-gray-160: var(--dao-gray-160);
-$box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-$border-radius: 10px;
-
 .job-comparison {
   display: flex;
   height: 600px;
 
-  .job-name-search, .job-name {
-    padding: 10px 12px;
-  }
-
   .job-list {
     display: flex;
     flex-direction: column;
-    width: 240px;
-    padding: 10px 0;
+    width: 248px;
     background: #fff;
-    border-right: 1px solid $dao-gray-160;
+
+    :deep(.dao-transfer-panel) {
+      padding: 0;
+      padding-right: 5px;
+      border-radius: 0;
+    }
+
+    :deep(.dao-transfer-panel__head) {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
   }
 
-  .job-name-list{
-    flex-grow: 1;
-    width: 100%;
-    overflow: scroll;
-  }
-
-  .job-name {
-    width: 100%;
-    padding: 15px;
-    margin: 0;
-  }
-
-  .job-chart {
-    flex-grow: 1;
-    padding: 20px;
-  }
 }
 </style>

@@ -110,22 +110,22 @@ export const retrieveQuantization = (parameters: Parameters) => {
   return quantizationValue;
 };
 
-export function useDeleteHyperparameter(namespace: string, handleRefresh: () => void) {
+export function useDeleteHyperparameter(namespace: Ref<string>, handleRefresh: () => void) {
   const { t } = useI18n();
 
-  const deleteFn = (name: string) => hyperparameterClient.delete(namespace, name).then(() => {
-    handleRefresh();
-  });
+  const deleteFn = (name: string) => hyperparameterClient.delete(namespace.value, name);
 
-  const onConfirmDelete = (name?: string) => {
+  const onConfirmDelete = async (name?: string) => {
     const dialog = createDialog(ConfirmDeleteDialog);
 
-    return dialog.show({
+    await dialog.show({
       header: t('views.Hyperparameter.delete.header'),
       content: t('views.Hyperparameter.delete.content', { name }),
       name,
       deleteFn,
     });
+
+    handleRefresh();
   };
 
   return {

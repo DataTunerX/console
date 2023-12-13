@@ -156,7 +156,7 @@ const toList = () => {
 
 watch(namespace, toList);
 
-const { onConfirmDelete } = useDeleteHyperparameter(namespace.value, toList);
+const { onConfirmDelete } = useDeleteHyperparameter(namespace, toList);
 </script>
 
 <template>

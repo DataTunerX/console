@@ -1,8 +1,0 @@
-{
-  "finetuneRegistry": "Fine-tune Registry",
-  "modelfileaddress": "Model file address:",
-  "deploy": "Deploy",
-
-  "deleteFinetuneRegistry": "Delete Fine-tune Registry",
-  "deleteFinetuneRegistryContent": "Are you sure you want to delete the fine-tune registry {name}?？"
-}

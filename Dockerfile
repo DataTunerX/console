@@ -1,5 +1,5 @@
 ARG NGINX_IMAGE_VERSION=1.21.6-alpine
-FROM docker.m.daocloud.io/nginx:${NGINX_IMAGE_VERSION}
+FROM nginx:${NGINX_IMAGE_VERSION}
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk -U upgrade

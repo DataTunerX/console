@@ -1,8 +1,0 @@
-{
-  "finetuneRegistry": "微调仓库",
-  "modelfileaddress": "模型文件地址:",
-  "deploy": "部署",
-
-  "deleteFinetuneRegistry": "删除微调模型",
-  "deleteFinetuneRegistryContent": "确定删除微调模型 {name} 吗？"
-}

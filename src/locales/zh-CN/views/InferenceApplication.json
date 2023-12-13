@@ -1,0 +1,40 @@
+{
+  "list": {
+    "header": "推理应用",
+    "table": {
+      "header": {
+        "name": "推理应用名称",
+        "checkpoint": "检查点",
+        "llm": "LLM",
+        "hyperparameter": "超参数",
+        "status": "状态"
+      }
+    },
+    "compare": "对比",
+    "compareLimit": "最多只能选择 3 个推理服务进行对比"
+  },
+  "applicationStatus": {
+    "NOT_STARTED": "未开始",
+    "DEPLOYING": "部署中",
+    "RUNNING": "运行中",
+    "DEPLOY_FAILED": "部署失败",
+    "DELETING": "删除中",
+    "UNHEALTHY": "不健康",
+    "unknown": "未知"
+  },
+  "serviceStatus": {
+    "FailedToGetOrCreateRayCluster": "获取或创建Ray集群失败",
+    "WaitForDashboard": "等待仪表盘",
+    "WaitForServeDeploymentReady": "等待Serve部署就绪",
+    "FailedToGetServeDeploymentStatus": "获取Serve部署状态失败",
+    "Running": "运行中",
+    "Restarting": "重新启动中",
+    "FailedToUpdateIngress": "更新Ingress失败",
+    "FailedToUpdateServingPodLabel": "更新Serving Pod标签失败",
+    "FailedToUpdateService": "更新服务失败"
+  },
+  "delete": {
+    "header": "删除推理应用",
+    "content": "确定要删除推理应用吗？"
+  }
+}

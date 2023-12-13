@@ -1,7 +1,7 @@
 apiVersion: ray.io/v1
 kind: RayService
 metadata:
-  name: finetune-sample
+  name: finetune-sample5
   namespace: datatunerx-dev
   labels:
     createdByFrontend: "true"
@@ -16,7 +16,7 @@ spec:
         spec:
           containers:
             - name: ray-head
-              image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-job1:20231206
+              image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -38,7 +38,14 @@ spec:
                   cpu: 1000m
                   memory: 4Gi
           nodeSelector:
-            kubernetes.io/hostname: 10-29-100-31
+            kubernetes.io/hostname: 10-33-1-11
+          tolerations:
+          - effect: NoSchedule
+            key: nvidia.com/gpu
+            operator: Exists
+          - effect: NoSchedule
+            key: node.kubernetes.io/disk-pressure
+            operator: Exists
     rayVersion: 2.7.1
     workerGroupSpecs:
       - groupName: group
@@ -50,12 +57,12 @@ spec:
           spec:
             containers:
               - name: ray-worker
-                image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-job1:20231206
+                image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213
                 env:
                   - name: BASE_MODEL_DIR
-                    value: /tmp/llama2-7b/
+                    value: '/tmp/llama2-7b/'
                   - name: CHECKPOINT_DIR
-                    value:
+                    value: '/checkpoint/tuning/TorchTrainer_2023-12-12_22-00-28/TorchTrainer_f85ec_00000_0_2023-12-12_22-00-57/checkpoint_000000'
                 lifecycle:
                   preStop:
                     exec:
@@ -72,7 +79,14 @@ spec:
                     cpu: 1000m
                     memory: 48Gi
             nodeSelector:
-              kubernetes.io/hostname: 10-29-100-31
+              kubernetes.io/hostname: 10-33-1-11
+            tolerations:
+              - effect: NoSchedule
+                key: nvidia.com/gpu
+                operator: Exists
+              - effect: NoSchedule
+                key: node.kubernetes.io/disk-pressure
+                operator: Exists
   serveConfig:
     deployments:
       - name: LlamaDeployment

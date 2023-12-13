@@ -1,0 +1,8 @@
+{
+  "modelRegistry": "Model Registry",
+  "modelfileaddress": "Model file address:",
+  "deploy": "Deploy",
+
+  "deleteModelRegistry": "Delete Model",
+  "deleteModelRegistryContent": "Are you sure you want to delete the model {name}?"
+}

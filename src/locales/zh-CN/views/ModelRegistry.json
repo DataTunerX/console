@@ -1,0 +1,8 @@
+{
+  "modelRegistry": "模型仓库",
+  "modelfileaddress": "模型文件地址:",
+  "deploy": "部署",
+
+  "deleteModelRegistry": "删除模型",
+  "deleteModelRegistryContent": "确定删除模型 {name} 吗？"
+}

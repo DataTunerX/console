@@ -8,6 +8,11 @@ import { useRelativeTime } from '@/utils/useRelativeTime';
 import { nError } from '@/utils/useNoty';
 import isEmpty from 'lodash/isEmpty';
 
+import LearningRateChart from '@/components/charts/LearningRateChart.vue';
+import PerformanceEvaluationChart from '@/components/charts/PerformanceEvaluationChart.vue';
+import TrainLossChart from '@/components/charts/TrainingLossChart.vue';
+import ValidationLossChart from '@/components/charts/ValidationLossChart.vue';
+
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 import WorkloadLogsDialog from './components/WorkloadLogsDialog.vue';
@@ -184,6 +189,34 @@ const viewWorkloadLogs = () => {
             </dao-key-value-layout-item>
           </template>
         </dao-key-value-layout>
+      </dao-card-item>
+    </dao-card>
+
+    <dao-card
+      title="监控"
+      type="simple"
+      class="mt-[20px]"
+      divider
+    >
+      <dao-card-item>
+        <learning-rate-chart />
+      </dao-card-item>
+      <dao-card-item>
+        <train-loss-chart />
+      </dao-card-item>
+    </dao-card>
+
+    <dao-card
+      title="监控"
+      type="simple"
+      class="mt-[20px]"
+      divider
+    >
+      <dao-card-item>
+        <validation-loss-chart />
+      </dao-card-item>
+      <dao-card-item>
+        <performance-evaluation-chart />
       </dao-card-item>
     </dao-card>
   </div>

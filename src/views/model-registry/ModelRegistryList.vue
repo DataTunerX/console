@@ -7,7 +7,7 @@ import { createDialog } from '@dao-style/extend';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import CardLayoutContainer from '@/components/CardLayoutContainer.vue';
 
-import FinetuneRegistryCard from './components/FinetuneRegistryCard.vue';
+import ModelCard from './components/ModelCard.vue';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
@@ -28,8 +28,8 @@ const onConfirmDelete = (name: string) => {
   const dialog = createDialog(ConfirmDeleteDialog);
 
   return dialog.show({
-    header: t('views.FinetuneRegistry.deleteFinetuneRegistry'),
-    content: t('views.FinetuneRegistry.deleteFinetuneRegistryContent'),
+    header: t('views.ModelRegistry.deleteModelRegistry'),
+    content: t('views.ModelRegistry.deleteModelRegistryContent'),
     name,
     deleteFn,
   });
@@ -37,10 +37,10 @@ const onConfirmDelete = (name: string) => {
 </script>
 
 <template>
-  <div class="finetune-registry-list console-main-container">
+  <div class="model-registry-list console-main-container">
     <dao-header
       type="2nd"
-      :title="$t('views.FinetuneRegistry.finetuneRegistry')"
+      :title="$t('views.ModelRegistry.modelRegistry')"
     />
     <dao-toolbar
       v-model:search="search.keywords"
@@ -50,7 +50,7 @@ const onConfirmDelete = (name: string) => {
 
     <div v-loading="isLoading">
       <card-layout-container :cards="total">
-        <finetune-registry-card
+        <model-card
           v-for="registry in pagedData"
           :key="registry.metadata?.name"
           :data="registry"

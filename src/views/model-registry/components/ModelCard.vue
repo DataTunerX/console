@@ -89,7 +89,7 @@ const copy = async () => {
       class="registry-card__description"
       title="registry.url"
     >
-      {{ t("views.FinetuneRegistry.modelfileaddress") }} {{ props.data.spec?.checkpointImage?.checkPointPath }}
+      {{ t("views.ModelRegistry.modelfileaddress") }} {{ props.data.spec?.checkpointImage?.checkPointPath }}
     </div>
 
     <div
@@ -107,7 +107,7 @@ const copy = async () => {
         @click.prevent="copy"
       />
       <dao-action-icon
-        :tooltip-content="$t('views.FinetuneRegistry.deploy')"
+        :tooltip-content="$t('views.ModelRegistry.deploy')"
         name="icon-gitops"
       />
     </div>

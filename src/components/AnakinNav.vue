@@ -11,8 +11,8 @@ const routes = computed<NavRoute[]>(() => {
       icon: 'icon-engine',
     },
     {
-      to: { name: 'FinetuneRegistryList' },
-      display: i18n.t('components.AnakinHeader.menu.fineTuningRegistry'),
+      to: { name: 'ModelRegistryList' },
+      display: i18n.t('components.AnakinHeader.menu.modeRegistry'),
       icon: 'icon-registry',
     },
     {
@@ -26,9 +26,9 @@ const routes = computed<NavRoute[]>(() => {
       icon: 'icon-cluster',
     },
     {
-      to: { name: 'InferenceList' },
+      to: { name: 'InferenceApplicationList' },
       display: i18n.t('components.AnakinHeader.menu.inference'),
-      icon: 'icon-cluster',
+      icon: 'icon-book',
     },
   ] as NavRoute[];
 
