@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { FinetuneJobWithName } from '@/api/finetune-experiment';
 import { TransferActionDirection } from '@dao-style/core';
+import { FinetuneJobWithName } from '@/api/finetune-experiment';
 import JobChart from './JobChart.vue';
 
 const props = defineProps({
@@ -42,13 +42,13 @@ const onChange = ({ direction, row }: { direction: TransferActionDirection; row:
       break;
 
     default:
+      // eslint-disable-next-line no-console
       console.warn(`${direction} callback is not defined`);
       break;
   }
 };
 
 const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableList: string[] }) => {
-  console.log(checked);
   if (checked) {
     // 去除重复的key
     selectedKeys.value = [...new Set(selectedKeys.value.concat(checkableList))];

@@ -213,7 +213,7 @@ watch(namespace, toList);
         :label="t('views.FinetuneExperiment.taskList')"
       >
         <dao-toolbar
-          v-model:search="search.keywords"
+          v-model:search="search"
           no-rounded
           hide-refresh
           :fuzzy="{ key: 'fuzzy', single: true }"

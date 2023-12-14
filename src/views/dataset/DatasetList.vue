@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useNamespaceStore } from '@/stores/namespace';
-import { Dataset, datasetClient } from '@/api/dataset';
+import { datasetClient } from '@/api/dataset';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { useExperimentStore } from '@/stores/experiment';
 import DatasetItem from './components/DatasetItem.vue';
@@ -11,7 +11,7 @@ const { namespace } = storeToRefs(useNamespaceStore());
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable<Dataset>(async () => datasetClient.list(namespace.value));
+} = useQueryTable(() => datasetClient.list(namespace.value));
 
 const { fetchExperiment } = useExperimentStore();
 const { datasetWithExperiment } = storeToRefs(useExperimentStore());
@@ -33,7 +33,7 @@ const onCreate = () => router.push({ name: 'DatasetCreate' });
     />
 
     <dao-toolbar
-      v-model:search="search.keywords"
+      v-model:search="search"
       :fuzzy="{ key: 'fuzzy', single: true }"
       @refresh="handleRefresh"
     >

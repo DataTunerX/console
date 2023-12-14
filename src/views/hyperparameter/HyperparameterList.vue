@@ -17,6 +17,19 @@ const { t } = useI18n();
 const router = useRouter();
 const { namespace } = storeToRefs(useNamespaceStore());
 
+const searchOptions = [
+  {
+    key: 'metadata.name',
+    label: t('views.Hyperparameter.name'),
+    single: true,
+  },
+  {
+    key: 'spec.objective.type',
+    label: t('views.Hyperparameter.fineTuningType'),
+    single: true,
+  },
+];
+
 const columns = defineColumns([
   {
     id: 'name',
@@ -34,6 +47,7 @@ const columns = defineColumns([
   {
     id: 'createAt',
     header: t('common.createTime'),
+    sortable: true,
   },
   {
     id: 'action',
@@ -43,8 +57,8 @@ const columns = defineColumns([
 ]);
 
 const {
-  isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable<Hyperparameter>(async () => hyperparameterClient.list(namespace.value));
+  isLoading, pagedData, page, pageSize, total, handleRefresh, search, sort,
+} = useQueryTable<Hyperparameter>(() => hyperparameterClient.list(namespace.value));
 
 const { onConfirmDelete } = useDeleteHyperparameter(namespace, handleRefresh);
 
@@ -86,12 +100,14 @@ const onCreate = () => {
     <dao-table
       v-model:page-size="pageSize"
       v-model:current-page="page"
-      v-model:search="search.keywords"
+      v-model:search="search"
       :loading="isLoading"
       :fuzzy="{ key: 'fuzzy', single: true }"
+      :search-options="searchOptions"
       :columns="columns"
       :data="pagedData"
       :total="total"
+      :sort="sort"
       @refresh="handleRefresh"
     >
       <template #td-name="{ row }">

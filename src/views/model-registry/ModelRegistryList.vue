@@ -14,9 +14,7 @@ const { t } = useI18n();
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable(
-  async () => llmCheckpointClient.list(namespace.value),
-);
+} = useQueryTable(() => llmCheckpointClient.list(namespace.value));
 
 watch(namespace, handleRefresh);
 
@@ -43,7 +41,7 @@ const onConfirmDelete = (name: string) => {
       :title="$t('views.ModelRegistry.modelRegistry')"
     />
     <dao-toolbar
-      v-model:search="search.keywords"
+      v-model:search="search"
       :fuzzy="{ key: 'fuzzy', single: true }"
       @refresh="handleRefresh"
     />

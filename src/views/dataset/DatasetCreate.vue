@@ -206,12 +206,6 @@ const toList = () => {
   });
 };
 
-// const onSubmit = () => {
-//   validate().then((valid) => {
-//     console.log('valid', valid);
-//   });
-// };
-
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isUpdate.value && values.metadata?.name) {

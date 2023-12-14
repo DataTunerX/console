@@ -90,6 +90,7 @@ export const useExperimentStore = defineStore('experiment', {
           return stream?.read().then((result) => this.processText(result, buffer, utf8Decoder, stream));
         })
         .catch(() => {
+          /* eslint-disable no-console */
           console.log('Error! Retrying in 5 seconds...');
           setTimeout(() => this.streamUpdates(namespace, lastResourceVersion), 5000);
         });
@@ -124,9 +125,10 @@ export const useExperimentStore = defineStore('experiment', {
               (experiment) => experiment.metadata?.name !== event.object.metadata.name,
             );
           }
-
+          /* eslint-disable no-console */
           console.log(event.type, event.object.metadata.name);
         } catch (error) {
+          /* eslint-disable no-console */
           console.log('Error while parsing', chunk, '\n', error);
         }
       });

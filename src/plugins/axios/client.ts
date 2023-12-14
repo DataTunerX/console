@@ -1,5 +1,5 @@
 import { DeleteOptions, ListMeta } from 'kubernetes-types/meta/v1';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { OpPatch } from 'json-patch';
 import httpClient from './index';
 
@@ -29,7 +29,7 @@ export class K8sClient<T, D = any> {
   list(namespace: string, config?: AxiosRequestConfig<D>) {
     const path = this.getPath(namespace);
 
-    return this.httpClient.get<List<T>>(path, config);
+    return this.httpClient.get<List<T>, AxiosResponse<List<T>>, D>(path, config);
   }
 
   create(namespace: string, data: T) {

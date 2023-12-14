@@ -5,6 +5,8 @@ import {
 import { useNamespaceStore } from '@/stores/namespace';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { defineColumns } from '@dao-style/core';
+import { useDateFormat } from '@dao-style/extend';
+
 import ApplicationStatusComponent from './components/application-status.vue';
 import { useDeleteInferenceApplication } from './composition/inference-application';
 
@@ -35,6 +37,7 @@ const columns = defineColumns([
   {
     id: 'createAt',
     header: t('common.createTime'),
+    sortable: true,
   },
   {
     id: 'action',
@@ -44,8 +47,8 @@ const columns = defineColumns([
 ]);
 
 const {
-  isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable(async () => rayServiceClient.list(namespace.value));
+  isLoading, pagedData, page, pageSize, total, handleRefresh, search, sort,
+} = useQueryTable(() => rayServiceClient.list(namespace.value), { keys: ['status'] });
 
 watch(namespace, () => {
   handleRefresh();
@@ -81,9 +84,10 @@ const selectable = (row: RayService) => {
     <dao-table
       v-model:page-size="pageSize"
       v-model:current-page="page"
-      v-model:search="search.keywords"
+      v-model:search="search"
       :selectable="selectable"
       :selected-rows="selectedRows"
+      :sort="sort"
       :loading="isLoading"
       :fuzzy="{ key: 'fuzzy', single: true }"
       :columns="columns"
@@ -120,6 +124,10 @@ const selectable = (row: RayService) => {
 
       <template #td-status="{ row }">
         <application-status-component :ray-service-status="row.status" />
+      </template>
+
+      <template #td-createAt="{ row }">
+        {{ useDateFormat(row.metadata?.creationTimestamp) }}
       </template>
     </dao-table>
   </div>
