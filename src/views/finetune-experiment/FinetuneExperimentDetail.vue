@@ -129,6 +129,15 @@ const onConfirmStop = async () => {
 };
 
 const curTab = ref('profile');
+
+const toList = () => {
+  router.push({
+    name: 'FinetuneExperimentList',
+    params: { ns: namespace.value },
+  });
+};
+
+watch(namespace, toList);
 </script>
 
 <template>

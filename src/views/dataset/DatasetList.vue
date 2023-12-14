@@ -20,6 +20,8 @@ fetchExperiment(namespace.value);
 
 const { onConfirmDelete } = useDeleteDataset(namespace.value, handleRefresh);
 
+watch(namespace, handleRefresh);
+
 const onCreate = () => router.push({ name: 'DatasetCreate' });
 </script>
 

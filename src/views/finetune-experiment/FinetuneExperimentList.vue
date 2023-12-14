@@ -17,6 +17,8 @@ const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable<FinetuneExperiment>(() => finetuneExperimentClient.list(namespace.value));
 
+watch(namespace, handleRefresh);
+
 const onCreate = () => {
   router.push({
     name: 'FinetuneExperimentCreate',

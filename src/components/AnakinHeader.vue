@@ -41,13 +41,19 @@ watch(namespace, (ns) => {
       params: { ns },
     });
   } else {
-    router.replace({
+    router.push({
       name: route.name as string,
       params: { ns },
     });
   }
 }, {
   immediate: true,
+});
+
+watch(() => route.params.ns, (ns) => {
+  if (ns) {
+    namespace.value = ns as string;
+  }
 });
 
 </script>

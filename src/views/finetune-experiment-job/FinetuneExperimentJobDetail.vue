@@ -96,6 +96,15 @@ const infos = computed(() => {
   return items;
 });
 
+const toList = () => {
+  router.push({
+    name: 'FinetuneExperimentList',
+    params: { ns: namespace.value },
+  });
+};
+
+watch(namespace, toList);
+
 const viewWorkloadLogs = () => {
   const dialog = createDialog(WorkloadLogsDialog);
   const { status } = finetuneJob.value;

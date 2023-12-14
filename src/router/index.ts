@@ -147,7 +147,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/:pathMatch(.*)',
     redirect: {
-      name: 'FinetuneExperimentList',
+      name: 'Login',
     },
   },
 ];

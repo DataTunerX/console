@@ -6,11 +6,7 @@
     id="container"
   >
     <anakin-nav class="console-sidebar" />
-
-    <router-view
-      :key="namespace"
-      class="console-content"
-    />
+    <router-view class="console-content" />
   </div>
 </template>
 

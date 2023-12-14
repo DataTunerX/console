@@ -62,7 +62,10 @@ const {
 });
 
 const toList = () => {
-  router.push({ name: 'HyperparameterList' });
+  router.push({
+    name: 'HyperparameterList',
+    params: { ns: namespace.value },
+  });
 };
 
 const onSubmit = handleSubmit(async () => {

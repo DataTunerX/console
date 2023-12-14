@@ -62,6 +62,8 @@ const {
 
 const { onConfirmDelete } = useDeleteHyperparameter(namespace, handleRefresh);
 
+watch(namespace, handleRefresh);
+
 const regroupParameters = (parameters: Parameters) => {
   const params = {
     ...omit(parameters, ['int4', 'int8', 'PEFT']),
