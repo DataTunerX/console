@@ -22,7 +22,7 @@ import { useDataset } from './composition/dataset';
 
 const { t } = useI18n();
 
-const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(useNamespaceStore());
 const router = useRouter();
 
 const { query } = useRoute();
@@ -34,7 +34,7 @@ const state = reactive({
 });
 
 const fetchPlugins = () => {
-  dataPluginClient.list(namespaceStore.namespace).then(({ data }) => {
+  dataPluginClient.list(namespace.value).then(({ data }) => {
     state.plugins = data.items;
   });
 };
@@ -133,7 +133,7 @@ const duplicateSubset = useFieldError('spec.datasetMetadata.datasetInfo.subsets'
 
 onMounted(() => {
   if (isUpdate.value) {
-    fetchDataset(namespaceStore.namespace, query.name as string).then(() => {
+    fetchDataset(namespace.value, query.name as string).then(() => {
       resetForm({ values: dataset.value });
     });
   }
@@ -203,25 +203,24 @@ const hasMarginBottom = computed(() => {
 const toList = () => {
   router.push({
     name: 'DatasetList',
+    params: {
+      ns: namespace.value,
+    },
   });
 };
 
-// const onSubmit = () => {
-//   validate().then((valid) => {
-//     console.log('valid', valid);
-//   });
-// };
+watch(namespace, toList);
 
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isUpdate.value && values.metadata?.name) {
       await datasetClient.update(
-        namespaceStore.namespace,
+        namespace.value,
         values.metadata?.name,
         convertDatasetForPost(values),
       );
     } else {
-      await datasetClient.create(namespaceStore.namespace, convertDatasetForPost(values));
+      await datasetClient.create(namespace.value, convertDatasetForPost(values));
     }
     nSuccess(
       t('common.notySuccess', {

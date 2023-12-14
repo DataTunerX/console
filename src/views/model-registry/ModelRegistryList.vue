@@ -8,17 +8,18 @@ import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue';
 import CardLayoutContainer from '@/components/CardLayoutContainer.vue';
 
 import ModelCard from './components/ModelCard.vue';
+import { useCreateInferenceApplication } from '../inference-application/composition/inference-application';
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable(
-  async () => llmCheckpointClient.list(namespace.value),
-);
+} = useQueryTable(() => llmCheckpointClient.list(namespace.value));
 
 watch(namespace, handleRefresh);
+
+const { onCreate } = useCreateInferenceApplication(handleRefresh);
 
 const deleteFn = (name: string) => llmCheckpointClient.delete(namespace.value, name).then(() => {
   handleRefresh();
@@ -43,7 +44,7 @@ const onConfirmDelete = (name: string) => {
       :title="$t('views.ModelRegistry.modelRegistry')"
     />
     <dao-toolbar
-      v-model:search="search.keywords"
+      v-model:search="search"
       :fuzzy="{ key: 'fuzzy', single: true }"
       @refresh="handleRefresh"
     />
@@ -55,6 +56,7 @@ const onConfirmDelete = (name: string) => {
           :key="registry.metadata?.name"
           :data="registry"
           @on-delete="onConfirmDelete"
+          @on-create="onCreate"
         />
       </card-layout-container>
 

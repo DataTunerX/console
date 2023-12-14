@@ -4,10 +4,10 @@ import { nError } from '@/utils/useNoty';
 import { UnwrapNestedRefs, ToRefs } from 'vue';
 import { AxiosResponse } from 'axios';
 import { List } from '@/plugins/axios/client';
+import { DaoTableSort, SearchModelType } from '@dao-style/core';
 
-interface AxiosResponseTemplate<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (): Promise<AxiosResponse<List<T>, any>>;
+interface Service<T> {
+  (): Promise<AxiosResponse<List<T>>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,45 +17,37 @@ function defaultCompareFn(a: any, b: any) {
 
 export type SortDirection = 'ascend' | 'descend';
 
-export interface Sort {
-  key: string;
-  direction: SortDirection;
+export interface Sort extends DaoTableSort{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   compareFn: (a: any, b: any) => number;
 }
-
-export interface Search {
-  isReg: boolean;
-  keys: string[];
-  keywords: Record<string, string[]>;
-}
-
-export interface DefaultParams {
-  search?: Partial<Search>;
-  sort?: Partial<Sort>;
-}
-
 export interface Params {
-  search: Search;
+  search: SearchModelType;
   sort: Sort;
+  keys: string[];
 }
 
 const FUZZY_SEARCH_PARAM = 'fuzzy';
 
-const defaultParams = {
-  search: {
-    isReg: false,
-    keys: ['metadata.name'] as string[],
-    keywords: {
-      [FUZZY_SEARCH_PARAM]: [],
-    },
-  },
+export const commonSortIdMap: Record<string, string> = {
+  name: 'metadata.name',
+  createAt: 'metadata.creationTimestamp',
+};
+
+export const tableIdToSortBy = (sort: DaoTableSort, sortIdMap = commonSortIdMap): DaoTableSort => ({
+  ...sort,
+  id: sortIdMap[sort.id] ?? sort.id,
+});
+
+const defaultParams: Params = {
   sort: {
-    key: 'metadata.creationTimestamp',
-    direction: 'descend',
+    id: commonSortIdMap.createAt,
+    desc: false,
     compareFn: defaultCompareFn,
   },
-} as Params;
+  search: {},
+  keys: ['metadata.name'],
+};
 
 interface StateType<T> extends Params {
   items: T[];
@@ -74,62 +66,69 @@ interface ReturnData<T> extends ToRefs<UnwrapNestedRefs<StateType<T>>> {
   handleRefresh: () => void;
 }
 
-/**
- * @param api 请求函数
- * @param delay 通过延时启动loading动画尽量规避loading动画过短
- */
-export function useQueryTable<T>(
-  api: AxiosResponseTemplate<T>,
-  options?: DefaultParams,
+export const useQueryTable = <Item>(
+  api: Service<Item>,
+  options?: Partial<Params>,
   { immediate = true, delay = 400 } = {},
-) :ReturnData<T> {
+): ReturnData<Item> => {
   const { sort: sortParams, search: searchParams } = merge({}, defaultParams, options) as Params;
 
+  let { keys } = defaultParams;
+
+  if (options?.keys) {
+    keys = [...keys, ...options.keys];
+  }
+
   const { t } = useI18n();
-  const state = reactive<StateType<T>>({
+  const state = reactive<StateType<Item>>({
     items: [],
     pagedData: [],
     page: 1,
     pageSize: 10,
     search: searchParams,
     sort: sortParams,
+    keys,
   });
 
   const filteredList = computed(() => {
     let list = [...state.items];
-    // FIXME: too tricky
-    const [searchText] = state.search.keywords[FUZZY_SEARCH_PARAM] ?? [];
+    const {
+      [FUZZY_SEARCH_PARAM]: fuzzyText,
+      ...search
+    } = state.search;
 
-    if (searchText) {
+    Object.entries(search).forEach(([key, value]) => {
+      if (!value) {
+        return;
+      }
+
+      list = list.filter((i) => {
+        const iStr = get(i, key);
+
+        return value.some((v) => iStr.includes(v));
+      });
+    });
+
+    if (fuzzyText) {
       list = list.filter((i) => {
         let iStr = '';
 
-        if (state.search.keys?.length) {
-          iStr = state.search.keys.map((key) => get(i, key)).join(' ');
+        if (state.keys?.length) {
+          iStr = state.keys.map((key) => JSON.stringify(get(i, key))).join(' ');
         } else {
           iStr = JSON.stringify(i);
         }
 
-        if (state.search.isReg) {
-          try {
-            const matched = Boolean(iStr.match(new RegExp(searchText)));
-
-            return matched;
-          } catch {
-            //
-          }
-        }
-
-        return iStr.toLocaleLowerCase().includes(searchText.toLocaleLowerCase());
+        return fuzzyText.some((keyword) => iStr.toLocaleLowerCase().includes(keyword.toString().toLocaleLowerCase()));
       });
     }
-    if (state.sort.key) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      list.sort((a: any, b: any) => {
-        const { key } = state.sort;
+
+    if (state.sort.id) {
+      list.sort((a, b) => {
+        const key = tableIdToSortBy(state.sort).id;
         const sortResult = state.sort.compareFn(get(a, key), get(b, key));
 
-        return state.sort.direction === 'ascend' ? sortResult : sortResult * -1;
+        return state.sort.desc ? sortResult : sortResult * -1;
       });
     }
 
@@ -207,7 +206,7 @@ export function useQueryTable<T>(
   watch(
     () => state.items,
     () => {
-      state.search.keywords = {};
+      state.search = {};
       state.page = 1;
     },
   );
@@ -238,4 +237,4 @@ export function useQueryTable<T>(
     handleChangePageSize,
     handleRefresh,
   };
-}
+};

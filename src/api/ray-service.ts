@@ -176,3 +176,8 @@ const apiVersion = 'ray.io/v1';
 const kind = 'RayService';
 
 export const rayServiceClient = new K8sClient<RayService>(apiVersion, kind);
+
+export interface InferenceApplication {
+  name: string,
+  llmCheckpoint: string,
+}

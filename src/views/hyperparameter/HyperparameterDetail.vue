@@ -151,10 +151,9 @@ const onEdit = () => {
 const toList = () => {
   router.push({
     name: 'HyperparameterList',
+    params: { ns: namespace.value },
   });
 };
-
-watch(namespace, toList);
 
 const { onConfirmDelete } = useDeleteHyperparameter(namespace, toList);
 </script>

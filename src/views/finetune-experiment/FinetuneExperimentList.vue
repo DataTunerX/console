@@ -15,7 +15,7 @@ const { t } = useI18n();
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
-} = useQueryTable<FinetuneExperiment>(async () => finetuneExperimentClient.list(namespace.value));
+} = useQueryTable<FinetuneExperiment>(() => finetuneExperimentClient.list(namespace.value));
 
 watch(namespace, handleRefresh);
 
@@ -57,7 +57,7 @@ const onConfirmStop = (workload: FinetuneExperiment) => {
       :title="$t('views.FinetuneExperiment.finetuneExperiment')"
     />
     <dao-toolbar
-      v-model:search="search.keywords"
+      v-model:search="search"
       :fuzzy="{ key: 'fuzzy', single: true }"
       @refresh="handleRefresh"
     >

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-
 import { LLMCheckpoint } from '@/api/checkpoint';
-
 import { Theme as llmTheme } from '@/api/large-language-model';
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as hyperparameterTheme } from '@/api/hyperparameter';
@@ -16,12 +14,19 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['on-delete']);
+const emits = defineEmits(['on-delete', 'on-create']);
 
 const { t } = useI18n();
 
 const onDelete = () => {
   emits('on-delete', props.data.metadata?.name);
+};
+
+const onCreate = () => {
+  emits('on-create', {
+    name: props.data.metadata?.name,
+    llmCheckpoint: props.data.metadata?.name,
+  });
 };
 
 const copy = async () => {
@@ -109,6 +114,7 @@ const copy = async () => {
       <dao-action-icon
         :tooltip-content="$t('views.ModelRegistry.deploy')"
         name="icon-gitops"
+        @click="onCreate"
       />
     </div>
   </div>

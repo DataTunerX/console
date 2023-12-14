@@ -131,7 +131,10 @@ const onConfirmStop = async () => {
 const curTab = ref('profile');
 
 const toList = () => {
-  router.push({ name: 'FinetuneExperimentList' });
+  router.push({
+    name: 'FinetuneExperimentList',
+    params: { ns: namespace.value },
+  });
 };
 
 watch(namespace, toList);
@@ -213,7 +216,7 @@ watch(namespace, toList);
         :label="t('views.FinetuneExperiment.taskList')"
       >
         <dao-toolbar
-          v-model:search="search.keywords"
+          v-model:search="search"
           no-rounded
           hide-refresh
           :fuzzy="{ key: 'fuzzy', single: true }"

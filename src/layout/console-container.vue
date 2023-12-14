@@ -1,23 +1,24 @@
 <template>
   <anakin-header />
 
-  <div id="container">
+  <div
+    v-if="namespace"
+    id="container"
+  >
     <anakin-nav class="console-sidebar" />
     <router-view class="console-content" />
-
-    <dialog-wrapper />
   </div>
 </template>
 
 <script lang="ts" setup>
 import AnakinNav from '@/components/AnakinNav.vue';
 import AnakinHeader from '@/components/AnakinHeader.vue';
-import { DialogWrapper } from '@dao-style/extend';
-import { useUserStore } from '@/stores/user';
+import { useNamespaceStore } from '@/stores/namespace';
 
-const userStore = useUserStore();
+const namespaceStore = useNamespaceStore();
+const { namespace } = storeToRefs(useNamespaceStore());
 
 onBeforeMount(async () => {
-  await userStore.initView();
+  await namespaceStore.fetchNamespace();
 });
 </script>

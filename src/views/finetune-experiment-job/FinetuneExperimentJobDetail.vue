@@ -97,7 +97,10 @@ const infos = computed(() => {
 });
 
 const toList = () => {
-  router.push({ name: 'FinetuneExperimentList' });
+  router.push({
+    name: 'FinetuneExperimentList',
+    params: { ns: namespace.value },
+  });
 };
 
 watch(namespace, toList);

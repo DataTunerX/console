@@ -3,10 +3,10 @@ import {
   createRouter, type RouteRecordRaw, type RouterHistory, type Router, createWebHistory,
 } from 'vue-router';
 import Guards from '@/router/guards/index';
+import RouterContent from '@/layout/RouterContent.vue';
+import ConsoleContainer from '@/layout/console-container.vue';
 
 import Login from '@/views/login/Login.vue';
-
-import RouterContent from '@/views/RouterContent.vue';
 
 import DatasetList from '@/views/dataset/DatasetList.vue';
 import DatasetCreate from '@/views/dataset/DatasetCreate.vue';
@@ -31,107 +31,124 @@ const routes: Array<RouteRecordRaw> = [
     redirect: {
       name: 'Login',
     },
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '/ns',
+    name: 'ConsoleContainer',
+    component: ConsoleContainer,
     children: [
       {
-        path: 'login',
-        name: 'Login',
-        component: Login,
-      },
-      {
-        path: 'fine-tune',
+        path: ':ns',
         component: RouterContent,
         children: [
           {
-            path: '',
-            name: 'FinetuneExperimentList',
-            component: FinetuneExperimentList,
-          },
-          {
-            path: 'create',
-            name: 'FinetuneExperimentCreate',
-            component: FinetuneExperimentCreate,
-          },
-          {
-            path: ':name',
-            name: 'FinetuneExperimentDetail',
-            component: FinetuneExperimentDetail,
-          },
-          {
-            path: ':name/job/:jobName',
-            name: 'FinetuneExperimentJobDetail',
-            component: FinetuneExperimentJobDetail,
-          },
-        ],
+            path: 'fine-tune',
+            component: RouterContent,
+            children: [
+              {
+                path: '',
+                name: 'FinetuneExperimentList',
+                component: FinetuneExperimentList,
+              },
+              {
+                path: 'create',
+                name: 'FinetuneExperimentCreate',
+                component: FinetuneExperimentCreate,
+              },
+              {
+                path: ':name',
+                name: 'FinetuneExperimentDetail',
+                component: FinetuneExperimentDetail,
+              },
+              {
+                path: ':name/job/:jobName',
+                name: 'FinetuneExperimentJobDetail',
+                component: FinetuneExperimentJobDetail,
+              },
+            ],
 
-      },
-      {
-        path: 'finetune-registry',
-        component: RouterContent,
-        children: [
-          {
-            path: '',
-            name: 'ModelRegistryList',
-            component: ModelRegistryList,
-          },
-        ],
-      },
-      {
-        path: 'datasets',
-        component: RouterContent,
-        children: [
-          {
-            path: '',
-            name: 'DatasetList',
-            component: DatasetList,
           },
           {
-            path: 'create',
-            name: 'DatasetCreate',
-            component: DatasetCreate,
+            path: 'finetune-registry',
+            component: RouterContent,
+            children: [
+              {
+                path: '',
+                name: 'ModelRegistryList',
+                component: ModelRegistryList,
+              },
+            ],
           },
           {
-            path: ':name',
-            name: 'DatasetDetail',
-            component: DatasetDetail,
+            path: 'datasets',
+            component: RouterContent,
+            children: [
+              {
+                path: '',
+                name: 'DatasetList',
+                component: DatasetList,
+              },
+              {
+                path: 'create',
+                name: 'DatasetCreate',
+                component: DatasetCreate,
+              },
+              {
+                path: ':name',
+                name: 'DatasetDetail',
+                component: DatasetDetail,
+              },
+            ],
           },
-        ],
-      },
-      {
-        path: 'hyperparameter',
-        component: RouterContent,
-        children: [
           {
-            path: '',
-            name: 'HyperparameterList',
-            component: HyperparameterList,
-          },
-          {
-            path: 'create',
-            name: 'HyperparameterCreate',
-            component: HyperparameterCreate,
-          },
-          {
-            path: ':name',
-            name: 'HyperparameterDetail',
-            component: HyperparameterDetail,
-          },
-        ],
+            path: 'hyperparameter',
+            component: RouterContent,
+            children: [
+              {
+                path: '',
+                name: 'HyperparameterList',
+                component: HyperparameterList,
+              },
+              {
+                path: 'create',
+                name: 'HyperparameterCreate',
+                component: HyperparameterCreate,
+              },
+              {
+                path: ':name',
+                name: 'HyperparameterDetail',
+                component: HyperparameterDetail,
+              },
+            ],
 
-      },
-
-      {
-        path: 'inference-application',
-        component: RouterContent,
-        children: [
-          {
-            path: '',
-            name: 'InferenceApplicationList',
-            component: InferenceApplicationList,
           },
+
+          {
+            path: 'inference-application',
+            component: RouterContent,
+            children: [
+              {
+                path: '',
+                name: 'InferenceApplicationList',
+                component: InferenceApplicationList,
+              },
+            ],
+          },
+
         ],
       },
-
     ],
+  },
+  {
+    path: '/:pathMatch(.*)',
+    redirect: {
+      name: 'Login',
+    },
   },
 ];
 

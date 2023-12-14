@@ -137,6 +137,7 @@ const activeSection = ref([`${jobs.value[0].key}`]);
 const toList = () => {
   router.push({
     name: 'FinetuneExperimentList',
+    params: { ns: namespace.value },
   });
 };
 

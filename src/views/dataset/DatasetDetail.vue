@@ -104,7 +104,10 @@ const onEdit = () => {
 };
 
 const toList = () => {
-  router.push({ name: 'DatasetList' });
+  router.push({
+    name: 'DatasetList',
+    params: { ns: namespace.value },
+  });
 };
 
 watch(namespace, toList);

@@ -1,7 +1,7 @@
 apiVersion: ray.io/v1
 kind: RayService
 metadata:
-  name: finetune-sample5
+  name: finetune-sampleasdf
   namespace: datatunerx-dev
   labels:
     createdByFrontend: "true"
