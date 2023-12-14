@@ -23,14 +23,14 @@ const { handleSubmit } = useForm<ServiceAccount>({
 const onSubmit = handleSubmit(async (values) => {
   await userStore.login(values.token);
   router.push({
-    name: 'FinetuneExperimentList',
+    name: 'ConsoleContainer',
   });
 });
 
 onMounted(async () => {
   if (loginSuccess.value) {
     router.push({
-      name: 'FinetuneExperimentList',
+      name: 'ConsoleContainer',
     });
   }
 });

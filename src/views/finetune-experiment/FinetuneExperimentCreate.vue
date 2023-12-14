@@ -140,8 +140,6 @@ const toList = () => {
   });
 };
 
-watch(namespace, toList);
-
 const onSubmit = async () => {
   const { valid } = await validate();
 

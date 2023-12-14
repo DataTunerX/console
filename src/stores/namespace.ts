@@ -27,6 +27,7 @@ export const useNamespaceStore = defineStore('namespace', {
         nError(i18n.t('common.fetchFailed'), error);
       }
     },
+
     setNamespace(val: string) {
       localStorage.setItem(NAMESPACE, val);
       this.namespace = val;

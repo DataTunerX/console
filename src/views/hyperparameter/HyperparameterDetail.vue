@@ -154,8 +154,6 @@ const toList = () => {
   });
 };
 
-watch(namespace, toList);
-
 const { onConfirmDelete } = useDeleteHyperparameter(namespace, toList);
 </script>
 

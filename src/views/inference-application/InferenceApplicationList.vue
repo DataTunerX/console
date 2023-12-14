@@ -50,10 +50,6 @@ const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search, sort,
 } = useQueryTable(() => rayServiceClient.list(namespace.value), { keys: ['status'] });
 
-watch(namespace, () => {
-  handleRefresh();
-});
-
 const { onConfirmDelete } = useDeleteInferenceApplication(namespace, handleRefresh);
 
 const selectedRows = ref<RayService[]>([]);

@@ -1,32 +1,50 @@
 <script lang="ts" setup>
 import { i18n } from '@/plugins';
+import { useNamespaceStore } from '@/stores/namespace';
 import { NavRoute } from '@/types/common';
 import { getActiveRouteFold } from '@/utils/util';
+
+const { namespace } = storeToRefs(useNamespaceStore());
 
 const routes = computed<NavRoute[]>(() => {
   const items = [
     {
-      to: { name: 'FinetuneExperimentList' },
+      to: {
+        name: 'FinetuneExperimentList',
+        params: { ns: namespace.value },
+      },
       display: i18n.t('components.AnakinHeader.menu.fineTuningExperiment'),
       icon: 'icon-engine',
     },
     {
-      to: { name: 'ModelRegistryList' },
+      to: {
+        name: 'ModelRegistryList',
+        params: { ns: namespace.value },
+      },
       display: i18n.t('components.AnakinHeader.menu.modeRegistry'),
       icon: 'icon-registry',
     },
     {
-      to: { name: 'DatasetList' },
+      to: {
+        name: 'DatasetList',
+        params: { ns: namespace.value },
+      },
       display: i18n.t('components.AnakinHeader.menu.dataset'),
       icon: 'icon-mspider',
     },
     {
-      to: { name: 'HyperparameterList' },
+      to: {
+        name: 'HyperparameterList',
+        params: { ns: namespace.value },
+      },
       display: i18n.t('components.AnakinHeader.menu.hyperparameterGroup'),
       icon: 'icon-cluster',
     },
     {
-      to: { name: 'InferenceApplicationList' },
+      to: {
+        name: 'InferenceApplicationList',
+        params: { ns: namespace.value },
+      },
       display: i18n.t('components.AnakinHeader.menu.inference'),
       icon: 'icon-book',
     },

@@ -62,9 +62,6 @@ const {
 
 const { onConfirmDelete } = useDeleteHyperparameter(namespace, handleRefresh);
 
-// 监听命名空间变化，重新加载数据集
-watch(namespace, handleRefresh);
-
 const regroupParameters = (parameters: Parameters) => {
   const params = {
     ...omit(parameters, ['int4', 'int8', 'PEFT']),

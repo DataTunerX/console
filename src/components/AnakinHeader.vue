@@ -1,14 +1,14 @@
 <script setup lang="ts">
-
-// import { noop } from '@vueuse/core';
 import { i18n } from '@/plugins';
 import AnakinHeaderButton from '@/components/AnakinHeaderButton.vue';
 import Avatar from '@/assets/avatar.webp';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useUserStore } from '@/stores/user';
 
-const userStore = useUserStore();
+const route = useRoute();
 const router = useRouter();
+
+const userStore = useUserStore();
 
 const logout = async () => {
   await userStore.logout();
@@ -16,18 +16,6 @@ const logout = async () => {
 };
 
 const userOperation = computed(() => [
-  // {
-  //   label: i18n.t('components.AnakinHeader.user.personal-center'),
-  //   icon: 'icon-user',
-  //   href: './profile',
-  //   operate: noop,
-  // },
-  // {
-  //   label: i18n.t('components.AnakinHeader.user.setting'),
-  //   icon: 'icon-setting',
-  //   href: './settings',
-  //   operate: noop,
-  // },
   {
     label: i18n.t('components.AnakinHeader.user.logout'),
     icon: 'icon-logout',
@@ -45,6 +33,23 @@ const namespace = computed({
     namespaceStore.setNamespace(val);
   },
 });
+
+watch(namespace, (ns) => {
+  if (route.name === 'ConsoleContainer' && ns) {
+    router.push({
+      name: 'FinetuneExperimentList',
+      params: { ns },
+    });
+  } else {
+    router.replace({
+      name: route.name as string,
+      params: { ns },
+    });
+  }
+}, {
+  immediate: true,
+});
+
 </script>
 
 <template>
@@ -58,7 +63,6 @@ const namespace = computed({
       >
     </div>
 
-    <!-- <span class="datatunerx-header__namespace"> {{ i18n.t('components.AnakinHeader.namespace') }} </span> -->
     <dao-select
       v-model="namespace"
       search
@@ -107,13 +111,6 @@ const namespace = computed({
                 >
                   {{ operate.label }}
                 </dao-button>
-                <!-- <dao-history-link
-                  :href="operate.href"
-                  :icon="operate.icon"
-                  class="datatunerx-user-drop--item"
-                >
-                  {{ operate.label }}
-                </dao-history-link> -->
               </dao-dropdown-item>
             </dao-dropdown-menu>
           </template>
@@ -137,16 +134,6 @@ $datatunerx-header-color: var(--dao-navigation-090);
   height: 50px;
   color: $datatunerx-header-color;
   background-color: $datatunerx-header-background;
-
-  &__product {
-    width: 210px;
-    /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-    font-family: PingFang SC-Bold, PingFang SC;
-    font-size: 26px;
-    font-weight: bold;
-    color: #fff;
-    text-align: center;
-  }
 
   &__namespace {
     margin-left: 30px;

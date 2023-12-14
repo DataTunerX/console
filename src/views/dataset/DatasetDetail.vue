@@ -107,8 +107,6 @@ const toList = () => {
   router.push({ name: 'DatasetList' });
 };
 
-watch(namespace, toList);
-
 const { onConfirmDelete } = useDeleteDataset(namespace.value, toList);
 </script>
 

@@ -17,8 +17,6 @@ const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search,
 } = useQueryTable(() => llmCheckpointClient.list(namespace.value));
 
-watch(namespace, handleRefresh);
-
 const { onCreate } = useCreateInferenceApplication(handleRefresh);
 
 const deleteFn = (name: string) => llmCheckpointClient.delete(namespace.value, name).then(() => {
