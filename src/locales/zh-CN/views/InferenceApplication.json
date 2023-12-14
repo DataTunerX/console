@@ -36,5 +36,12 @@
   "delete": {
     "header": "删除推理应用",
     "content": "确定要删除推理应用吗？"
+  },
+  "create": {
+    "header": "创建推理应用",
+    "name": "名称",
+    "llmCheckpoint": "模型",
+    "createSuccess": "推理应用创建成功",
+    "createFailed": "推理应用创建失败"
   }
 }

@@ -36,5 +36,13 @@
   "delete":{
     "header": "Delete Inference Application",
     "content": "Are you sure you want to delete this inference application?"
+  },
+
+  "create":{
+    "header": "Create Inference Application",
+    "name": "Name",
+    "llmCheckpoint": "Model",
+    "createSuccess": "Inference application created successfully",
+    "createFailed": "Failed to create inference application"
   }
 }
