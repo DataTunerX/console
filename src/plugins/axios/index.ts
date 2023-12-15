@@ -37,7 +37,16 @@ httpClient.interceptors.request.use(
 
 httpClient.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error.response?.data),
+  (error) => {
+    const { response = {} } = error;
+
+    if (response?.status === 401 || response?.status === 403) {
+      localStorage.removeItem(TOKEN);
+      window.location.reload();
+    }
+
+    return Promise.reject(error.response?.data);
+  },
 );
 
 export default httpClient;

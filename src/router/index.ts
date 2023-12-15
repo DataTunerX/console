@@ -24,6 +24,7 @@ import FinetuneExperimentJobDetail from '@/views/finetune-experiment-job/Finetun
 import ModelRegistryList from '@/views/model-registry/ModelRegistryList.vue';
 
 import InferenceApplicationList from '@/views/inference-application/InferenceApplicationList.vue';
+import InferenceApplicationModelCompare from '@/views/inference-application/InferenceApplicationModelCompare.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -136,6 +137,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'InferenceApplicationList',
                 component: InferenceApplicationList,
+              },
+              {
+                path: 'inference-application-model-compare',
+                name: 'InferenceApplicationModelCompare',
+                component: InferenceApplicationModelCompare,
               },
             ],
           },
