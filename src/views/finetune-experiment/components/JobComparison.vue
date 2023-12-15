@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { TransferActionDirection } from '@dao-style/core';
 import { FinetuneJobWithName } from '@/api/finetune-experiment';
+import { ProcessedMetrics, getMetrics, processedData } from '@/api/finetune-metrics';
+import { useNamespaceStore } from '@/stores/namespace';
 import JobChart from './JobChart.vue';
 
 const props = defineProps({
@@ -10,8 +12,35 @@ const props = defineProps({
   },
 });
 
+const { namespace } = storeToRefs(useNamespaceStore());
+
 const selectedKeys = ref<string[]>([]);
 
+const loaded = ref(false);
+const finetuneMetrics = ref<ProcessedMetrics>({
+  train_metrics: [],
+  eval_metrics: [],
+});
+
+const fetchMetrics = async () => {
+  loaded.value = false;
+  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
+
+  finetuneMetrics.value = processedData(data);
+  loaded.value = true;
+};
+
+watch(() => props.jobs, () => {
+  selectedKeys.value = props.jobs.map((job) => job.name);
+
+  try {
+    fetchMetrics();
+  } catch (error) {
+    console.log(error);
+  }
+}, {
+  immediate: true,
+});
 type Row = {
   key: string;
   label?: string;
@@ -72,7 +101,12 @@ const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableLis
         <template #check-all />
       </dao-transfer-panel>
     </div>
-    <job-chart class="flex-1" />
+    <job-chart
+      v-if="loaded"
+      class="flex-1"
+      :data="finetuneMetrics"
+      :selected-keys="selectedKeys"
+    />
   </div>
 </template>
 

@@ -19,18 +19,18 @@ const columns = defineColumns([
     id: 'name',
     header: t('views.InferenceApplication.list.table.header.name'),
   },
-  {
-    id: 'checkpoint',
-    header: t('views.InferenceApplication.list.table.header.checkpoint'),
-  },
-  {
-    id: 'llm',
-    header: t('views.InferenceApplication.list.table.header.llm'),
-  },
-  {
-    id: 'hyperparameter',
-    header: t('views.InferenceApplication.list.table.header.hyperparameter'),
-  },
+  // {
+  //   id: 'checkpoint',
+  //   header: t('views.InferenceApplication.list.table.header.checkpoint'),
+  // },
+  // {
+  //   id: 'llm',
+  //   header: t('views.InferenceApplication.list.table.header.llm'),
+  // },
+  // {
+  //   id: 'hyperparameter',
+  //   header: t('views.InferenceApplication.list.table.header.hyperparameter'),
+  // },
   {
     id: 'status',
     header: t('views.InferenceApplication.list.table.header.status'),

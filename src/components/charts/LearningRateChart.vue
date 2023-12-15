@@ -1,34 +1,27 @@
 <script lang="ts" setup>
-import { Chart } from '@/plugins/g2';
+import { ProcessedTrainMetrics } from '@/api/finetune-metrics';
+import LineChart from './LineChart.vue';
+
+defineProps({
+  data: {
+    type: Array as PropType<ProcessedTrainMetrics[]>,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: '',
+  },
+});
 
 const container = 'container-learning-rate';
-
-onMounted(() => {
-  const chart = new Chart({
-    container,
-    autoFit: true,
-  });
-
-  chart
-    .line()
-    .data({
-      type: 'fetch',
-      value: './train.json',
-    })
-    .encode('x', 'current_steps')
-    .encode('y', 'loss')
-    .encode('color', 'Symbol')
-    .axis('x', { title: 'Step' })
-    .axis('y', { title: 'Learning Rate' });
-
-  chart.render();
-
-  onUnmounted(() => {
-    chart.destroy();
-  });
-});
 </script>
 
 <template>
-  <div :id="container" />
+  <line-chart
+    :container="container"
+    :data="data"
+    :color="color"
+    y="learning_rate"
+    y-axis="Learning Rate"
+  />
 </template>

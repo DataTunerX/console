@@ -1,34 +1,21 @@
 <script lang="ts" setup>
-import { Chart } from '@/plugins/g2';
+import { ProcessedEvalMetrics } from '@/api/finetune-metrics';
+import LineChart from './LineChart.vue';
 
-const container = 'container-validation-loss';
-
-onMounted(() => {
-  const chart = new Chart({
-    container,
-    autoFit: true,
-  });
-
-  chart
-    .line()
-    .data({
-      type: 'fetch',
-      value: './train.json',
-    })
-    .encode('x', 'current_steps')
-    .encode('y', 'loss')
-    .encode('color', 'Symbol')
-    .axis('x', { title: 'Step' })
-    .axis('y', { title: 'Validation Loss' });
-
-  chart.render();
-
-  onUnmounted(() => {
-    chart.destroy();
-  });
+defineProps({
+  data: {
+    type: Array as PropType<ProcessedEvalMetrics[]>,
+    required: true,
+  },
 });
+
 </script>
 
 <template>
-  <div :id="container" />
+  <line-chart
+    container="container-validation-loss"
+    :data="data"
+    y="eval_loss"
+    y-axis="Eval Loss"
+  />
 </template>

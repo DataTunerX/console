@@ -2,7 +2,9 @@
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
 import { useNamespaceStore } from '@/stores/namespace';
-import { FinetuneJob, finetuneJobClient, State } from '@/api/finetune-job';
+import {
+  FinetuneJob, finetuneJobClient, State,
+} from '@/api/finetune-job';
 import { useDateFormat, createDialog } from '@dao-style/extend';
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import { nError } from '@/utils/useNoty';
@@ -13,6 +15,9 @@ import PerformanceEvaluationChart from '@/components/charts/PerformanceEvaluatio
 import TrainLossChart from '@/components/charts/TrainingLossChart.vue';
 import ValidationLossChart from '@/components/charts/ValidationLossChart.vue';
 
+import {
+  getMetrics, processedData, ProcessedMetrics,
+} from '@/api/finetune-metrics';
 import ExperimentJobStatus from './components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from './components/HyperparameterWithOverrides.vue';
 import WorkloadLogsDialog from './components/WorkloadLogsDialog.vue';
@@ -114,6 +119,26 @@ const viewWorkloadLogs = () => {
     container: status?.finetuneStatus?.rayJobInfo?.rayJobPodContainerName,
   });
 };
+
+const loaded = ref(false);
+const finetuneMetrics = ref<ProcessedMetrics>({
+  train_metrics: [],
+  eval_metrics: [],
+});
+
+const fetchMetrics = async () => {
+  loaded.value = false;
+  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
+
+  finetuneMetrics.value = processedData(data);
+  loaded.value = true;
+};
+
+try {
+  fetchMetrics();
+} catch (error) {
+  console.log(error);
+}
 </script>
 
 <template>
@@ -196,30 +221,32 @@ const viewWorkloadLogs = () => {
     </dao-card>
 
     <dao-card
+      v-if="loaded"
       title="监控"
       type="simple"
       class="mt-[20px]"
       divider
     >
       <dao-card-item>
-        <learning-rate-chart />
+        <learning-rate-chart :data="finetuneMetrics.train_metrics" />
       </dao-card-item>
       <dao-card-item>
-        <train-loss-chart />
+        <train-loss-chart :data="finetuneMetrics.train_metrics" />
       </dao-card-item>
     </dao-card>
 
     <dao-card
+      v-if="loaded"
       title="监控"
       type="simple"
       class="mt-[20px]"
       divider
     >
       <dao-card-item>
-        <validation-loss-chart />
+        <validation-loss-chart :data="finetuneMetrics.eval_metrics" />
       </dao-card-item>
       <dao-card-item>
-        <performance-evaluation-chart />
+        <performance-evaluation-chart :data="finetuneMetrics.eval_metrics" />
       </dao-card-item>
     </dao-card>
   </div>
