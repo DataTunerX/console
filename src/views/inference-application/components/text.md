@@ -4,6 +4,26 @@ Showdown is a Javascript Markdown to HTML converter, based on the original works
 
 # Installation
 
+```js
+const markedWorker = new Worker('./markedWorker.js');
+
+const markedTimeout = setTimeout(() => {
+  markedWorker.terminate();
+  throw new Error('Marked took too long!');
+}, timeoutLimit);
+
+markedWorker.onmessage = (e) => {
+  clearTimeout(markedTimeout);
+  const html = e.data;
+
+  console.log(html);
+  markedWorker.terminate();
+};
+
+markedWorker.postMessage(markdownString);
+
+```
+
 ## Download tarball
 
 You can download the latest release tarball directly from [releases][releases]
@@ -20,11 +40,11 @@ You can download the latest release tarball directly from [releases][releases]
 
 You can also use one of several CDNs available:
 
-* rawgit CDN
+- rawgit CDN
 
         https://cdn.rawgit.com/showdownjs/showdown/<version tag>/dist/showdown.min.js
 
-* cdnjs
+- cdnjs
 
         https://cdnjs.cloudflare.com/ajax/libs/showdown/<version tag>/showdown.min.js
 
@@ -33,56 +53,56 @@ You can also use one of several CDNs available:
 [atx]: http://www.aaronsw.com/2002/atx/intro
 [setext]: https://en.wikipedia.org/wiki/Setext
 
----------
+---
 
 # Syntax
 
 ## Table of contents
 
-* [Installation](#installation)
-  * [Download tarball](#download-tarball)
-  * [Bower](#bower)
-  * [npm (server-side)](#npm-server-side)
-  * [CDN](#cdn)
-* [Syntax](#syntax)
-  * [Table of contents](#table-of-contents)
-  * [Introduction](#introduction)
-  * [Paragraphs](#paragraphs)
-  * [Headings](#headings)
-    * [Atx Style](#atx-style)
-    * [Setext style](#setext-style)
-    * [Header IDs](#header-ids)
-  * [Blockquotes](#blockquotes)
-  * [Bold and Italic](#bold-and-italic)
-  * [Strikethrough](#strikethrough)
-  * [Emojis](#emojis)
-  * [Code formatting](#code-formatting)
-    * [Inline formats](#inline-formats)
-    * [Multiple lines](#multiple-lines)
-  * [Lists](#lists)
-    * [Unordered lists](#unordered-lists)
-    * [Ordered lists](#ordered-lists)
-    * [TaskLists (GFM Style)](#tasklists-gfm-style)
-    * [List syntax](#list-syntax)
-    * [Nested blocks](#nested-blocks)
-    * [Nested lists](#nested-lists)
-    * [Nested code blocks](#nested-code-blocks)
-  * [Links](#links)
-    * [Simple](#simple)
-    * [Inline](#inline)
-    * [Reference Style](#reference-style)
-  * [Images](#images)
-    * [Inline](#inline-1)
-    * [Reference Style](#reference-style-1)
-    * [Image dimensions](#image-dimensions)
-    * [Base64 encoded images](#base64-encoded-images)
-  * [Tables](#tables)
-  * [Mentions](#mentions)
-  * [Handling HTML in markdown documents](#handling-html-in-markdown-documents)
-  * [Escaping entities](#escaping-entities)
-    * [Escaping markdown entities](#escaping-markdown-entities)
-    * [Escaping HTML tags](#escaping-html-tags)
-  * [Known differences and Gotchas](#known-differences-and-gotchas)
+- [Installation](#installation)
+  - [Download tarball](#download-tarball)
+  - [Bower](#bower)
+  - [npm (server-side)](#npm-server-side)
+  - [CDN](#cdn)
+- [Syntax](#syntax)
+  - [Table of contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Paragraphs](#paragraphs)
+  - [Headings](#headings)
+    - [Atx Style](#atx-style)
+    - [Setext style](#setext-style)
+    - [Header IDs](#header-ids)
+  - [Blockquotes](#blockquotes)
+  - [Bold and Italic](#bold-and-italic)
+  - [Strikethrough](#strikethrough)
+  - [Emojis](#emojis)
+  - [Code formatting](#code-formatting)
+    - [Inline formats](#inline-formats)
+    - [Multiple lines](#multiple-lines)
+  - [Lists](#lists)
+    - [Unordered lists](#unordered-lists)
+    - [Ordered lists](#ordered-lists)
+    - [TaskLists (GFM Style)](#tasklists-gfm-style)
+    - [List syntax](#list-syntax)
+    - [Nested blocks](#nested-blocks)
+    - [Nested lists](#nested-lists)
+    - [Nested code blocks](#nested-code-blocks)
+  - [Links](#links)
+    - [Simple](#simple)
+    - [Inline](#inline)
+    - [Reference Style](#reference-style)
+  - [Images](#images)
+    - [Inline](#inline-1)
+    - [Reference Style](#reference-style-1)
+    - [Image dimensions](#image-dimensions)
+    - [Base64 encoded images](#base64-encoded-images)
+  - [Tables](#tables)
+  - [Mentions](#mentions)
+  - [Handling HTML in markdown documents](#handling-html-in-markdown-documents)
+  - [Escaping entities](#escaping-entities)
+    - [Escaping markdown entities](#escaping-markdown-entities)
+    - [Escaping HTML tags](#escaping-html-tags)
+  - [Known differences and Gotchas](#known-differences-and-gotchas)
 
 ## Introduction
 
@@ -131,8 +151,11 @@ You can create a heading by adding one or more # symbols before your heading tex
 
 ```md
 # The largest heading (an <h1> tag)
+
 ## The second largest heading (an <h2> tag)
+
 …
+
 ###### The 6th largest heading (an <h6> tag)
 ```
 
@@ -141,13 +164,13 @@ The space between `#` and the heading text is not required but you can make that
 You can wrap the headings in `#`. Both leading and trailing `#` will be removed.
 
 ```md
-## My Heading ##
+## My Heading
 ```
 
 If, for some reason, you need to keep a leading or trailing `#`, you can either add a space or escape it:
 
 ```md
-# # My header # #
+# # My header
 
 #\# My Header \# #
 ```
@@ -157,11 +180,9 @@ If, for some reason, you need to keep a leading or trailing `#`, you can either 
 You can also use [**setext style**][setext] headings, although only two levels are available.
 
 ```md
-This is an H1
-=============
+# This is an H1
 
-This is an H2
--------------
+## This is an H2
 ```
 
 **Note:**
@@ -185,10 +206,10 @@ Showdown generates bookmarks anchors in titles automatically, by adding an id pr
 
 This behavior can be modified with options:
 
-* **`noHeaderId`** disables automatic id generation;
-* **`ghCompatibleHeaderId`** generates header ids compatible with github style (spaces are replaced with dashes and a bunch of non alphanumeric chars are removed)
-* **`prefixHeaderId`** adds a prefix to the generated header ids (either automatic or custom).
-* **`headerLevelStart`** sets the header starting level. For instance, setting this to 3 means that `# header` will be converted to `<h3>`.
+- **`noHeaderId`** disables automatic id generation;
+- **`ghCompatibleHeaderId`** generates header ids compatible with github style (spaces are replaced with dashes and a bunch of non alphanumeric chars are removed)
+- **`prefixHeaderId`** adds a prefix to the generated header ids (either automatic or custom).
+- **`headerLevelStart`** sets the header starting level. For instance, setting this to 3 means that `# header` will be converted to `<h3>`.
 
 Read the [README.md][readme] for more info
 
@@ -257,7 +278,10 @@ Here's an idea: why don't we take `SuperiorProject` and turn it into `**Reasonab
 ```
 
 ```html
-<p>Here's an idea: why don't we take <code>SuperiorProject</code> and turn it into <code>**Reasonable**Project</code>.</p>
+<p>
+  Here's an idea: why don't we take <code>SuperiorProject</code> and turn it
+  into <code>**Reasonable**Project</code>.
+</p>
 ```
 
 ### Multiple lines
@@ -286,11 +310,13 @@ Showdown supports ordered (numbered) and unordered (bulleted) lists.
 
 ### Unordered lists
 
-You can make an unordered list by preceding list items with either a *, a - or a +. Markers are interchangeable too.
+You can make an unordered list by preceding list items with either a \*, a - or a +. Markers are interchangeable too.
 
 ```md
+- Item
+
 * Item
-+ Item
+
 - Item
 ```
 
@@ -311,20 +337,20 @@ It’s important to note that the actual numbers you use to mark the list have n
 Showdown also supports GFM styled takslists if the **`tasklists`** option is enabled.
 
 ```md
- - [x] checked list item
- - [ ] unchecked list item
+- [x] checked list item
+- [ ] unchecked list item
 ```
 
-* [x] checked list item
-* [ ] unchecked list item
+- [x] checked list item
+- [ ] unchecked list item
 
 ### List syntax
 
 List markers typically start at the left margin, but may be indented by up to three spaces.
 
 ```md
-   * this is valid
-   * this is too
+- this is valid
+- this is too
 ```
 
 List markers must be followed by one or more spaces or a tab.
@@ -332,11 +358,11 @@ List markers must be followed by one or more spaces or a tab.
 To make lists look nice, you can wrap items with hanging indents:
 
 ```md
-*   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
-    viverra nec, fringilla in, laoreet vitae, risus.
-*   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
-    Suspendisse id sem consectetuer libero luctus adipiscing.
+- Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+  Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
+  viverra nec, fringilla in, laoreet vitae, risus.
+- Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
+  Suspendisse id sem consectetuer libero luctus adipiscing.
 ```
 
 But if you want to be lazy, you don’t have to
@@ -345,19 +371,19 @@ If one list item is separated by a blank line, Showdown will wrap all the list i
 So this input:
 
 ```md
-* Bird
+- Bird
 
-* Magic
-* Johnson
+- Magic
+- Johnson
 ```
 
 Results in:
 
 ```html
 <ul>
-<li><p>Bird</p></li>
-<li><p>Magic</p></li>
-<li><p>Johnson</p></li>
+  <li><p>Bird</p></li>
+  <li><p>Magic</p></li>
+  <li><p>Johnson</p></li>
 </ul>
 ```
 
@@ -382,10 +408,10 @@ List items may consist of multiple paragraphs. Each subsequent paragraph in a li
 This is valid for other block elements such as blockquotes:
 
 ```md
-*   A list item with a blockquote:
+- A list item with a blockquote:
 
-    > This is a blockquote
-    > inside a list item.
+  > This is a blockquote
+  > inside a list item.
 ```
 
 or event other lists.
@@ -399,9 +425,9 @@ You can create nested lists by indenting list items by **four** spaces.
     1. A corollary to the above item.
     2. Yet another point to consider.
 2.  Item 2
-    * A corollary that does not need to be ordered.
-    * This is indented four spaces
-    * You might want to consider making a new list.
+    - A corollary that does not need to be ordered.
+    - This is indented four spaces
+    - You might want to consider making a new list.
 3.  Item 3
 ```
 
@@ -413,7 +439,7 @@ To nest a third (or more) sublist level, you need to indent 4 extra spaces (or 1
 ```md
 1.  level 1
     1.  Level 2
-        *   Level 3
+        - Level 3
     2.  level 2
         1.  Level 3
 1.  Level 1
@@ -423,16 +449,16 @@ To nest a third (or more) sublist level, you need to indent 4 extra spaces (or 1
 
 You can nest fenced codeblocks the same way you nest other block elements, by indenting by fours spaces or a tab:
 
-```md
+````md
 1.  Some code:
 
     ```js
-    var foo = 'bar';
+    var foo = "bar";
     console.log(foo);
     ```
-```
+````
 
-To put a *indented style* code block within a list item, the code block needs to be indented twice — 8 spaces or two tabs:
+To put a _indented style_ code block within a list item, the code block needs to be indented twice — 8 spaces or two tabs:
 
 ```md
 1.  Some code:
@@ -504,9 +530,9 @@ Inline image syntax looks like this:
 
 That is:
 
-* An exclamation mark: !;
-* followed by a set of square brackets, containing the alt attribute text for the image;
-* followed by a set of parentheses, containing the URL or path to the image, and an optional title attribute enclosed in double or single quotes.
+- An exclamation mark: !;
+- followed by a set of square brackets, containing the alt attribute text for the image;
+- followed by a set of parentheses, containing the URL or path to the image, and an optional title attribute enclosed in double or single quotes.
 
 ### Reference Style
 
@@ -519,7 +545,7 @@ Reference-style image syntax looks like this:
 Where “id” is the name of a defined image reference. Image references are defined using syntax identical to link references:
 
 ```md
-[id]: url/to/image  "Optional title attribute"
+[id]: url/to/image "Optional title attribute"
 ```
 
 Implicit references are also supported in images, similar to what happens with links:
@@ -565,8 +591,8 @@ SURBVBhXYwCC/2AAZYEoOAMs8Z+BgQEAXdcR7/Q1gssAAAAASUVORK5CYII=)
 ```md
 ![Alt text][id]
 
-[id]:
-data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7l
+[id]: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7l
+
 jmRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7D
 AcdvqGQAAAAYSURBVBhXYwCC/2AAZYEoOAMs8Z+BgQEAXdcR7/Q1gssAAAAASUVORK5CYII=
 ```
@@ -579,8 +605,8 @@ Please note that with reference style base64 image sources, regardless of "wrapp
 ![Alt text][id]
 ![Alt text][id2]
 
-[id]:
-data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7l
+[id]: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7l
+
 jmRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7D
 AcdvqGQAAAAYSURBVBhXYwCC/2AAZYEoOAMs8Z+BgQEAXdcR7/Q1gssAAAAASUVORK5CYII=
 [id2]:
@@ -604,10 +630,10 @@ You also don't need to make the raw Markdown line up prettily.
 You can also use other markdown syntax inside them.
 
 ```md
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
+| Tables        |      Are      |  Cool |
+| ------------- | :-----------: | ----: |
 | **col 3 is**  | right-aligned | $1600 |
-| col 2 is      | *centered*    |   $12 |
+| col 2 is      |  _centered_   |   $12 |
 | zebra stripes | ~~are neat~~  |    $1 |
 ```
 
@@ -632,6 +658,7 @@ Showdown, in most cases, leaves HTML tags alone, leaving them untouched in the o
 
 ```md
 some markdown **here**
+
 <div>this is *not* **parsed**</div>
 ```
 
@@ -646,20 +673,26 @@ However, there are exceptions to this. With `<code>` and `<pre><code>` tags, the
 some markdown **here** with <code>foo & bar <baz></baz></code>
 ```
 
- ```html
-<p>some markdown <strong>here</strong> with <code>foo &amp; bar &lt;baz&gt;&lt;/baz&gt;</code></p>
+```html
+<p>
+  some markdown <strong>here</strong> with
+  <code>foo &amp; bar &lt;baz&gt;&lt;/baz&gt;</code>
+</p>
 ```
 
-If you wish to enable markdown parsing inside a specific HTML tag, you can enable it by using the html attribute **`markdown`** or  **`markdown="1"`**  or **`data-markdown="1"`**.
+If you wish to enable markdown parsing inside a specific HTML tag, you can enable it by using the html attribute **`markdown`** or **`markdown="1"`** or **`data-markdown="1"`**.
 
 ```md
 some markdown **here**
+
 <div markdown="1">this is *not* **parsed**</div>
 ```
 
 ```html
 <p>some markdown <strong>here</strong></p>
-<div markdown="1"><p>this is <em>not</em> <strong>parsed</strong></p></div>
+<div markdown="1">
+  <p>this is <em>not</em> <strong>parsed</strong></p>
+</div>
 ```
 
 ## Escaping entities
@@ -699,39 +732,43 @@ Since [version 1.7.2](https://github.com/showdownjs/showdown/tree/1.7.2) backsla
 
 ## Known differences and Gotchas
 
-In most cases, Showdown's output is identical to that of Perl Markdown v1.0.2b7.  What follows is a list of all known deviations.  Please file an issue if you find more.
+In most cases, Showdown's output is identical to that of Perl Markdown v1.0.2b7. What follows is a list of all known deviations. Please file an issue if you find more.
 
-* **Since version 1.4.0, showdown supports the markdown="1" attribute**, but for older versions, this attribute is ignored. This means:
+- **Since version 1.4.0, showdown supports the markdown="1" attribute**, but for older versions, this attribute is ignored. This means:
 
         <div markdown="1">
              Markdown does *not* work in here.
         </div>
 
-* You can only nest square brackets in link titles to a depth of two levels:
+- You can only nest square brackets in link titles to a depth of two levels:
 
         [[fine]](http://www.github.com/)
         [[[broken]]](http://www.github.com/)
 
-    If you need more, you can escape them with backslashes.
+  If you need more, you can escape them with backslashes.
 
-* A list is **single paragraph** if it has only **1 line-break separating items** and it becomes **multi paragraph if ANY of its items is separated by 2 line-breaks**:
+- A list is **single paragraph** if it has only **1 line-break separating items** and it becomes **multi paragraph if ANY of its items is separated by 2 line-breaks**:
 
-   ```md
-    - foo
+  ```md
+  - foo
 
-    - bar
-    - baz
-   ```
+  - bar
+  - baz
+  ```
 
-   becomes
+  becomes
 
-    ```html
-    <ul>
-      <li><p>foo</p></li>
-      <li><p>bar</p></li>
-      <li><p>baz</p></li>
-    </ul>
-    ```
+  ```html
+  <ul>
+    <li><p>foo</p></li>
+    <li><p>bar</p></li>
+    <li><p>baz</p></li>
+  </ul>
+  ```
+
+  ```js
+  const a = {}
+  ```
 
 This new ruleset is based on the comments of Markdown's author John Gruber in the [Markdown discussion list][md-newsletter].
 

@@ -5323,7 +5323,7 @@ domhandler@^5.0.2, domhandler@^5.0.3:
 
 dompurify@^3.0.0:
   version "3.0.6"
-  resolved "https://registry.npmmirror.com/dompurify/-/dompurify-3.0.6.tgz#925ebd576d54a9531b5d76f0a5bef32548351dae"
+  resolved "https://registry.npmmirror.com/dompurify/-/dompurify-3.0.6.tgz"
   integrity sha512-ilkD8YEnnGh1zJ240uJsW7AzE+2qpbOUYjacomn3AvJ6J4JhKGSZ2nh4wUIXPZrEPppaCLx5jFe8T89Rk8tQ7w==
 
 domutils@^2.5.2, domutils@^2.8.0:
@@ -6445,7 +6445,7 @@ git-raw-commits@^2.0.0:
 
 github-markdown-css@^5.5.0:
   version "5.5.0"
-  resolved "https://registry.npmmirror.com/github-markdown-css/-/github-markdown-css-5.5.0.tgz#799a2d8b11c8c36cd0239524e1f76307cd8f244c"
+  resolved "https://registry.npmmirror.com/github-markdown-css/-/github-markdown-css-5.5.0.tgz"
   integrity sha512-Ncp4putm+cGteDhtNYKGdchM4uiIm5tmQcAQx/eEYhuM0sOdjZYNQOauQTaodjDQjfw7whU99MijwC1M0FUY4w==
 
 gl-matrix@^3.1.0, gl-matrix@^3.3.0, gl-matrix@^3.4.3:
@@ -6709,6 +6709,11 @@ highlight.js@^10.7.1:
   version "10.7.3"
   resolved "https://registry.npmmirror.com/highlight.js/-/highlight.js-10.7.3.tgz"
   integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
+
+highlight.js@^11.9.0:
+  version "11.9.0"
+  resolved "https://registry.npmmirror.com/highlight.js/-/highlight.js-11.9.0.tgz"
+  integrity sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"
@@ -8422,9 +8427,14 @@ map-obj@^4.0.0, map-obj@^4.1.0:
   resolved "https://registry.npmmirror.com/map-obj/-/map-obj-4.3.0.tgz"
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
 
+marked-highlight@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.npmmirror.com/marked-highlight/-/marked-highlight-2.0.9.tgz"
+  integrity sha512-HAK1WJSK6CGVDzplOf6layWFz1lHm8Fsjd+SEUYmLhAZmM8TlYmErC/hTphoiOxogYqGQGt3Ghug3Yhs+s+3jw==
+
 marked@^11.1.0:
   version "11.1.0"
-  resolved "https://registry.npmmirror.com/marked/-/marked-11.1.0.tgz#f2d12323e80ba8a97cc8262fe7e94fcc007476ab"
+  resolved "https://registry.npmmirror.com/marked/-/marked-11.1.0.tgz"
   integrity sha512-fvKJWAPEafVj1dwGwcPI5mBB/0pvViL6NlCbNDG1HOIRwwAU/jeMoFxfbRLuirO1wRH7m4yPvBqD/O1wyWvayw==
 
 mathml-tag-names@^2.1.3:
@@ -11709,7 +11719,7 @@ vue-demi@*, vue-demi@>=0.14.5:
 
 vue-dompurify-html@^5.0.0:
   version "5.0.0"
-  resolved "https://registry.npmmirror.com/vue-dompurify-html/-/vue-dompurify-html-5.0.0.tgz#8cc92b2be52afd6ee8b2b95bb88a3a51be8bc873"
+  resolved "https://registry.npmmirror.com/vue-dompurify-html/-/vue-dompurify-html-5.0.0.tgz"
   integrity sha512-mirhe1ANWPU5wTCkR1IARtL0eXPFQGO8iLQNQWC+/X0HMeY1Ne+mh/EIvF5e970fME0UOCF/tMxDmqx5Lo679Q==
   dependencies:
     dompurify "^3.0.0"

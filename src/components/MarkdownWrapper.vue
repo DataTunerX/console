@@ -6,8 +6,9 @@
 </template>
 
 <script lang="ts" setup>
-import 'github-markdown-css/github-markdown.css';
-import { marked } from 'marked';
+import { Marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
+import hljs from 'highlight.js';
 
 const propsData = defineProps({
   source: {
@@ -17,11 +18,32 @@ const propsData = defineProps({
   },
 });
 
+const marked = new Marked(
+  markedHighlight({
+    langPrefix: 'hljs language-',
+    highlight(code: string, lang: string) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+
+      return hljs.highlight(code, { language }).value;
+    },
+  }),
+);
+
 const compiledMarkdown = computed(() => marked.parse(propsData.source));
+
+onMounted(async () => {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    await import('highlight.js/styles/github-dark.css');
+  } else {
+    await import('highlight.js/styles/github.css');
+  }
+});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import 'github-markdown-css/github-markdown.css';
+
 .markdown-body {
-  padding: 10px 20px;
+  padding: 10px;
 }
 </style>
