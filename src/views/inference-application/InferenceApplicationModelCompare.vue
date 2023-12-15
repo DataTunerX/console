@@ -23,55 +23,53 @@ const servicename = computed(() => {
 const examples: ExampleMap[] = [
   {
     text: 'aaaaahjshas',
-    color: 'yellow',
+    color: 'purple',
   },
   {
     text: 'aaaaajkbadhjhwohuijhduiow',
-    color: 'yellow',
+    color: 'purple',
   },
   {
     text: 'aaaaa',
-    color: 'skyblue',
+    color: 'purple',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaasjhsjkahdsjlna',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaanjskalnkalna',
-    color: 'skyblue',
+    color: 'green',
   },
   {
     text: 'aaamnsdjlkbnwajlbaa',
-    color: 'pink',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'pink',
+    color: 'skyblue',
   },
-
 ];
-
 </script>
 
 <template>
@@ -83,7 +81,7 @@ const examples: ExampleMap[] = [
           :list="[
             {
               label: t('views.InferenceApplication.list.header'),
-              to: { name: 'InferenceApplicationList'},
+              to: { name: 'InferenceApplicationList' },
             },
             {
               label: t('views.InferenceApplication.compare.header'),
@@ -93,6 +91,7 @@ const examples: ExampleMap[] = [
         />
       </template>
     </dao-header>
+
     <dao-card
       type="headless"
       class="compare-card"
@@ -107,11 +106,11 @@ const examples: ExampleMap[] = [
         />
       </dao-card-item>
     </dao-card>
+
     <div class="compare-input-card">
       <ComparisonChatTextarea
         :placeholder="'在这里输入问题，或挑选指令模板'"
         :maxlength="4000"
-        :rows="4"
       />
       <div class="issue-example">
         <div class="issue-example-header">
@@ -142,7 +141,7 @@ const examples: ExampleMap[] = [
   :deep(.dao-card-container) {
     padding: 16px;
 
-    .dao-card-item  {
+    .dao-card-item {
       &:not(:last-child) {
         margin-right: 16px;
       }
@@ -156,8 +155,8 @@ const examples: ExampleMap[] = [
   overflow: hidden;
   background: var(--dao-pure-white);
   border-radius: 6px;
-  box-shadow: 0 2px 5px 0 rgba(var(--dao-pure-black-rgb),.1);
-  transition: box-shadow .3s ease-in;
+  box-shadow: 0 2px 5px 0 rgba(var(--dao-pure-black-rgb), 0.1);
+  transition: box-shadow 0.3s ease-in;
 
   .issue-example {
     margin-top: 16px;
@@ -183,12 +182,11 @@ const examples: ExampleMap[] = [
         margin-right: 12px;
       }
 
-      >i {
-          width: 100px;
-          margin-right: 10px;
+      > i {
+        width: 100px;
+        margin-right: 10px;
       }
     }
   }
 }
-
 </style>
