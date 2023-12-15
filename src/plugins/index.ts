@@ -1,5 +1,6 @@
 import { App } from 'vue';
 import routerInstall from '@/router';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
 import { errorHandlers, type ErrorHandler } from './fetch';
 import daoStyleInstall from './dao-style';
 import i18nInstall, { loadLocaleMessages, i18n, loadLanguageAsync } from './vue-i18n';
@@ -13,6 +14,7 @@ export default function install<T>(app: App<T>) {
   app.use(i18nInstall);
   app.use(dayjsInstall);
   app.use(piniaInstall);
+  app.use(VueDOMPurifyHTML);
 }
 
 export {

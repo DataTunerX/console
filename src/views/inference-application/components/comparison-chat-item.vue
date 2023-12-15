@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-// import showdown from 'showdown';
-import ComparisonChatMarkdown from './comparison-chat-markdown.vue';
+import Markdown from '@/components/MarkdownWrapper.vue';
+import text from './text.md';
 
 const props = defineProps({
   name: {
@@ -25,7 +25,7 @@ const { t } = useI18n();
       <dao-tag>aaa</dao-tag>
     </div>
     <div class="chat-markdown">
-      <ComparisonChatMarkdown />
+      <Markdown :source="text" />
     </div>
     <div class="comparison-chat-item-container-footer">
       <div class="footer-item">

@@ -23,6 +23,14 @@ module.exports = defineConfig({
   },
 
   configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.md$/i,
+          loader: 'raw-loader',
+        },
+      ],
+    },
     plugins: [
       unpluginPlugin.default({
         include: [
