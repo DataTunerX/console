@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-// import showdown from 'showdown';
-import ComparisonChatMarkdown from './comparison-chat-markdown.vue';
+import Markdown from '@/components/MarkdownWrapper.vue';
+import text from './text.md';
+
+const { t } = useI18n();
 
 const props = defineProps({
   name: {
@@ -8,8 +10,6 @@ const props = defineProps({
     default: '',
   },
 });
-
-const { t } = useI18n();
 </script>
 
 <template>
@@ -24,9 +24,11 @@ const { t } = useI18n();
       </div>
       <dao-tag>aaa</dao-tag>
     </div>
+
     <div class="chat-markdown">
-      <ComparisonChatMarkdown />
+      <Markdown :source="text" />
     </div>
+
     <div class="comparison-chat-item-container-footer">
       <div class="footer-item">
         <div>16.3s</div>
@@ -52,6 +54,10 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .comparison-chat-item-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   &-header {
     display: flex;
     align-items: center;
@@ -70,8 +76,9 @@ const { t } = useI18n();
   }
 
   .chat-markdown {
-    min-height: 200px;
-    margin: 16px 0;
+    flex: 1;
+    margin: 10px 0;
+    overflow: scroll;
     border: 1px solid var(--dao-gray-blue-050);
     border-radius: 5px;
   }

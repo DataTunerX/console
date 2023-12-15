@@ -23,6 +23,14 @@ module.exports = defineConfig({
   },
 
   configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.md$/i,
+          loader: 'raw-loader',
+        },
+      ],
+    },
     plugins: [
       unpluginPlugin.default({
         include: [
@@ -58,6 +66,11 @@ module.exports = defineConfig({
             name: 'g2',
             chunks: 'all',
             priority: 20,
+          },
+          highlight: {
+            test: /[\\/]node_modules[\\/]highlight\.js[\\/]/,
+            name: 'highlight',
+            chunks: 'all',
           },
         },
       },

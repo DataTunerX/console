@@ -8,8 +8,6 @@ interface ExampleMap {
   color: LabelExtendColor;
 }
 
-const { t } = useI18n();
-const router = useRouter();
 const { query } = useRoute();
 
 const servicename = computed(() => {
@@ -23,67 +21,85 @@ const servicename = computed(() => {
 const examples: ExampleMap[] = [
   {
     text: 'aaaaahjshas',
-    color: 'yellow',
+    color: 'purple',
+  },
+  {
+    text: 'aaaaahjshas',
+    color: 'purple',
+  },
+  {
+    text: 'aaaaahjshas',
+    color: 'purple',
+  },
+  {
+    text: 'aaaaahjshas',
+    color: 'purple',
+  },
+  {
+    text: 'aaaaahjshas',
+    color: 'purple',
+  },
+  {
+    text: 'aaaaahjshas',
+    color: 'purple',
   },
   {
     text: 'aaaaajkbadhjhwohuijhduiow',
-    color: 'yellow',
+    color: 'purple',
   },
   {
     text: 'aaaaa',
-    color: 'skyblue',
+    color: 'purple',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaasjhsjkahdsjlna',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'green',
   },
   {
     text: 'aaaanjskalnkalna',
-    color: 'skyblue',
+    color: 'green',
   },
   {
     text: 'aaamnsdjlkbnwajlbaa',
-    color: 'pink',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'yellow',
+    color: 'skyblue',
   },
   {
     text: 'aaaaa',
-    color: 'pink',
+    color: 'skyblue',
   },
-
 ];
-
 </script>
 
 <template>
   <div class="inference-list console-main-container">
-    <dao-header type="3rd">
+    <!-- <dao-header type="3rd">
       <template #breadcrumb>
         <dao-breadcrumb
           icon="icon-cluster"
           :list="[
             {
               label: t('views.InferenceApplication.list.header'),
-              to: { name: 'InferenceApplicationList'},
+              to: { name: 'InferenceApplicationList' },
             },
             {
               label: t('views.InferenceApplication.compare.header'),
@@ -92,7 +108,8 @@ const examples: ExampleMap[] = [
           @navigate="router.push"
         />
       </template>
-    </dao-header>
+    </dao-header> -->
+
     <dao-card
       type="headless"
       class="compare-card"
@@ -107,11 +124,11 @@ const examples: ExampleMap[] = [
         />
       </dao-card-item>
     </dao-card>
+
     <div class="compare-input-card">
       <ComparisonChatTextarea
         :placeholder="'在这里输入问题，或挑选指令模板'"
         :maxlength="4000"
-        :rows="4"
       />
       <div class="issue-example">
         <div class="issue-example-header">
@@ -130,34 +147,47 @@ const examples: ExampleMap[] = [
           >
             {{ text }}
           </dao-label-extend>
-          <!-- eslint-disable-next-line vue/html-self-closing -->
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
       </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
+.inference-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - var(--sidebar-top));
+  padding: 20px;
+  overflow: hidden;
+}
+
 .compare-card {
+  height: 100%;
+  overflow: scroll;
+
   :deep(.dao-card-container) {
+    height: 100%;
     padding: 16px;
 
-    .dao-card-item  {
+    .dao-card-item {
       &:not(:last-child) {
         margin-right: 16px;
       }
     }
+  }
+
+  :deep(.dao-card-item-container) {
+    height: 100%;
   }
 }
 
 .compare-input-card {
   padding: 16px;
   margin-top: 20px;
-  overflow: hidden;
   background: var(--dao-pure-white);
   border-radius: 6px;
-  box-shadow: 0 2px 5px 0 rgba(var(--dao-pure-black-rgb),.1);
-  transition: box-shadow .3s ease-in;
+  box-shadow: 0 2px 5px 0 rgba(var(--dao-pure-black-rgb), 0.1);
 
   .issue-example {
     margin-top: 16px;
@@ -175,20 +205,15 @@ const examples: ExampleMap[] = [
     &-container {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
-      margin-right: -12px;
+      justify-content: flex-start;
+      // margin-right: -12px;
 
       &-item {
         margin-top: 8px;
         margin-right: 12px;
       }
 
-      >i {
-          width: 100px;
-          margin-right: 10px;
-      }
     }
   }
 }
-
 </style>

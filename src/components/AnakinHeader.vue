@@ -60,7 +60,6 @@ watch(() => route.params.ns, (ns) => {
 
 <template>
   <header class="datatunerx-header">
-    <!-- <div class="" /> -->
     <div class="datatunerx-header-logo">
       <img
         alt="logo"
@@ -88,13 +87,13 @@ watch(() => route.params.ns, (ns) => {
           trigger="click"
           :offset="5"
         >
-          <anakin-header-button class="datatunerx-user-trigger">
+          <anakin-header-button>
             <img
               class="datatunerx-user-avatar"
               :src="Avatar"
               alt="user.username"
             >
-            <span class="datatunerx-user-username"> Max </span>
+            <span class="datatunerx-user-username"> DataTunerX </span>
             <dao-icon
               use-font
               name="icon-dropdown-line"
@@ -108,15 +107,9 @@ watch(() => route.params.ns, (ns) => {
                 :key="operate.label"
                 @click="operate.operate"
               >
-                <dao-button
-                  size="sm"
-                  use-font
-                  :icon-left="operate.icon"
-                  type="ghost"
-                  @click="operate.operate"
-                >
+                <dao-history-link :icon="operate.icon">
                   {{ operate.label }}
-                </dao-button>
+                </dao-history-link>
               </dao-dropdown-item>
             </dao-dropdown-menu>
           </template>
@@ -262,7 +255,6 @@ $datatunerx-header-color: var(--dao-navigation-090);
     border-radius: 0.6rem;
 
     &:hover {
-      // background: rgba(0, 0, 0, 0.3);
       background-color: var(--dao-top-gray-020);
     }
   }

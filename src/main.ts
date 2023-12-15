@@ -1,4 +1,5 @@
 import 'normalize.css/normalize.css';
+
 import pluginInstall, { loadDayjsLanguageAsync, loadLanguageAsync } from './plugins';
 
 import '@/assets/styles/common.scss';

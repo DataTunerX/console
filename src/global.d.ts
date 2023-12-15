@@ -93,3 +93,10 @@ declare let __webpack_init_sharing__: (scope: string) => Promise<void>;
 declare let __webpack_share_scopes__: {
   [propsName: string]: any;
 };
+
+declare module '*.md';
+
+declare module '*.css' {
+  const content: { [className: string]: string };
+  return content;
+}
