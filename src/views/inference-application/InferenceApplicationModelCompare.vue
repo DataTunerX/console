@@ -12,7 +12,13 @@ const { t } = useI18n();
 const router = useRouter();
 const { query } = useRoute();
 
-const servicename = computed(() => query.servicename as string[]);
+const servicename = computed(() => {
+  if (Array.isArray(query.servicename)) {
+    return query.servicename as string[];
+  }
+
+  return [query.servicename as string];
+});
 
 const examples: ExampleMap[] = [
   {
@@ -95,7 +101,10 @@ const examples: ExampleMap[] = [
         v-for="(name, index) in servicename"
         :key="index"
       >
-        <ComparisonChatItem :name="name" />
+        <ComparisonChatItem
+          :key="index"
+          :name="name"
+        />
       </dao-card-item>
     </dao-card>
     <div class="compare-input-card">
