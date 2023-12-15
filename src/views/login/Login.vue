@@ -38,35 +38,67 @@ onMounted(async () => {
 
 <template>
   <div class="login-container">
-    <dao-form label-width="60px">
-      <dao-form-item-validate
-        name="token"
-        label="Token"
-        tag="textarea"
-        :control-props="{
-          rows:10,
-          class: 'w-[500px]'
-        }"
-      />
-      <dao-form-item>
+    <dao-card title="登录 DataTunerX">
+      <dao-card-item>
+        <dao-form label-width="0">
+          <dao-form-item-validate
+            name="token"
+            tag="textarea"
+            :control-props="{
+              placeholder: 'Enter Kubernetes Token',
+              rows: 10,
+              class: 'w-[600px]',
+            }"
+          />
+        </dao-form>
+
         <dao-button
           type="primary"
+          class="float-right w-[100px]"
           @click="onSubmit"
         >
           登录
         </dao-button>
-      </dao-form-item>
-    </dao-form>
+      </dao-card-item>
+    </dao-card>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .login-container {
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+
+  :deep(.dao-card){
+    transform: translate(0, -20%);
+  }
+
+  :deep(.dao-textarea){
+    max-height: unset;
+  }
+
+  :deep(.dao-form-item__label) {
+    padding: 0;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>

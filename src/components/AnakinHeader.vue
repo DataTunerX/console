@@ -42,7 +42,7 @@ watch(namespace, (ns) => {
     });
   } else {
     router.push({
-      name: route.name as string,
+      ...route,
       params: { ns },
     });
   }
