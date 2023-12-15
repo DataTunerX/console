@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { object, string } from 'yup';
 
 const router = useRouter();
+const route = useRoute();
 
 const userStore = useUserStore();
 const loginSuccess = computed(() => userStore.isLoginSuccess());
@@ -22,9 +23,15 @@ const { handleSubmit } = useForm<ServiceAccount>({
 
 const onSubmit = handleSubmit(async (values) => {
   await userStore.login(values.token);
-  router.push({
-    name: 'ConsoleContainer',
-  });
+  const redirectedPath = route.redirectedFrom?.fullPath;
+
+  if (redirectedPath) {
+    router.push(redirectedPath);
+  } else {
+    router.push({
+      name: 'ConsoleContainer',
+    });
+  }
 });
 
 onMounted(async () => {
