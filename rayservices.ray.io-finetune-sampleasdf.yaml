@@ -1,0 +1,143 @@
+apiVersion: ray.io/v1
+kind: RayService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"ray.io/v1","kind":"RayService","metadata":{"annotations":{},"labels":{"INFERENCE_SERVICE_LABEL":"true"},"name":"finetune-sampleasdf","namespace":"datatunerx-dev"},"spec":{"rayClusterConfig":{"headGroupSpec":{"rayStartParams":{"dashboard-host":"0.0.0.0","num-gpus":"0"},"serviceType":"NodePort","template":{"spec":{"containers":[{"image":"10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213","name":"ray-head","ports":[{"containerPort":6379,"name":"gcs-server","protocol":"TCP"},{"containerPort":8265,"name":"dashboard","protocol":"TCP"},{"containerPort":10001,"name":"client","protocol":"TCP"},{"containerPort":8000,"name":"serve","protocol":"TCP"}],"resources":{"limits":{"cpu":"2000m","memory":"8Gi"},"requests":{"cpu":"1000m","memory":"4Gi"}}}],"nodeSelector":{"kubernetes.io/hostname":"10-33-1-11"},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"},{"effect":"NoSchedule","key":"node.kubernetes.io/disk-pressure","operator":"Exists"}]}}},"rayVersion":"2.7.1","workerGroupSpecs":[{"groupName":"group","maxReplicas":1,"minReplicas":1,"rayStartParams":{},"replicas":1,"template":{"spec":{"containers":[{"env":[{"name":"BASE_MODEL_DIR","value":"/tmp/llama2-7b/"},{"name":"CHECKPOINT_DIR","value":"/checkpoint/tuning/TorchTrainer_2023-12-12_22-00-28/TorchTrainer_f85ec_00000_0_2023-12-12_22-00-57/checkpoint_000000"}],"image":"10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213","lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","ray stop"]}}},"name":"ray-worker","resources":{"limits":{"cpu":"2000m","memory":"48Gi","nvidia.com/gpu":"1"},"requests":{"cpu":"1000m","memory":"48Gi"}}}],"nodeSelector":{"kubernetes.io/hostname":"10-33-1-11"},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"},{"effect":"NoSchedule","key":"node.kubernetes.io/disk-pressure","operator":"Exists"}]}}}]},"serveConfig":{"deployments":[{"name":"LlamaDeployment","numReplicas":1,"rayActorOptions":{"numGpus":1}}],"importPath":"inference.deployment","runtimeEnv":"working_dir: file:///home/inference/inference.zip\n"},"serveService":{"metadata":{"labels":{"app":"inference"},"name":"finetune-sample-service"},"spec":{"ports":[{"name":"serve","port":8000,"protocol":"TCP","targetPort":8000}],"selector":{"ray.io/node-type":"head"}}}}}
+  creationTimestamp: "2023-12-14T06:01:40Z"
+  generation: 1
+  labels:
+    serviceType: inferenceService
+  name: finetune-sampleasdf
+  namespace: datatunerx-dev
+  resourceVersion: "5892674"
+  uid: 1f498bc9-fb6a-4781-9182-b87580b411e3
+spec:
+  rayClusterConfig:
+    headGroupSpec:
+      rayStartParams:
+        dashboard-host: 0.0.0.0
+        num-gpus: "0"
+      serviceType: NodePort
+      template:
+        spec:
+          containers:
+          - image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213
+            name: ray-head
+            ports:
+            - containerPort: 6379
+              name: gcs-server
+              protocol: TCP
+            - containerPort: 8265
+              name: dashboard
+              protocol: TCP
+            - containerPort: 10001
+              name: client
+              protocol: TCP
+            - containerPort: 8000
+              name: serve
+              protocol: TCP
+            resources:
+              limits:
+                cpu: 2000m
+                memory: 8Gi
+              requests:
+                cpu: 1000m
+                memory: 4Gi
+          nodeSelector:
+            kubernetes.io/hostname: 10-33-1-11
+          tolerations:
+          - effect: NoSchedule
+            key: nvidia.com/gpu
+            operator: Exists
+          - effect: NoSchedule
+            key: node.kubernetes.io/disk-pressure
+            operator: Exists
+    rayVersion: 2.7.1
+    workerGroupSpecs:
+    - groupName: group
+      maxReplicas: 1
+      minReplicas: 1
+      rayStartParams: {}
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - env:
+            - name: BASE_MODEL_DIR
+              value: /tmp/llama2-7b/
+            - name: CHECKPOINT_DIR
+              value: /checkpoint/tuning/TorchTrainer_2023-12-12_22-00-28/TorchTrainer_f85ec_00000_0_2023-12-12_22-00-57/checkpoint_000000
+            image: 10.33.1.11:9090/datatunerx/ray271-llama2-7b-finetune-checkpoint-liantiao-test-vepk:20231213
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                  - /bin/sh
+                  - -c
+                  - ray stop
+            name: ray-worker
+            resources:
+              limits:
+                cpu: 2000m
+                memory: 48Gi
+                nvidia.com/gpu: "1"
+              requests:
+                cpu: 1000m
+                memory: 48Gi
+          nodeSelector:
+            kubernetes.io/hostname: 10-33-1-11
+          tolerations:
+          - effect: NoSchedule
+            key: nvidia.com/gpu
+            operator: Exists
+          - effect: NoSchedule
+            key: node.kubernetes.io/disk-pressure
+            operator: Exists
+  serveConfig:
+    deployments:
+    - name: LlamaDeployment
+      numReplicas: 1
+      rayActorOptions:
+        numGpus: 1
+    importPath: inference.deployment
+    runtimeEnv: |
+      working_dir: file:///home/inference/inference.zip
+  serveService:
+    metadata:
+      labels:
+        app: inference
+      name: finetune-sample-service
+    spec:
+      ports:
+      - name: serve
+        port: 8000
+        protocol: TCP
+        targetPort: 8000
+      selector:
+        ray.io/node-type: head
+status:
+  activeServiceStatus:
+    applicationStatuses:
+      default:
+        healthLastUpdateTime: "2023-12-14T06:02:50Z"
+        lastUpdateTime: "2023-12-14T06:02:50Z"
+        serveDeploymentStatuses:
+          LlamaDeployment:
+            healthLastUpdateTime: "2023-12-14T06:02:50Z"
+            lastUpdateTime: "2023-12-14T06:02:50Z"
+            status: HEALTHY
+        status: RUNNING
+    dashboardStatus:
+      healthLastUpdateTime: "2023-12-14T06:02:50Z"
+      isHealthy: true
+      lastUpdateTime: "2023-12-14T06:02:50Z"
+    rayClusterName: finetune-sampleasdf-raycluster-2hctl
+    rayClusterStatus:
+      head: {}
+  observedGeneration: 1
+  pendingServiceStatus:
+    dashboardStatus: {}
+    rayClusterStatus:
+      head: {}
+  serviceStatus: Running

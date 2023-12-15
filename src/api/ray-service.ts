@@ -1,6 +1,7 @@
 import { Service } from 'kubernetes-types/core/v1';
 import { ObjectMeta } from 'kubernetes-types/meta/v1';
-import { K8sClient } from '@/plugins/axios/client';
+import { K8sClient, List } from '@/plugins/axios/client';
+import httpClient from '@/plugins/axios';
 import { Spec as RayClusterConfig } from './ray-cluster';
 /* eslint-disable no-use-before-define */
 export interface RayService {
@@ -181,3 +182,21 @@ export interface InferenceApplication {
   name: string,
   llmCheckpoint: string,
 }
+
+export const listInferenceApplications = async (namespace: string) => httpClient.get<List<RayService>>(
+  `/inference/apis/util.datatunerx.io/v1beta1/namespaces/${namespace}/services`,
+);
+
+export const createInferenceApplications = async (namespace: string, inferenceApplication: InferenceApplication) => httpClient.post<RayService>(
+  `/inference/apis/util.datatunerx.io/v1beta1/namespaces/${namespace}/services`,
+  inferenceApplication,
+);
+
+export interface Input {
+  input: string
+}
+
+export const inference = async (namespace: string, service: string, input: Input) => httpClient.post<RayService>(
+  `/inference/apis/util.datatunerx.io/v1beta1/namespaces/${namespace}/services/${service}/inference/chat`,
+  input,
+);

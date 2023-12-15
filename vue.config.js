@@ -82,6 +82,7 @@ module.exports = defineConfig({
     proxy: {
       '^/apis': proxyConfig,
       '^/api': proxyConfig,
+      '^/inference': proxyConfig,
     },
   },
 
