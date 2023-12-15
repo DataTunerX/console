@@ -1,10 +1,10 @@
 apiVersion: ray.io/v1
 kind: RayService
 metadata:
-  name: finetune-sampleasdf
+  name: app1
   namespace: datatunerx-dev
   labels:
-    createdByFrontend: "true"
+    serviceType: inferenceService
 spec:
   rayClusterConfig:
     headGroupSpec:

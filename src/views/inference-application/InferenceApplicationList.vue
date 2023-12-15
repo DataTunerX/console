@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {
-  ApplicationStatus, RayService, ServiceStatus, rayServiceClient,
+  ApplicationStatus, RayService, ServiceStatus, listInferenceApplications,
 } from '@/api/ray-service';
 import { useNamespaceStore } from '@/stores/namespace';
 import { useQueryTable } from '@/hooks/useQueryTable';
@@ -49,7 +49,7 @@ const columns = defineColumns([
 
 const {
   isLoading, pagedData, page, pageSize, total, handleRefresh, search, sort,
-} = useQueryTable(() => rayServiceClient.list(namespace.value), { keys: ['status'] });
+} = useQueryTable(() => listInferenceApplications(namespace.value), { keys: ['status'] });
 
 watch(namespace, handleRefresh);
 

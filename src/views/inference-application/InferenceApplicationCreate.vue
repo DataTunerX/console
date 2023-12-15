@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { InferenceApplication } from '@/api/ray-service';
+import { InferenceApplication, createInferenceApplications } from '@/api/ray-service';
+import { useNamespaceStore } from '@/stores/namespace';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { object, string } from 'yup';
 
@@ -19,6 +20,8 @@ const emits = defineEmits<Emits>();
 
 const { t } = useI18n();
 
+const { namespace } = storeToRefs(useNamespaceStore());
+
 const { handleSubmit } = useForm<InferenceApplication>({
   initialValues: props.modelValue,
   validationSchema: object({
@@ -29,7 +32,7 @@ const { handleSubmit } = useForm<InferenceApplication>({
 
 const submit = handleSubmit(async (values) => {
   try {
-    console.log(values);
+    await createInferenceApplications(namespace.value, values);
     nSuccess(t('views.InferenceApplication.create.createSuccess'));
     emits('resolve');
   } catch (error) {
