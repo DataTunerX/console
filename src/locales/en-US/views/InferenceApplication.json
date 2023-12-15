@@ -44,5 +44,13 @@
     "llmCheckpoint": "Model",
     "createSuccess": "Inference application created successfully",
     "createFailed": "Failed to create inference application"
+  },
+  
+  "compare": {
+    "header": "Multi-model Comparison",
+    "elapsedTime": "Elapsed Time(s)",
+    "tokensTotalQuantity": "Tokens Total Quantity",
+    "perSecond": "tokens/s",
+    "send": "Send"
   }
 }

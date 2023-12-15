@@ -43,5 +43,13 @@
     "llmCheckpoint": "模型",
     "createSuccess": "推理应用创建成功",
     "createFailed": "推理应用创建失败"
+  },
+
+  "compare": {
+    "header": "多模型对比",
+    "elapsedTime": "用时(s)",
+    "tokensTotalQuantity": "tokens总数",
+    "perSecond": "tokens/每秒",
+    "send": "发送"
   }
 }

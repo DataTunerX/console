@@ -12,6 +12,7 @@ import { useDeleteInferenceApplication } from './composition/inference-applicati
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
+const router = useRouter();
 
 const columns = defineColumns([
   {
@@ -70,6 +71,16 @@ const selectable = (row: RayService) => {
 
   return false;
 };
+
+const onCompare = () => {
+  const queryList = selectedRows.value?.map(({ metadata }) => metadata?.name);
+
+  router.push({
+    name: 'InferenceApplicationModelCompare',
+    query: { servicename: queryList },
+  });
+};
+
 </script>
 
 <template>
@@ -100,7 +111,10 @@ const selectable = (row: RayService) => {
           :content="$t('views.InferenceApplication.list.compareLimit')"
           simple
         />
-        <dao-button v-else>
+        <dao-button
+          v-else
+          @click="onCompare"
+        >
           {{ t("views.InferenceApplication.list.compare") }}
         </dao-button>
       </template>
