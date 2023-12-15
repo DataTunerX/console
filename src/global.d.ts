@@ -95,3 +95,8 @@ declare let __webpack_share_scopes__: {
 };
 
 declare module '*.md';
+
+declare module '*.css' {
+  const content: { [className: string]: string };
+  return content;
+}

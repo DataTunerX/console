@@ -70,7 +70,6 @@ const onConfirmDelete = (name: string) => {
 
       <dao-empty
         v-else
-        class="mt-[20px]"
       />
     </div>
   </div>

@@ -67,6 +67,11 @@ module.exports = defineConfig({
             chunks: 'all',
             priority: 20,
           },
+          highlight: {
+            test: /[\\/]node_modules[\\/]highlight\.js[\\/]/,
+            name: 'highlight',
+            chunks: 'all',
+          },
         },
       },
     },
