@@ -40,7 +40,7 @@ watch(namespace, (ns) => {
       name: 'FinetuneExperimentList',
       params: { ns },
     });
-  } else {
+  } else if (ns) {
     router.push({
       ...route,
       params: { ns },
