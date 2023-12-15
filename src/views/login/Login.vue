@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/stores/user';
+import { RouteLocation } from 'vue-router';
 import { object, string } from 'yup';
 
 const router = useRouter();
@@ -23,10 +24,10 @@ const { handleSubmit } = useForm<ServiceAccount>({
 
 const onSubmit = handleSubmit(async (values) => {
   await userStore.login(values.token);
-  const redirectedPath = route.redirectedFrom?.fullPath;
+  const redirected = route.redirectedFrom as RouteLocation;
 
-  if (redirectedPath) {
-    router.push(redirectedPath);
+  if (redirected && redirected.name) {
+    router.push(redirected);
   } else {
     router.push({
       name: 'ConsoleContainer',
