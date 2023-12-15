@@ -1,8 +1,21 @@
 <script lang="ts" setup>
+import { ProcessedMetrics } from '@/api/finetune-metrics';
 import LearningRateChart from '@/components/charts/LearningRateChart.vue';
 import PerformanceEvaluationChart from '@/components/charts/PerformanceEvaluationChart.vue';
 import TrainLossChart from '@/components/charts/TrainingLossChart.vue';
 import ValidationLossChart from '@/components/charts/ValidationLossChart.vue';
+
+const props = defineProps({
+  data: {
+    type: Object as PropType<ProcessedMetrics>,
+    default: () => ({
+    }),
+  },
+  selectedKeys: {
+    type: Array as PropType<string[]>,
+    default: () => ([]),
+  },
+});
 
 enum MetricType {
   LearningRate = 'learning_rate',
@@ -45,10 +58,27 @@ const metricType = ref(MetricType.LearningRate);
         />
       </dao-select>
     </div>
-    <learning-rate-chart v-if="metricType === MetricType.LearningRate" />
-    <train-loss-chart v-if="metricType === MetricType.TrainingLoss" />
-    <validation-loss-chart v-if="metricType === MetricType.ValidationLoss" />
-    <performance-evaluation-chart v-if="metricType === MetricType.PerformanceEvaluation" />
+
+    <learning-rate-chart
+      v-if="metricType === MetricType.LearningRate"
+      :data="props.data.train_metrics"
+      color="finetune_name"
+    />
+    <train-loss-chart
+      v-if="metricType === MetricType.TrainingLoss"
+      :data="props.data.train_metrics"
+      color="finetune_name"
+    />
+    <validation-loss-chart
+      v-if="metricType === MetricType.ValidationLoss"
+      :data="props.data.eval_metrics"
+      color="finetune_name"
+    />
+    <performance-evaluation-chart
+      v-if="metricType === MetricType.PerformanceEvaluation"
+      :data="props.data.eval_metrics"
+      color="finetune_name"
+    />
   </div>
 </template>
 

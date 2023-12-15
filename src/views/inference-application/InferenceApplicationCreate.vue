@@ -12,9 +12,9 @@ const props = defineProps({
 });
 
 type Emits = {
-  (event: 'resolve'): void,
-  (event: 'reject'): void,
-}
+  (event: 'resolve'): void;
+  (event: 'reject'): void;
+};
 
 const emits = defineEmits<Emits>();
 

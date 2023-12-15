@@ -99,3 +99,10 @@ const activeOpened = computed(() => getActiveRouteFold(routes.value));
     </router-link>
   </dao-nav>
 </template>
+
+<style lang="scss" scoped>
+:deep(.dao-nav__sub-title-active.dao-nav__sub-title){
+  background-color: var(--dao-navigation-090);
+
+}
+</style>
