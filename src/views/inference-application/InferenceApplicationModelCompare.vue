@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { LabelExtendColor } from '@dao-style/extend';
+import { inference } from '@/api/ray-service';
+import { useNamespaceStore } from '@/stores/namespace';
 import ComparisonChatItem from './components/comparison-chat-item.vue';
 import ComparisonChatTextarea from './components/comparison-chat-textarea.vue';
 
@@ -9,8 +11,9 @@ interface ExampleMap {
 }
 
 const { query } = useRoute();
+const { namespace } = storeToRefs(useNamespaceStore());
 
-const servicename = computed(() => {
+const servicenames = computed(() => {
   if (Array.isArray(query.servicename)) {
     return query.servicename as string[];
   }
@@ -88,6 +91,19 @@ const examples: ExampleMap[] = [
     color: 'skyblue',
   },
 ];
+
+const chatQuestion = ref<string>('');
+
+const selectedExample = (text: string) => {
+  chatQuestion.value = text;
+};
+
+const fetchChatResult = async () => {
+  const result = await Promise.all(servicenames.value.map((name) => inference(namespace.value, name, { input: chatQuestion.value })));
+
+  console.log(result);
+};
+
 </script>
 
 <template>
@@ -115,7 +131,7 @@ const examples: ExampleMap[] = [
       class="compare-card"
     >
       <dao-card-item
-        v-for="(name, index) in servicename"
+        v-for="(name, index) in servicenames"
         :key="index"
       >
         <ComparisonChatItem
@@ -127,8 +143,10 @@ const examples: ExampleMap[] = [
 
     <div class="compare-input-card">
       <ComparisonChatTextarea
+        v-model="chatQuestion"
         :placeholder="'在这里输入问题，或挑选指令模板'"
         :maxlength="4000"
+        :send-question-fn="fetchChatResult"
       />
       <div class="issue-example">
         <div class="issue-example-header">
@@ -144,6 +162,7 @@ const examples: ExampleMap[] = [
             :key="index"
             :color="color"
             class="issue-example-container-item"
+            @click="selectedExample(text)"
           >
             {{ text }}
           </dao-label-extend>
@@ -211,6 +230,7 @@ const examples: ExampleMap[] = [
       &-item {
         margin-top: 8px;
         margin-right: 12px;
+        cursor: pointer;
       }
 
     }
