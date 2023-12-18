@@ -33,6 +33,10 @@ export interface ProcessedEvalMetrics extends EvalMetrics {
   finetune_name: string;
 }
 
+export interface FinetuneMetricsMap {
+  [key: string]: TrainMetrics[];
+}
+
 export interface ProcessedMetrics {
   train_metrics: ProcessedTrainMetrics[];
   eval_metrics: ProcessedEvalMetrics[];

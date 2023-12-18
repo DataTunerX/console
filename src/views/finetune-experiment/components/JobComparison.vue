@@ -1,53 +1,25 @@
 <script lang="ts" setup>
 import { TransferActionDirection } from '@dao-style/core';
-import { FinetuneJobWithName } from '@/api/finetune-experiment';
-import { ProcessedMetrics, getMetrics, processedData } from '@/api/finetune-metrics';
-import { useNamespaceStore } from '@/stores/namespace';
 import JobChart from './JobChart.vue';
+import { useFinetuneExperimentStore } from '../composition/store';
 
-const props = defineProps({
-  jobs: {
-    type: Array as PropType<FinetuneJobWithName[]>,
-    default: () => ([]),
-  },
-});
+const { jobs, finetuneMetrics, loaded } = storeToRefs(useFinetuneExperimentStore());
 
-const { namespace } = storeToRefs(useNamespaceStore());
+const selectedKeys = ref<string[]>(jobs.value?.map((job) => job.name) ?? []);
 
-const selectedKeys = ref<string[]>([]);
-
-const loaded = ref(false);
-const finetuneMetrics = ref<ProcessedMetrics>({
-  train_metrics: [],
-  eval_metrics: [],
-});
-
-const fetchMetrics = async () => {
-  loaded.value = false;
-  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
-
-  finetuneMetrics.value = processedData(data);
-  loaded.value = true;
-};
-
-watch(() => props.jobs, () => {
-  selectedKeys.value = props.jobs.map((job) => job.name);
-
-  try {
-    fetchMetrics();
-  } catch (error) {
-    console.log(error);
-  }
+watch(jobs, () => {
+  selectedKeys.value = jobs.value?.map((job) => job.name) ?? [];
 }, {
   immediate: true,
 });
+
 type Row = {
   key: string;
   label?: string;
   desc?: string;
 };
 
-const data = computed(() => props.jobs.map((job) => ({
+const data = computed(() => jobs.value?.map((job) => ({
   key: job.name,
   label: job.name,
   desc: job.spec?.finetune.finetuneSpec.llm,
@@ -65,7 +37,7 @@ const onChange = ({ direction, row }: { direction: TransferActionDirection; row:
       break;
 
     case 'right':
-      if (index > -1) {
+      if (index === -1) {
         selectedKeys.value.push(key);
       }
       break;
@@ -89,7 +61,9 @@ const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableLis
 
 <template>
   <div class="job-comparison">
-    <div class="job-list">
+    <div
+      class="job-list"
+    >
       <dao-transfer-panel
         type="source"
         :data="data"
@@ -103,8 +77,7 @@ const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableLis
     </div>
     <job-chart
       v-if="loaded"
-      class="flex-1"
-      :data="finetuneMetrics"
+      :metrics="finetuneMetrics"
       :selected-keys="selectedKeys"
     />
   </div>
@@ -113,11 +86,13 @@ const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableLis
 <style lang="scss" scoped>
 .job-comparison {
   display: flex;
-  height: 600px;
+  // height: 600px;
+  background: #fff;
 
   .job-list {
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     width: 248px;
     background: #fff;
 
@@ -131,7 +106,10 @@ const onCheckAll = ({ checked, checkableList }: { checked: boolean; checkableLis
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
-  }
 
+    :deep(.dao-transfer-panel__body){
+      height: unset;
+    }
+  }
 }
 </style>

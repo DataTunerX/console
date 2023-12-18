@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import type { Condition, ListMeta, ObjectMeta } from 'kubernetes-types/meta/v1';
 import { K8sClient } from '@/plugins/axios/client';
+import { ProcessedTrainMetrics } from './finetune-metrics';
 import { FinetuneJob, Status as FinetuneJobStatus, ScoringConfig } from './finetune-job';
 
 export const Theme = 'canary';
@@ -42,6 +43,7 @@ export interface FinetuneExperiment {
 }
 
 export type FinetuneJobWithName = FinetuneJob & { name: string };
+export type FinetuneJobWithMetrics = FinetuneJobWithName & { metrics?: ProcessedTrainMetrics[] };
 
 /**
  * FinetuneExperimentSpec defines the desired state of FinetuneExperiment
@@ -58,7 +60,7 @@ export interface Spec {
   pending?: boolean;
 }
 
-export type FinetuneJobStatusWithName = {status?: FinetuneJobStatus;} & { name?: string };
+export type FinetuneJobStatusWithName = { status?: FinetuneJobStatus } & { name?: string };
 
 /**
  * FinetuneExperimentStatus defines the observed state of FinetuneExperiment

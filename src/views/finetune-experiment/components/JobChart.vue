@@ -1,19 +1,44 @@
+<template>
+  <div class="job-chart">
+    <div class="flex justify-end">
+      <dao-select v-model="metricType">
+        <dao-option
+          v-for="item in metricTypes"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </dao-select>
+    </div>
+
+    <component
+      :is="getChartComponent(metricType)"
+      :data="getChartData(metricType)"
+      color="finetune_name"
+      hide-title
+    />
+  </div>
+</template>
+
 <script lang="ts" setup>
+import { ref, defineProps, PropType } from 'vue';
 import { ProcessedMetrics } from '@/api/finetune-metrics';
 import LearningRateChart from '@/components/charts/LearningRateChart.vue';
-import PerformanceEvaluationChart from '@/components/charts/PerformanceEvaluationChart.vue';
 import TrainLossChart from '@/components/charts/TrainingLossChart.vue';
 import ValidationLossChart from '@/components/charts/ValidationLossChart.vue';
+import PerformanceEvaluationChart from '@/components/charts/PerformanceEvaluationChart.vue';
 
 const props = defineProps({
-  data: {
+  metrics: {
     type: Object as PropType<ProcessedMetrics>,
     default: () => ({
+      train_metrics: [],
+      eval_metrics: [],
     }),
   },
   selectedKeys: {
     type: Array as PropType<string[]>,
-    default: () => ([]),
+    default: () => [],
   },
 });
 
@@ -43,53 +68,41 @@ const metricTypes: { label: string; value: MetricType }[] = [
   },
 ];
 
-const metricType = ref(MetricType.LearningRate);
+const metricType = ref(MetricType.TrainingLoss);
+
+function getChartComponent(type: MetricType) {
+  switch (type) {
+    case MetricType.LearningRate:
+      return LearningRateChart;
+    case MetricType.TrainingLoss:
+      return TrainLossChart;
+    case MetricType.ValidationLoss:
+      return ValidationLossChart;
+    case MetricType.PerformanceEvaluation:
+      return PerformanceEvaluationChart;
+    default:
+      return null;
+  }
+}
+
+function getChartData(type: MetricType) {
+  switch (type) {
+    case MetricType.LearningRate:
+    case MetricType.TrainingLoss:
+      return props.metrics.train_metrics.filter((metric) => props.selectedKeys.includes(metric.finetune_name));
+    case MetricType.ValidationLoss:
+    case MetricType.PerformanceEvaluation:
+      return props.metrics.eval_metrics.filter((metric) => props.selectedKeys.includes(metric.finetune_name));
+    default:
+      return [];
+  }
+}
 </script>
-
-<template>
-  <div class="job-chart">
-    <div class="flex justify-end">
-      <dao-select v-model="metricType">
-        <dao-option
-          v-for="item in metricTypes"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </dao-select>
-    </div>
-
-    <learning-rate-chart
-      v-if="metricType === MetricType.LearningRate"
-      :data="props.data.train_metrics"
-      color="finetune_name"
-      hide-title
-    />
-    <train-loss-chart
-      v-if="metricType === MetricType.TrainingLoss"
-      :data="props.data.train_metrics"
-      color="finetune_name"
-      hide-title
-    />
-    <validation-loss-chart
-      v-if="metricType === MetricType.ValidationLoss"
-      :data="props.data.eval_metrics"
-      color="finetune_name"
-      hide-title
-    />
-    <performance-evaluation-chart
-      v-if="metricType === MetricType.PerformanceEvaluation"
-      :data="props.data.eval_metrics"
-      color="finetune_name"
-      hide-title
-    />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .job-chart {
   flex-grow: 1;
-  padding: 15px;
+  width: 0;
+  padding: 20px;
 }
-
 </style>

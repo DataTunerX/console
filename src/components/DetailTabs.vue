@@ -1,18 +1,20 @@
 <template>
-  <dao-tabs
-    :model-value="activeType.routeName"
-    type="card"
-    @click="changeTab"
-  >
-    <dao-tab-item
-      v-for="tab in tabs"
-      :key="tab.key"
-      :value="tab.routeName"
-      :label="tab.display"
-    />
-  </dao-tabs>
+  <div>
+    <dao-tabs
+      :model-value="activeType.routeName"
+      type="card"
+      @click="changeTab"
+    >
+      <dao-tab-item
+        v-for="tab in tabs"
+        :key="tab.key"
+        :value="tab.routeName"
+        :label="tab.display"
+      />
+    </dao-tabs>
 
-  <router-view />
+    <router-view />
+  </div>
 </template>
 
 <script lang="ts" setup>
