@@ -18,6 +18,6 @@ const container = 'container-train-loss';
     :container="container"
     :data="data"
     y="loss"
-    y-axis="Training Loss"
+    title="Training Loss"
   />
 </template>

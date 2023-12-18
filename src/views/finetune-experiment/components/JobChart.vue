@@ -63,21 +63,25 @@ const metricType = ref(MetricType.LearningRate);
       v-if="metricType === MetricType.LearningRate"
       :data="props.data.train_metrics"
       color="finetune_name"
+      hide-title
     />
     <train-loss-chart
       v-if="metricType === MetricType.TrainingLoss"
       :data="props.data.train_metrics"
       color="finetune_name"
+      hide-title
     />
     <validation-loss-chart
       v-if="metricType === MetricType.ValidationLoss"
       :data="props.data.eval_metrics"
       color="finetune_name"
+      hide-title
     />
     <performance-evaluation-chart
       v-if="metricType === MetricType.PerformanceEvaluation"
       :data="props.data.eval_metrics"
       color="finetune_name"
+      hide-title
     />
   </div>
 </template>

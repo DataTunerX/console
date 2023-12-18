@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import { useNamespaceStore } from '@/stores/namespace';
 import {
-  FinetuneJobWithName,
   FinetuneExperiment,
   finetuneExperimentClient,
   State as FinetuneExperimentState,
 } from '@/api/finetune-experiment';
 import { useDateFormat } from '@dao-style/extend';
 
-import { useQueryTable } from '@/hooks/useQueryTable';
 import { useRelativeTime } from '@/utils/useRelativeTime';
-import { AxiosResponse } from 'axios';
-import { List } from '@/plugins/axios/client';
+import { ProcessedMetrics, getMetrics, processedData } from '@/api/finetune-metrics';
+import { nError } from '@/utils/useNoty';
 import { useFinetuneExperiment } from './composition/finetune';
-import FinetuneJobItem from './components/FinetuneJobItem.vue';
+import JobList from './components/JobList.vue';
 import ExperimentStatus from './components/ExperimentStatus.vue';
 import JobComparison from './components/JobComparison.vue';
 
@@ -26,9 +24,46 @@ const name = route.params.name as string;
 
 const finetuneExperiment = ref<FinetuneExperiment>({});
 
-const canStop = computed(
-  () => finetuneExperiment.value.status?.state === FinetuneExperimentState.Pending,
-);
+const loaded = ref(false);
+const finetuneMetrics = ref<ProcessedMetrics>({
+  train_metrics: [],
+  eval_metrics: [],
+});
+
+const fetchMetrics = async () => {
+  loaded.value = false;
+  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
+
+  finetuneMetrics.value = processedData(data);
+  loaded.value = true;
+};
+
+// 加载微调实验详情
+const fetchExperiment = async () => {
+  try {
+    const { data } = await finetuneExperimentClient.read(namespace.value, name);
+
+    finetuneExperiment.value = data;
+
+    fetchMetrics();
+  } catch (error) {
+    nError(t('common.fetchFailed'), error);
+  }
+};
+
+fetchExperiment();
+
+const jobsWithStatus = computed(() => finetuneExperiment.value.spec?.finetuneJobs.map((job) => {
+  // TODO: 从微调任务中获取状态
+  const status = finetuneExperiment.value?.status?.jobsStatus?.find(
+    (item) => item.name === job.name,
+  );
+
+  return {
+    ...job,
+    status: status?.status,
+  };
+}));
 
 const infos = computed(() => {
   // const finetuneExperimentData = finetuneExperiment.value?.spec;
@@ -94,32 +129,9 @@ const infos = computed(() => {
   return items;
 });
 
-// 加载微调实验详情
-const fetchExperiment = async () => finetuneExperimentClient.read(namespace.value, name).then(({ data }) => {
-  finetuneExperiment.value = data;
-
-  return {
-    data: {
-      items: data.spec?.finetuneJobs,
-    },
-  } as AxiosResponse<List<FinetuneJobWithName>>;
-});
-
-const {
-  items, page, pageSize, total, search,
-} = useQueryTable<FinetuneJobWithName>(fetchExperiment);
-
-const jobsWithStatus = computed(() => items.value?.map((job) => {
-  // TODO: 从微调任务中获取状态
-  const status = finetuneExperiment.value?.status?.jobsStatus?.find(
-    (item) => item.name === job.name,
-  );
-
-  return {
-    ...job,
-    status: status?.status,
-  };
-}));
+const canStop = computed(
+  () => finetuneExperiment.value.status?.state === FinetuneExperimentState.Pending,
+);
 
 const { stop } = useFinetuneExperiment();
 
@@ -215,28 +227,7 @@ watch(namespace, toList);
         value="profile"
         :label="t('views.FinetuneExperiment.taskList')"
       >
-        <dao-toolbar
-          v-model:search="search"
-          no-rounded
-          hide-refresh
-          :fuzzy="{ key: 'fuzzy', single: true }"
-          @refresh="fetchExperiment"
-        />
-
-        <finetune-job-item
-          v-for="(experiment, index) in jobsWithStatus"
-          :key="index"
-          :data="experiment"
-          :name="name"
-        />
-
-        <dao-pagination
-          v-model:current-page="page"
-          v-model:page-size="pageSize"
-          class="mt-[20px]"
-          :total="total"
-          :no-shadow="true"
-        />
+        <job-list :jobs="jobsWithStatus" />
       </dao-tab-item>
       <dao-tab-item
         value="detail"
