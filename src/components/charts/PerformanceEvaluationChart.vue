@@ -7,6 +7,10 @@ defineProps({
     type: Array as PropType<ProcessedEvalMetrics[]>,
     required: true,
   },
+  hideTitle: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const container = 'container-performance-evaluation';
@@ -18,6 +22,7 @@ const container = 'container-performance-evaluation';
     :container="container"
     :data="data"
     y="eval_perplexity"
-    y-axis="Eval Perplexity"
+    :hide-title="hideTitle"
+    title="Eval Perplexity"
   />
 </template>

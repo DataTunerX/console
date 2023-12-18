@@ -22,6 +22,6 @@ const container = 'container-learning-rate';
     :data="data"
     :color="color"
     y="learning_rate"
-    y-axis="Learning Rate"
+    title="Learning Rate"
   />
 </template>

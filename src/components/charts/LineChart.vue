@@ -11,6 +11,14 @@ const props = defineProps({
     type: Array as PropType<ProcessedTrainMetrics[]> | PropType<ProcessedEvalMetrics[]>,
     required: true,
   },
+  title: {
+    type: String,
+    default: '',
+  },
+  hideTitle: {
+    type: Boolean,
+    default: false,
+  },
   x: {
     type: String,
     default: 'current_steps',
@@ -25,7 +33,7 @@ const props = defineProps({
   },
   yAxis: {
     type: String,
-    required: true,
+    default: '',
   },
   color: {
     type: String,
@@ -37,19 +45,51 @@ onMounted(() => {
   const chart = new Chart({
     container: props.container,
     autoFit: true,
+    height: 400,
   });
 
   chart
+    // .theme({ type: 'academy' })
     .line()
     .data(props.data)
     .encode('x', props.x)
     .encode('y', props.y)
 
-    .axis('x', { title: props.xAxis })
-    .axis('y', { title: props.yAxis });
+    .axis('x', {
+      title: props.xAxis,
+      line: true,
+      // arrow: true,
+    })
+    .axis('y', {
+      title: props.yAxis,
+      // line: true,
+      // arrow: true,
+      // Grid
+      // gridLineDash: null,
+      // gridStroke: 'red',
+      // gridStrokeWidth: 5,
+      // gridAreaFill: '#eee',
+      // lineStroke: 'red',
+      // tickLineWidth: 2,
+      // tickStroke: 'red',
+      // gridLineDash: null,
+      // gridStroke: 'black',
+      // gridStrokeWidth: 5,
+      // gridAreaFill: '#eee',
+    });
+  // .scale('color', { palette: 'accent' }); // 指定色板
 
   if (props.color) {
     chart.encode('color', props.color);
+  }
+
+  if (!props.hideTitle) {
+    chart.title({
+      title: props.title,
+      style: {
+        titleFontSize: 14,
+      },
+    });
   }
 
   chart.render();
