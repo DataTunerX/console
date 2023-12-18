@@ -16,6 +16,6 @@ defineProps({
     container="container-validation-loss"
     :data="data"
     y="eval_loss"
-    y-axis="Eval Loss"
+    title="Eval Loss"
   />
 </template>
