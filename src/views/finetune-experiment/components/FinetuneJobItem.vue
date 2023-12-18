@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { FinetuneJobWithName } from '@/api/finetune-experiment';
+import { FinetuneJobWithMetrics } from '@/api/finetune-experiment';
 import { Theme as datasetTheme } from '@/api/dataset';
 import { Theme as llmTheme } from '@/api/large-language-model';
 import ExperimentJobStatus from '@/views/finetune-experiment-job/components/ExperimentJobStatus.vue';
 import HyperparameterWithOverrides from '@/views/finetune-experiment-job/components/HyperparameterWithOverrides.vue';
-import { Chart } from '@/plugins/g2';
+import LineChart from '@/components/charts/LineChart.vue';
 
 const props = defineProps({
   data: {
-    type: Object as PropType<FinetuneJobWithName>,
+    type: Object as PropType<FinetuneJobWithMetrics>,
     default: () => ({}),
   },
   name: {
@@ -49,33 +49,6 @@ const infos = computed(() => {
   return items;
 });
 
-onMounted(() => {
-  const chart = new Chart({
-    container: `container-${props.data.name}`,
-    // height: 200,
-    autoFit: true,
-    marginTop: 40,
-    marginBottom: 0,
-  });
-
-  chart
-    .line()
-    .data({
-      type: 'fetch',
-      value: './train.json',
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .encode('x', 'current_steps')
-    .encode('y', 'loss')
-    .axis('x', { title: '步长' })
-    .axis('y', { title: '训练集损失' });
-
-  chart.render();
-
-  onUnmounted(() => {
-    chart.destroy();
-  });
-});
 </script>
 
 <template>
@@ -147,10 +120,16 @@ onMounted(() => {
       </dao-key-value-layout>
     </dao-card-item>
 
-    <dao-card-item
-      :id="`container-${props.data.name}`"
-      class="!grow-[2]"
-    />
+    <dao-card-item class="!grow-[2]">
+      <line-chart
+        v-if="props.data.metrics"
+        :container="`container-${props.data.name}`"
+        :data="props.data.metrics"
+        y="loss"
+        title="Training Loss"
+        :height="180"
+      />
+    </dao-card-item>
   </dao-card>
 </template>
 

@@ -25,6 +25,8 @@ import ModelRegistryList from '@/views/model-registry/ModelRegistryList.vue';
 
 import InferenceApplicationList from '@/views/inference-application/InferenceApplicationList.vue';
 import InferenceApplicationModelCompare from '@/views/inference-application/InferenceApplicationModelCompare.vue';
+import JobList from '@/views/finetune-experiment/components/JobList.vue';
+import JobComparison from '@/views/finetune-experiment/components/JobComparison.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -48,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
         component: RouterContent,
         children: [
           {
-            path: 'fine-tune',
+            path: 'finetune',
             component: RouterContent,
             children: [
               {
@@ -65,6 +67,21 @@ const routes: Array<RouteRecordRaw> = [
                 path: ':name',
                 name: 'FinetuneExperimentDetail',
                 component: FinetuneExperimentDetail,
+                redirect: {
+                  name: 'JobList',
+                },
+                children: [
+                  {
+                    path: 'job-list',
+                    name: 'JobList',
+                    component: JobList,
+                  },
+                  {
+                    path: 'job-comparison',
+                    name: 'JobComparison',
+                    component: JobComparison,
+                  },
+                ],
               },
               {
                 path: ':name/job/:jobName',

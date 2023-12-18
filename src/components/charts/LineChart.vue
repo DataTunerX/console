@@ -39,13 +39,18 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  height: {
+    type: Number,
+    default: 400,
+  },
 });
 
 onMounted(() => {
   const chart = new Chart({
     container: props.container,
     autoFit: true,
-    height: 400,
+    height: props.height,
+    margin: 0,
   });
 
   chart
@@ -91,6 +96,10 @@ onMounted(() => {
       },
     });
   }
+
+  watch(() => props.data, () => {
+    chart.changeData(props.data);
+  });
 
   chart.render();
 

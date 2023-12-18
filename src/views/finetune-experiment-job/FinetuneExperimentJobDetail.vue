@@ -122,7 +122,7 @@ const finetuneMetrics = ref<ProcessedMetrics>({
 
 const fetchMetrics = async () => {
   loaded.value = false;
-  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
+  const { data } = await getMetrics(namespace.value, [jobName]);
 
   finetuneMetrics.value = processedData(data);
   loaded.value = true;
@@ -220,19 +220,19 @@ try {
       type="simple"
       class="mt-[20px]"
     >
-      <dao-card-item class="basis-6/12">
+      <dao-card-item class="!basis-6/12 p-[20px]">
         <learning-rate-chart :data="finetuneMetrics.train_metrics" />
       </dao-card-item>
 
-      <dao-card-item class="basis-6/12">
+      <dao-card-item class="!basis-6/12 p-[20px]">
         <train-loss-chart :data="finetuneMetrics.train_metrics" />
       </dao-card-item>
 
-      <dao-card-item class="basis-6/12">
+      <dao-card-item class="!basis-6/12 p-[20px]">
         <validation-loss-chart :data="finetuneMetrics.eval_metrics" />
       </dao-card-item>
 
-      <dao-card-item class="basis-6/12">
+      <dao-card-item class="!basis-6/12 p-[20px]">
         <performance-evaluation-chart :data="finetuneMetrics.eval_metrics" />
       </dao-card-item>
     </dao-card>

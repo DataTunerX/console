@@ -7,9 +7,12 @@ defineProps({
     type: Array as PropType<ProcessedTrainMetrics[]>,
     required: true,
   },
-});
+  container: {
+    type: String,
+    default: 'container-training-loss',
+  },
 
-const container = 'container-train-loss';
+});
 
 </script>
 

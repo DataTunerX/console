@@ -1,32 +1,28 @@
 <script lang="ts" setup>
-import { FinetuneJobWithName } from '@/api/finetune-experiment';
+import { FinetuneJobWithMetrics } from '@/api/finetune-experiment';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { AxiosResponse } from 'axios';
 import { List } from '@/plugins/axios/client';
 import FinetuneJobItem from './FinetuneJobItem.vue';
-
-const props = defineProps({
-  jobs: {
-    type: Array as PropType<FinetuneJobWithName[]>,
-    default: () => ([]),
-  },
-});
+import { useFinetuneExperimentStore } from '../composition/store';
 
 const route = useRoute();
-
 const name = route.params.name as string;
 
-const fakeFetchJobs = () => Promise.resolve({
+const { jobs } = storeToRefs(useFinetuneExperimentStore());
+
+const fetchJobs = () => Promise.resolve({
   data: {
-    items: props.jobs,
+    items: jobs.value ?? [],
   },
-} as AxiosResponse<List<FinetuneJobWithName>>);
+} as AxiosResponse<List<FinetuneJobWithMetrics>>);
 
 const {
   items, page, pageSize, total, search, fetchList,
-} = useQueryTable<FinetuneJobWithName>(fakeFetchJobs);
+} = useQueryTable<FinetuneJobWithMetrics>(fetchJobs);
 
-watch(() => props.jobs, () => {
+watch(jobs, () => {
+  console.log('jobsWithStatus changed');
   fetchList();
 });
 
@@ -41,9 +37,9 @@ watch(() => props.jobs, () => {
   />
 
   <finetune-job-item
-    v-for="(experiment, index) in items"
-    :key="index"
-    :data="experiment"
+    v-for="job in items"
+    :key="job.name"
+    :data="job"
     :name="name"
   />
 

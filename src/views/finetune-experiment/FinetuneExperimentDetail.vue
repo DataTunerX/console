@@ -1,19 +1,15 @@
 <script lang="ts" setup>
 import { useNamespaceStore } from '@/stores/namespace';
 import {
-  FinetuneExperiment,
-  finetuneExperimentClient,
   State as FinetuneExperimentState,
 } from '@/api/finetune-experiment';
 import { useDateFormat } from '@dao-style/extend';
 
 import { useRelativeTime } from '@/utils/useRelativeTime';
-import { ProcessedMetrics, getMetrics, processedData } from '@/api/finetune-metrics';
-import { nError } from '@/utils/useNoty';
+import DetailTabs from '@/components/DetailTabs.vue';
 import { useFinetuneExperiment } from './composition/finetune';
-import JobList from './components/JobList.vue';
 import ExperimentStatus from './components/ExperimentStatus.vue';
-import JobComparison from './components/JobComparison.vue';
+import { useFinetuneExperimentStore } from './composition/store';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -22,48 +18,20 @@ const route = useRoute();
 const { namespace } = storeToRefs(useNamespaceStore());
 const name = route.params.name as string;
 
-const finetuneExperiment = ref<FinetuneExperiment>({});
+const tabs = [{
+  key: 'job-list',
+  routeName: 'JobList',
+  display: t('views.FinetuneExperiment.taskList'),
+}, {
+  key: 'job-comparison',
+  routeName: 'JobComparison',
+  display: t('views.FinetuneExperiment.jobComparison'),
+}];
 
-const loaded = ref(false);
-const finetuneMetrics = ref<ProcessedMetrics>({
-  train_metrics: [],
-  eval_metrics: [],
-});
+const { finetuneExperiment } = storeToRefs(useFinetuneExperimentStore());
+const finetuneExperimentStore = useFinetuneExperimentStore();
 
-const fetchMetrics = async () => {
-  loaded.value = false;
-  const { data } = await getMetrics(namespace.value, ['finetune-sample']);
-
-  finetuneMetrics.value = processedData(data);
-  loaded.value = true;
-};
-
-// 加载微调实验详情
-const fetchExperiment = async () => {
-  try {
-    const { data } = await finetuneExperimentClient.read(namespace.value, name);
-
-    finetuneExperiment.value = data;
-
-    fetchMetrics();
-  } catch (error) {
-    nError(t('common.fetchFailed'), error);
-  }
-};
-
-fetchExperiment();
-
-const jobsWithStatus = computed(() => finetuneExperiment.value.spec?.finetuneJobs.map((job) => {
-  // TODO: 从微调任务中获取状态
-  const status = finetuneExperiment.value?.status?.jobsStatus?.find(
-    (item) => item.name === job.name,
-  );
-
-  return {
-    ...job,
-    status: status?.status,
-  };
-}));
+finetuneExperimentStore.fetchExperiment(name);
 
 const infos = computed(() => {
   // const finetuneExperimentData = finetuneExperiment.value?.spec;
@@ -137,10 +105,8 @@ const { stop } = useFinetuneExperiment();
 
 const onConfirmStop = async () => {
   await stop(finetuneExperiment.value);
-  fetchExperiment();
+  finetuneExperimentStore.fetchExperiment(name);
 };
-
-const curTab = ref('profile');
 
 const toList = () => {
   router.push({
@@ -219,19 +185,23 @@ watch(namespace, toList);
       </dao-card-item>
     </dao-card>
 
-    <dao-tabs
-      v-model="curTab"
+    <detail-tabs
       class="mt-[20px] finetune-experiment-detail__tabs"
+      :tabs="tabs"
+    />
+
+    <!-- <dao-tabs
+      v-model="curTab"
     >
       <dao-tab-item
         value="profile"
-        :label="t('views.FinetuneExperiment.taskList')"
+        label="1"
       >
         <job-list :jobs="jobsWithStatus" />
       </dao-tab-item>
       <dao-tab-item
         value="detail"
-        :label="$t('views.FinetuneExperiment.jobComparison')"
+        label="2"
         class="bg-white"
       >
         <job-comparison
@@ -239,7 +209,7 @@ watch(namespace, toList);
           :jobs="jobsWithStatus"
         />
       </dao-tab-item>
-    </dao-tabs>
+    </dao-tabs> -->
   </div>
 </template>
 
