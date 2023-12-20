@@ -14,8 +14,28 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  modelValue: {
+    type: String as PropType<string>,
+    default: () => (''),
+  },
+  sendQuestionFn: {
+    type: Function as PropType<() => Promise<unknown>>,
+    default: () => Promise.resolve(true),
+  },
 });
-const chatInput = ref<string>('');
+
+const emit = defineEmits(['update:modelValue']);
+
+const chatInput = computed({
+  get() {
+    return props.modelValue;
+  },
+
+  set(value) {
+    emit('update:modelValue', value);
+  },
+});
+
 const chatInputLength = computed(() => chatInput.value.length);
 
 const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -46,7 +66,10 @@ const isOverflow = computed(() => height.value > 200);
       size="xs"
       type="button"
     /> -->
-      <div class="dao-textarea-footer-button">
+      <div
+        class="dao-textarea-footer-button"
+        @click="props.sendQuestionFn"
+      >
         {{ t("views.InferenceApplication.compare.send") }}
       </div>
     </div>
