@@ -7,6 +7,7 @@ import { useDateFormat } from '@dao-style/extend';
 
 import { useRelativeTime } from '@/utils/useRelativeTime';
 import DetailTabs from '@/components/DetailTabs.vue';
+import { BuildInScoringPlugin } from '@/api/scoring-plugin';
 import { useFinetuneExperiment } from './composition/finetune';
 import ExperimentStatus from './components/ExperimentStatus.vue';
 import { useFinetuneExperimentStore } from './composition/store';
@@ -63,7 +64,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.evaluationMethod'),
-      value: finetuneExperiment.value?.spec?.scoringPluginConfig?.name,
+      value: finetuneExperiment.value?.spec?.scoringPluginConfig?.name ?? BuildInScoringPlugin,
     },
     {
       label: t('views.FinetuneExperiment.highestScore'),
