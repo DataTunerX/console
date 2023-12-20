@@ -154,18 +154,20 @@ export interface Parameters {
  * Optimizer specifies the optimization algorithm.
  */
 export enum Optimizer {
-  Adam = 'Adam',
-  AdamW = 'AdamW',
-  Sgd = 'SGD',
+  adamw_torch = 'adamw_torch',
+  adamw_hf = 'adamw_hf',
+  sgd = 'sgd',
+  adafactor = 'adafactor',
+  adagrad = 'adagrad',
 }
 
 /**
  * Scheduler specifies the learning rate scheduler.
  */
 export enum Scheduler {
-  Constant = 'Constant',
-  Cosine = 'Cosine',
-  Linear = 'Linear',
+  cosine = 'cosine',
+  linear = 'linear',
+  constant = 'constant',
 }
 
 /**
