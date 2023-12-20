@@ -24,8 +24,8 @@ const defaultHyperparameter: Hyperparameter = {
       type: FineTuningType.SFT,
     },
     parameters: {
-      scheduler: Scheduler.Cosine,
-      optimizer: Optimizer.AdamW,
+      scheduler: Scheduler.cosine,
+      optimizer: Optimizer.adamw_torch,
       int4: false,
       int8: false,
       loRA_R: '4',

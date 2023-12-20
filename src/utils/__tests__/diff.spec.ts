@@ -1,6 +1,8 @@
 import {
-  Optimizer, Scheduler, Parameters, getKeys, diff, Quantization,
-} from '@/utils/diff';
+  Parameters, Optimizer, Scheduler, Quantization,
+} from '@/api/hyperparameter';
+
+import { getKeys, diff } from '@/utils/diff';
 
 describe('diff.ts', () => {
   describe('getKeys', () => {
@@ -29,9 +31,9 @@ describe('diff.ts', () => {
       loRA_Alpha: '0.5',
       loRA_Dropout: '0.5',
       loRA_R: '1',
-      optimizer: Optimizer.Adam,
+      optimizer: Optimizer.adamw_torch,
       PEFT: false,
-      scheduler: Scheduler.Constant,
+      scheduler: Scheduler.constant,
       trainerType: 'type1',
       warmupRatio: '0.1',
       weightDecay: '0.01',

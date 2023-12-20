@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: datatunerx-ui
-          image: release.daocloud.io/datatunerx/datatunerx-ui:v0.0.1-dev-bd1f430
+          image: release.daocloud.io/datatunerx/datatunerx-ui:v0.0.1-dev-512723b
           env:
           - name: 'API_URL'
             value: "https://10.33.1.10:6443"
