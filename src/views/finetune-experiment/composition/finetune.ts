@@ -5,7 +5,7 @@ import {
   finetuneExperimentClient,
   FinetuneJobWithName,
 } from '@/api/finetune-experiment';
-import { BuildInScoringPlugin, ScoringPlugin, scoringConfigClient } from '@/api/scoring-plugin';
+import { BuildInScoringPlugin, ScoringPlugin, scoringPluginConfigClient } from '@/api/scoring-plugin';
 import { LargeLanguageModel, largeLanguageModelClient } from '@/api/large-language-model';
 import { ImagePullPolicy } from '@/api/finetune';
 import { FinetuneExperimentForRender } from '@/api/finetune-experiment-for-render';
@@ -42,9 +42,6 @@ const defaultFinetuneJob: FinetuneJobWithName = {
         },
       },
     },
-    scoringConfig: {
-      name: '',
-    },
     serveConfig: {},
   },
 };
@@ -57,7 +54,7 @@ const defaultFinetuneExperiment: FinetuneExperimentForRender = {
   },
   spec: {
     finetuneJobs: [defaultFinetuneJob],
-    scoringConfig: {
+    scoringPluginConfig: {
       name: BuildInScoringPlugin,
       parameters: {},
     },
@@ -97,20 +94,20 @@ export const useFinetuneJob = () => {
   return { finetuneJob };
 };
 
-export const useScoringConfig = () => {
+export const useScoringPluginConfig = () => {
   const state = reactive({
-    scoringConfigs: [] as ScoringPlugin[],
+    scoringPluginConfigs: [] as ScoringPlugin[],
   });
 
-  const fetchScoringConfigs = async (namespace: string) => {
-    const { data } = await scoringConfigClient.list(namespace);
+  const fetchScoringPluginConfigs = async (namespace: string) => {
+    const { data } = await scoringPluginConfigClient.list(namespace);
 
-    state.scoringConfigs = data.items;
+    state.scoringPluginConfigs = data.items;
   };
 
   return {
     ...toRefs(state),
-    fetchScoringConfigs,
+    fetchScoringPluginConfigs,
   };
 };
 

@@ -49,12 +49,10 @@ onMounted(() => {
   const chart = new Chart({
     container: props.container,
     autoFit: true,
-    height: props.height,
     margin: 0,
   });
 
   chart
-    // .theme({ type: 'academy' })
     .line()
     .data(props.data)
     .encode('x', props.x)
@@ -63,26 +61,13 @@ onMounted(() => {
     .axis('x', {
       title: props.xAxis,
       line: true,
-      // arrow: true,
     })
     .axis('y', {
       title: props.yAxis,
-      // line: true,
-      // arrow: true,
-      // Grid
-      // gridLineDash: null,
-      // gridStroke: 'red',
-      // gridStrokeWidth: 5,
-      // gridAreaFill: '#eee',
-      // lineStroke: 'red',
-      // tickLineWidth: 2,
-      // tickStroke: 'red',
-      // gridLineDash: null,
-      // gridStroke: 'black',
-      // gridStrokeWidth: 5,
-      // gridAreaFill: '#eee',
+    })
+    .tooltip({
+      title: (d) => `${props.xAxis} ${d[props.x]}`,
     });
-  // .scale('color', { palette: 'accent' }); // 指定色板
 
   if (props.color) {
     chart.encode('color', props.color);
@@ -98,7 +83,10 @@ onMounted(() => {
   }
 
   watch(() => props.data, () => {
-    chart.changeData(props.data);
+    nextTick(() => {
+      chart.render();
+      chart.changeData(props.data);
+    });
   });
 
   chart.render();
@@ -107,8 +95,19 @@ onMounted(() => {
     chart.destroy();
   });
 });
+
+const hasData = computed(() => props.data.length > 0);
+
 </script>
 
 <template>
-  <div :id="container" />
+  <div
+    v-show="hasData"
+    :id="container"
+    :style="{ height: `${height}px` }"
+  />
+  <dao-empty
+    v-show="!hasData"
+    :style="{ height: `${height}px` }"
+  />
 </template>

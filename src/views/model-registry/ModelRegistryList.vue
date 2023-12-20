@@ -51,13 +51,16 @@ const onConfirmDelete = (name: string) => {
 
     <div v-loading="isLoading">
       <card-layout-container :cards="total">
-        <model-card
+        <div
           v-for="registry in pagedData"
           :key="registry.metadata?.name"
-          :data="registry"
-          @on-delete="onConfirmDelete"
-          @on-create="onCreate"
-        />
+        >
+          <model-card
+            :data="registry"
+            @on-delete="onConfirmDelete"
+            @on-create="onCreate"
+          />
+        </div>
       </card-layout-container>
 
       <dao-pagination

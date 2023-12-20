@@ -1,36 +1,49 @@
 import { KeyValue } from '@/types/common';
-import { ScoringConfig } from './finetune-job';
+import { BuildInScoringPlugin } from './scoring-plugin';
+import { ScoringPluginConfig } from './finetune-job';
 import { Spec, FinetuneExperiment } from './finetune-experiment';
 
-export type ScoringConfigForRender = Omit<ScoringConfig, 'parameters'> & { parameters?: KeyValue };
+export type ScoringPluginConfigForRender = Omit<ScoringPluginConfig, 'parameters'> & {
+  parameters?: KeyValue;
+};
 
-export type SpecForRender = Omit<Spec, 'scoringConfig'> & { scoringConfig: ScoringConfigForRender };
+export type SpecForRender = Omit<Spec, 'scoringPluginConfig'> & {
+  scoringPluginConfig: ScoringPluginConfigForRender;
+};
 
-export type FinetuneExperimentForRender = Omit<FinetuneExperiment, 'spec'> & { spec: SpecForRender };
+export type FinetuneExperimentForRender = Omit<FinetuneExperiment, 'spec'> & {
+  spec: SpecForRender;
+};
 
-export function convertFinetuneExperimentForRender(finetuneExperiment: FinetuneExperiment): FinetuneExperimentForRender {
+export function convertFinetuneExperimentForRender(
+  finetuneExperiment: FinetuneExperiment,
+): FinetuneExperimentForRender {
   const { spec, ...otherProps } = finetuneExperiment;
 
   if (!spec) {
     throw new Error('Spec is undefined');
   }
 
-  const { scoringConfig, ...otherSpecProps } = spec;
+  const { scoringPluginConfig, ...otherSpecProps } = spec;
 
-  if (!scoringConfig) {
-    throw new Error('ScoringConfig is undefined');
+  let scoringPluginConfigForRender: ScoringPluginConfigForRender = { };
+
+  if (!scoringPluginConfig) {
+    scoringPluginConfigForRender = {
+      name: BuildInScoringPlugin,
+    };
+  } else {
+    const { parameters, ...otherScoringPluginConfigProps } = scoringPluginConfig;
+
+    scoringPluginConfigForRender = {
+      ...otherScoringPluginConfigProps,
+      parameters: JSON.parse(parameters || '{}'),
+    };
   }
-
-  const { parameters, ...otherScoringConfigProps } = scoringConfig;
-
-  const scoringConfigForRender: ScoringConfigForRender = {
-    ...otherScoringConfigProps,
-    parameters: JSON.parse(parameters || '{}'),
-  };
 
   const specForRender: SpecForRender = {
     ...otherSpecProps,
-    scoringConfig: scoringConfigForRender,
+    scoringPluginConfig: scoringPluginConfigForRender,
   };
 
   return {
@@ -39,19 +52,32 @@ export function convertFinetuneExperimentForRender(finetuneExperiment: FinetuneE
   };
 }
 
-export function convertFinetuneExperimentForPost(finetuneExperimentForRender: FinetuneExperimentForRender): FinetuneExperiment {
+export function convertFinetuneExperimentForPost(
+  finetuneExperimentForRender: FinetuneExperimentForRender,
+): FinetuneExperiment {
   const { spec, ...otherProps } = finetuneExperimentForRender;
-  const { scoringConfig, ...otherSpecProps } = spec;
-  const { parameters, ...otherScoringConfigProps } = scoringConfig;
+  const { scoringPluginConfig, ...otherSpecProps } = spec;
 
-  const scoringConfigForPost: ScoringConfig = {
-    ...otherScoringConfigProps,
-    parameters: JSON.stringify(parameters),
-  };
-
-  const specForPost: Spec = {
+  let specForPost = {
     ...otherSpecProps,
-    scoringConfig: scoringConfigForPost,
+  } as Spec;
+
+  const { parameters, ...otherScoringPluginConfigProps } = scoringPluginConfig;
+
+  let scoringPluginConfigForPost:ScoringPluginConfig | undefined = { };
+
+  if (scoringPluginConfig.name === BuildInScoringPlugin) {
+    scoringPluginConfigForPost = undefined;
+  } else {
+    scoringPluginConfigForPost = {
+      ...otherScoringPluginConfigProps,
+      parameters: JSON.stringify(parameters),
+    };
+  }
+
+  specForPost = {
+    ...specForPost,
+    scoringPluginConfig: scoringPluginConfigForPost,
   };
 
   return {

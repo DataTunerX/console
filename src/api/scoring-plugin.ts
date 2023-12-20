@@ -67,4 +67,4 @@ export const kind = 'ScoringPlugin';
 
 export const BuildInScoringPlugin = 'BuildInScoringPlugin';
 
-export const scoringConfigClient = new K8sClient<ScoringPlugin>(apiVersion, kind);
+export const scoringPluginConfigClient = new K8sClient<ScoringPlugin>(apiVersion, kind);

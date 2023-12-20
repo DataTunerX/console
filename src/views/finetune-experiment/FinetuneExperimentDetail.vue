@@ -63,7 +63,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.evaluationMethod'),
-      value: finetuneExperiment.value?.spec?.scoringConfig.name,
+      value: finetuneExperiment.value?.spec?.scoringPluginConfig?.name,
     },
     {
       label: t('views.FinetuneExperiment.highestScore'),

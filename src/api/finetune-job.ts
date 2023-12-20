@@ -46,7 +46,7 @@ export interface Spec {
   /**
    * Score plugin config.
    */
-  scoringConfig?: ScoringConfig;
+  scoringPluginConfig?: ScoringPluginConfig;
   /**
    * Serve config.
    */
@@ -67,7 +67,7 @@ export interface Finetune {
 /**
  * Score plugin config.
  */
-export interface ScoringConfig {
+export interface ScoringPluginConfig {
   /**
    * Name specifies the name of the scoring CR.
    */

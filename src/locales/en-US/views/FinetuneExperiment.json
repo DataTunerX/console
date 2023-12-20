@@ -13,7 +13,7 @@
   "createFineTuningExperiment": "Create Fine-tune Experiment",
   "basicInformation": "Basic Information",
   "experimentName": "Experiment Name",
-  "scoringConfig": "Evaluation Method",
+  "scoringPluginConfig": "Evaluation Method",
   "buildInScoringPlugin": "System Default",
   "parameters": "Runtime Parameters",
   "configuration": "Configuration",

@@ -51,12 +51,12 @@ enum MetricType {
 
 const metricTypes: { label: string; value: MetricType }[] = [
   {
-    label: 'Learning Rate',
-    value: MetricType.LearningRate,
-  },
-  {
     label: 'Training Loss',
     value: MetricType.TrainingLoss,
+  },
+  {
+    label: 'Learning Rate',
+    value: MetricType.LearningRate,
   },
   {
     label: 'Validation Loss',

@@ -62,7 +62,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.evaluationMethod'),
-      value: finetuneJob.value.spec?.scoringConfig?.name,
+      value: finetuneJob.value.spec?.scoringPluginConfig?.name,
     },
     {
       label: t('views.FinetuneExperiment.duration'),
