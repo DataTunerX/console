@@ -13,7 +13,7 @@
   "createFineTuningExperiment": "创建微调实验",
   "basicInformation": "基本信息",
   "experimentName": "实验名称",
-  "scoringConfig": "评估方式",
+  "scoringPluginConfig": "评估方式",
   "buildInScoringPlugin": "系统默认",
   "parameters": "运行参数",
   "configuration": "配置",

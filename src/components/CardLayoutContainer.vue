@@ -32,8 +32,8 @@ $max-width: 380px;
 
     > * {
       flex: 1 1 0;
-      min-width: 280px;
-      max-width: 380px;
+      min-width: 400px;
+      max-width: 600px;
       margin: 20px 10px 0;
     }
 
@@ -44,8 +44,8 @@ $max-width: 380px;
 
   &__placeholder {
     flex: 1 1 0;
-    min-width: 280px;
-    max-width: 380px;
+    min-width: 400px;
+    max-width: 600px;
     margin: 0 10px;
   }
 }

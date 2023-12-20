@@ -57,7 +57,7 @@ const infos = computed(() => {
     },
     {
       label: t('views.FinetuneExperiment.evaluationMethod'),
-      value: spec?.scoringConfig.name,
+      value: spec?.scoringPluginConfig?.name ?? t('views.FinetuneExperiment.buildInScoringPlugin'),
     },
     {
       label: t('views.FinetuneExperiment.dataSet'),

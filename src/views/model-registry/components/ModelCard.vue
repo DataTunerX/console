@@ -125,7 +125,7 @@ const copy = async () => {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 144px;
+  height: 180px;
   padding: 20px 20px 16px;
   overflow: hidden;
   color: var(--dao-text-secondary);

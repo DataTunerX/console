@@ -10,7 +10,10 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { nError } from '@/utils/useNoty';
 import { useRouter } from 'vue-router';
 import KeyValueForm from '@/components/KeyValueForm.vue';
-import { FinetuneExperimentForRender, convertFinetuneExperimentForPost } from '@/api/finetune-experiment-for-render';
+import {
+  FinetuneExperimentForRender,
+  convertFinetuneExperimentForPost,
+} from '@/api/finetune-experiment-for-render';
 import { BuildInScoringPlugin } from '@/api/scoring-plugin';
 
 import FinetuneJobComponent from './components/FinetuneJobComponent.vue';
@@ -19,7 +22,7 @@ import {
   useFinetuneExperiment,
   useFinetuneJob,
   useLargeLanguageModel,
-  useScoringConfig,
+  useScoringPluginConfig,
 } from './composition/finetune';
 import { useDataset } from '../dataset/composition/dataset';
 import { useHyperparameter } from '../hyperparameter/composition/hyperparameter';
@@ -38,11 +41,11 @@ const { hyperparameters, fetchHyperparameters } = useHyperparameter();
 
 const { finetuneExperiment } = useFinetuneExperiment();
 
-const { scoringConfigs, fetchScoringConfigs } = useScoringConfig();
+const { scoringPluginConfigs, fetchScoringPluginConfigs } = useScoringPluginConfig();
 
 const { finetuneJob } = useFinetuneJob();
 
-const componentRef = ref<typeof KeyValueForm >();
+const componentRef = ref<typeof KeyValueForm>();
 
 const validationSchema = markRaw(
   object({
@@ -50,36 +53,41 @@ const validationSchema = markRaw(
       name: string().RFC1123Label().required().label(t('views.FinetuneExperiment.experimentName')),
     }),
     spec: object({
-      finetuneJobs: array<FinetuneJobWithName>().of(
-        object({
-          name: string().RFC1123Label().label(t('views.FinetuneExperiment.taskName')),
-          spec: object({
-            finetune: object({
-              finetuneSpec: object({
-                llm: string().required().label(t('views.FinetuneExperiment.baseLargeModel')),
-                dataset: string().required().label(t('views.FinetuneExperiment.dataset')),
-                hyperparameter: object({
-                  hyperparameterRef: string().required().label(t('views.FinetuneExperiment.hyperparameter')),
-                  parameters: object({
-                    loRA_Alpha: number().moreThan(0),
-                    loRA_R: number().integer().moreThan(2),
-                    loRA_Dropout: number().moreThan(0).lessThan(1),
-                    learningRate: number().moreThan(0).lessThan(1),
-                    epochs: number().integer().min(1),
-                    blockSize: number().integer().moreThan(8),
-                    batchSize: number().integer().min(1),
-                    warmupRatio: number().moreThan(0).lessThan(1),
-                    weightDecay: number().moreThan(0).lessThan(1),
-                    gradAccSteps: number().integer().min(1),
+      finetuneJobs: array<FinetuneJobWithName>()
+        .of(
+          object({
+            name: string().RFC1123Label().label(t('views.FinetuneExperiment.taskName')),
+            spec: object({
+              finetune: object({
+                finetuneSpec: object({
+                  llm: string().required().label(t('views.FinetuneExperiment.baseLargeModel')),
+                  dataset: string().required().label(t('views.FinetuneExperiment.dataset')),
+                  hyperparameter: object({
+                    hyperparameterRef: string()
+                      .required()
+                      .label(t('views.FinetuneExperiment.hyperparameter')),
+                    parameters: object({
+                      loRA_Alpha: number().moreThan(0),
+                      loRA_R: number().integer().moreThan(2),
+                      loRA_Dropout: number().moreThan(0).lessThan(1),
+                      learningRate: number().moreThan(0).lessThan(1),
+                      epochs: number().integer().min(1),
+                      blockSize: number().integer().moreThan(8),
+                      batchSize: number().integer().min(1),
+                      warmupRatio: number().moreThan(0).lessThan(1),
+                      weightDecay: number().moreThan(0).lessThan(1),
+                      gradAccSteps: number().integer().min(1),
+                    }),
                   }),
                 }),
               }),
             }),
           }),
-        }),
-      ).min(1).unique((job) => job.name, t('views.FinetuneExperiment.taskName')),
-      scoringConfig: object({
-        name: string().required().label(t('views.FinetuneExperiment.scoringConfig')),
+        )
+        .min(1)
+        .unique((job) => job.name, t('views.FinetuneExperiment.taskName')),
+      scoringPluginConfig: object({
+        name: string().label(t('views.FinetuneExperiment.scoringPluginConfig')),
         parameters: object().test('parameters', '', async () => {
           if (componentRef.value) {
             const valid = await componentRef.value?.validate();
@@ -101,11 +109,14 @@ const {
   validationSchema,
 });
 
-const [parameters] = defineField('spec.scoringConfig.parameters', {
+const [parameters] = defineField('spec.scoringPluginConfig.parameters', {
   validateOnModelUpdate: false,
 });
 
-const useBuildInPlugin = computed(() => !values.spec.scoringConfig.name || values.spec.scoringConfig.name === BuildInScoringPlugin);
+const useBuildInPlugin = computed(
+  () => !values.spec.scoringPluginConfig?.name
+    || values.spec.scoringPluginConfig?.name === BuildInScoringPlugin,
+);
 
 const hasError = (index: number) => Object.keys(errorBag.value).some((key) => key.startsWith(`spec.finetuneJobs[${index}]`));
 
@@ -124,7 +135,7 @@ const init = () => {
     fetchLargeLanguageModels(namespace.value),
     fetchDatasets(namespace.value),
     fetchHyperparameters(namespace.value),
-    fetchScoringConfigs(namespace.value),
+    fetchScoringPluginConfigs(namespace.value),
   ]);
 };
 
@@ -148,7 +159,10 @@ const onSubmit = async () => {
 
   if (valid) {
     try {
-      await finetuneExperimentClient.create(namespace.value, convertFinetuneExperimentForPost(values));
+      await finetuneExperimentClient.create(
+        namespace.value,
+        convertFinetuneExperimentForPost(values),
+      );
       toList();
     } catch (error) {
       nError(t('common.createFailed'), error);
@@ -174,8 +188,8 @@ const onSubmit = async () => {
           }"
         />
         <dao-form-item-validate
-          :label="$t('views.FinetuneExperiment.scoringConfig')"
-          name="spec.scoringConfig.name"
+          :label="$t('views.FinetuneExperiment.scoringPluginConfig')"
+          name="spec.scoringPluginConfig.name"
           :tag="DaoSelect"
           :padding-bottom="10"
           :control-props="{
@@ -187,16 +201,14 @@ const onSubmit = async () => {
             :value="BuildInScoringPlugin"
           />
           <dao-option
-            v-for="scoringConfig in scoringConfigs"
-            :key="scoringConfig.metadata?.name"
-            :label="scoringConfig.metadata?.name"
-            :value="scoringConfig.metadata?.name"
+            v-for="scoringPluginConfig in scoringPluginConfigs"
+            :key="scoringPluginConfig.metadata?.name"
+            :label="scoringPluginConfig.metadata?.name"
+            :value="scoringPluginConfig.metadata?.name"
           />
         </dao-form-item-validate>
 
-        <dao-form-item
-          v-if="!useBuildInPlugin"
-        >
+        <dao-form-item v-if="!useBuildInPlugin">
           <dao-form-item
             padding-bottom="0"
             :label="$t('views.FinetuneExperiment.parameters')"
@@ -204,8 +216,8 @@ const onSubmit = async () => {
           >
             <key-value-form
               ref="componentRef"
-              name="spec.datasetMetadata.plugin.parameters"
-              v-bind="parameters"
+              v-model="parameters"
+              name="spec.scoringPluginConfig.parameters"
             />
           </dao-form-item>
         </dao-form-item>
