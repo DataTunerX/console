@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Markdown from '@/components/MarkdownWrapper.vue';
-import text from './text.md';
+// import text from './text.md';
 
 const { t } = useI18n();
 
@@ -8,6 +8,15 @@ const props = defineProps({
   name: {
     type: String,
     default: '',
+  },
+  chatResult: {
+    type: Object,
+    default: () => ({
+      elaspedTime: 0,
+      tokenLength: 0,
+      tokenPerSec: 0,
+      output: '',
+    }),
   },
 });
 </script>
@@ -26,24 +35,24 @@ const props = defineProps({
     </div>
 
     <div class="chat-markdown">
-      <Markdown :source="text" />
+      <Markdown :source="props.chatResult.output" />
     </div>
 
     <div class="comparison-chat-item-container-footer">
       <div class="footer-item">
-        <div>16.3s</div>
+        <div>{{ props.chatResult.elaspedTime }}s</div>
         <div class="footer-item-label">
           {{ t('views.InferenceApplication.compare.elapsedTime') }}
         </div>
       </div>
       <div class="footer-item">
-        <div>100.0</div>
+        <div>{{ props.chatResult.tokenLength }}</div>
         <div class="footer-item-label">
           {{ t('views.InferenceApplication.compare.tokensTotalQuantity') }}
         </div>
       </div>
       <div class="footer-item">
-        <div>22.3</div>
+        <div>{{ props.chatResult.tokenPerSec }}</div>
         <div class="footer-item-label">
           {{ t('views.InferenceApplication.compare.perSecond') }}
         </div>

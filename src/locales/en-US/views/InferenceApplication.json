@@ -50,7 +50,37 @@
     "header": "Multi-model Comparison",
     "elapsedTime": "Elapsed Time(s)",
     "tokensTotalQuantity": "Tokens Total Quantity",
-    "perSecond": "tokens/s",
-    "send": "Send"
+    "perSecond": "tokens/s"
+  },
+
+  "examples": {
+    "e1": {
+      "label": "Generating a Code Snippet",
+      "text": "Write a Python function to multiply two matrices."
+    },
+    "e2": {
+      "label": "Translation: From Chinese to English",
+      "text": "Translate the following Chinese paragraph into English: \"云原生技术的崛起代表着软件开发和部署方式的根本 性变革。容器化、微服务架构以及持续集成和持续交付(CI/CD)等实践，使得应用程序更具弹性、可伸缩性，并 能更快速地适应不断变化的需求。\" "
+    },
+    "e3": {
+      "label": "Translation: From English to Chinese",
+      "text": "Translate the following Chinese description into English: \"All of these technological advances, no matter how powerful they may seem, are actually old news. The news is that previously independent waves of exponential acceleration technologies have begun to merge with other independent waves of exponential acceleration technologies.\""
+    },
+    "e4": {
+      "label": "Meeting Summary",
+      "text": "Provide a concise summary of the following team meeting, summarizing the main topics of discussion, each team member's viewpoints, the core goals of the meeting, etc.: \nIn the recent team meeting, we discussed the initiation of a new project and related work assignments. Each team member shared their perspectives on their tasks and responsibilities. The marketing department emphasized the importance of market research and competitive analysis for effective marketing strategies. The technical team focused on the product development timeline and technical architecture. The finance department provided project budget and cost estimates, highlighting financial sustainability. The meeting also addressed the importance of communication channels and team collaboration. Our goal is to complete the project within the next quarter and achieve success in the market. Each team member is aware of their responsibilities and committed to contributing to the project's success. We plan to hold bi-weekly project progress meetings to ensure collaboration across all departments and address potential issues. This meeting provided us with a clear roadmap and goals, and we look forward to the success of the new project through teamwork and effort."
+    },
+    "e5": {
+      "label": "Extracting Keywords",
+      "text": "Please extract 6 keywords from the following technology article:\n \"Artificial Intelligence (AI) plays a crucial role in today's technological development. From healthcare to transportation, AI technology is rapidly infiltrating various fields. In the medical field, deep learning algorithms can analyze medical images, improving the accuracy of disease diagnosis. In the transportation system, intelligent control systems optimize traffic signal timings, reducing traffic congestion. In addition, advancements in natural language processing enable computers to understand and generate human language, crucial for applications like intelligent assistants and automatic translation. Overall, AI is becoming the engine driving social innovation and changing lifestyles.\""
+    },
+    "e6": {
+      "label": "Short Text Creation",
+      "text": "Using the theme of space exploration, create a science fiction story describing future space life, including technical details and human challenges, about 500 words."
+    },
+    "e7": {
+      "label": "Logical Reasoning",
+      "text": "In a group, Alice has read two more books than Bob, and Bob has read three more books than Charlie. If they have collectively read 15 books, how many books has each person read?"
+    }
   }
 }

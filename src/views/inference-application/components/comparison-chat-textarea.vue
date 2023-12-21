@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const { t } = useI18n();
 
 const props = defineProps({
   placeholder: {
@@ -41,8 +40,19 @@ const chatInputLength = computed(() => chatInput.value.length);
 const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
 const lineHeight = 2.1 * remInPixels;
 const padding = 2.8 * remInPixels;
-const textLines = computed(() => Math.max(chatInput.value.split('\n').length, 1));
-const height = computed(() => textLines.value * lineHeight + padding);
+const height = ref<number>(lineHeight + padding);
+// const height = computed(() => textLines.value * lineHeight + padding);
+
+watch(
+  () => chatInput.value,
+  () => {
+    height.value = 0;
+    nextTick(() => {
+      height.value = document.querySelector('.dao-textarea')?.scrollHeight || lineHeight;
+    });
+  },
+);
+
 const isOverflow = computed(() => height.value > 200);
 </script>
 
@@ -70,7 +80,11 @@ const isOverflow = computed(() => height.value > 200);
         class="dao-textarea-footer-button"
         @click="props.sendQuestionFn"
       >
-        {{ t("views.InferenceApplication.compare.send") }}
+        <SvgIcon
+          name="default-config"
+          :size="16"
+          color="var(--dao-gray-090)"
+        />
       </div>
     </div>
   </div>
