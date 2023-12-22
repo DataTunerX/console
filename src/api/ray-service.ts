@@ -28,6 +28,13 @@ interface ServeConfig {
   runtimeEnv?: string;
 }
 
+export interface ChatResultMap {
+  elaspedTime: string;
+  output: string;
+  tokenLength: string;
+  tokenPerSec: string;
+}
+
 interface Deployment {
   autoscalingConfig?: string;
   gracefulShutdownTimeoutS?: number;
@@ -196,7 +203,7 @@ export interface Input {
   input: string
 }
 
-export const inference = async (namespace: string, service: string, input: Input) => httpClient.post<RayService>(
+export const inference = async (namespace: string, service: string, input: Input) => httpClient.post<ChatResultMap>(
   `/inference/apis/util.datatunerx.io/v1beta1/namespaces/${namespace}/services/${service}/inference/chat`,
   input,
 );

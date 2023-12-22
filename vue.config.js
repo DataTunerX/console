@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service');
 const unpluginPlugin = require('unplugin-auto-import/webpack');
+const path = require('path');
 
 const proxyConfig = {
   target: process.env.VUE_APP_API_URL,
@@ -22,12 +23,22 @@ module.exports = defineConfig({
     },
   },
 
+  chainWebpack: (config) => {
+    config.module.rule('svg').exclude.add(path.resolve(__dirname, './src/assets/svgs')).end();
+  },
+
   configureWebpack: {
     module: {
       rules: [
         {
           test: /\.md$/i,
           loader: 'raw-loader',
+        },
+        {
+          test: /\.svg$/,
+          loader: 'svg-sprite-loader',
+          include: path.resolve(__dirname, './src/assets/svgs'),
+          options: { symbolId: 'icon-[name]' },
         },
       ],
     },

@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import { LabelExtendColor } from '@dao-style/extend';
-import { inference } from '@/api/ray-service';
+import { ChatResultMap, inference } from '@/api/ray-service';
 import { useNamespaceStore } from '@/stores/namespace';
+import map from 'lodash/map';
 import ComparisonChatItem from './components/comparison-chat-item.vue';
 import ComparisonChatTextarea from './components/comparison-chat-textarea.vue';
 
 interface ExampleMap {
+  label: string;
   text: string;
   color: LabelExtendColor;
 }
 
+const { t } = useI18n();
 const { query } = useRoute();
 const { namespace } = storeToRefs(useNamespaceStore());
 
@@ -21,88 +24,57 @@ const servicenames = computed(() => {
   return [query.servicename as string];
 });
 
-const examples: ExampleMap[] = [
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaahjshas',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaajkbadhjhwohuijhduiow',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaa',
-    color: 'purple',
-  },
-  {
-    text: 'aaaaa',
-    color: 'green',
-  },
-  {
-    text: 'aaaasjhsjkahdsjlna',
-    color: 'green',
-  },
-  {
-    text: 'aaaaa',
-    color: 'green',
-  },
-  {
-    text: 'aaaaa',
-    color: 'green',
-  },
-  {
-    text: 'aaaanjskalnkalna',
-    color: 'green',
-  },
-  {
-    text: 'aaamnsdjlkbnwajlbaa',
-    color: 'skyblue',
-  },
-  {
-    text: 'aaaaa',
-    color: 'skyblue',
-  },
-  {
-    text: 'aaaaa',
-    color: 'skyblue',
-  },
-  {
-    text: 'aaaaa',
-    color: 'skyblue',
-  },
-];
-
 const chatQuestion = ref<string>('');
 
 const selectedExample = (text: string) => {
   chatQuestion.value = text;
 };
 
+const chatResults = ref<ChatResultMap[]>([]);
+
 const fetchChatResult = async () => {
   const result = await Promise.all(servicenames.value.map((name) => inference(namespace.value, name, { input: chatQuestion.value })));
 
-  console.log(result);
+  chatResults.value = map(result, 'data');
 };
+
+const examplesList: ExampleMap[] = [
+  {
+    label: t('views.InferenceApplication.examples.e1.label'),
+    text: t('views.InferenceApplication.examples.e1.text'),
+    color: 'purple',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e2.label'),
+    text: t('views.InferenceApplication.examples.e2.text'),
+    color: 'purple',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e3.label'),
+    text: t('views.InferenceApplication.examples.e3.text'),
+    color: 'purple',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e4.label'),
+    text: t('views.InferenceApplication.examples.e4.text'),
+    color: 'green',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e5.label'),
+    text: t('views.InferenceApplication.examples.e5.text'),
+    color: 'green',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e6.label'),
+    text: t('views.InferenceApplication.examples.e6.text'),
+    color: 'skyblue',
+  },
+  {
+    label: t('views.InferenceApplication.examples.e7.label'),
+    text: t('views.InferenceApplication.examples.e7.text'),
+    color: 'skyblue',
+  },
+];
 
 </script>
 
@@ -137,6 +109,7 @@ const fetchChatResult = async () => {
         <ComparisonChatItem
           :key="index"
           :name="name"
+          :chat-result="chatResults[index]"
         />
       </dao-card-item>
     </dao-card>
@@ -158,13 +131,13 @@ const fetchChatResult = async () => {
         </div>
         <div class="issue-example-container">
           <dao-label-extend
-            v-for="({ text, color }, index) in examples"
+            v-for="({ label,text, color }, index) in examplesList"
             :key="index"
             :color="color"
-            class="issue-example-container-item"
+            class="mt-[8px] mr-[12px] cursor-pointer"
             @click="selectedExample(text)"
           >
-            {{ text }}
+            {{ label }}
           </dao-label-extend>
         </div>
       </div>
@@ -226,12 +199,6 @@ const fetchChatResult = async () => {
       flex-wrap: wrap;
       justify-content: flex-start;
       // margin-right: -12px;
-
-      &-item {
-        margin-top: 8px;
-        margin-right: 12px;
-        cursor: pointer;
-      }
 
     }
   }
