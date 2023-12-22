@@ -20,8 +20,10 @@ spec:
         - name: datatunerx-ui
           image: release.daocloud.io/datatunerx/datatunerx-ui:v0.0.1-dev-469952e
           env:
-          - name: 'API_URL'
+          - name: 'KUBERNETES_API_SERVER'
             value: "https://10.33.1.10:6443"
+          - name: 'DATATUNERX_API_SERVER'
+            value: "http://datatunerx-server.datatunerx-dev.svc.cluster.local/"
           imagePullPolicy: Always
           ports:
           - containerPort: 8443
