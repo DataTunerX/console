@@ -2,7 +2,7 @@
 import { ProcessedEvalMetrics } from '@/api/finetune-metrics';
 import LineChart from './LineChart.vue';
 
-defineProps({
+const props = defineProps({
   data: {
     type: Array as PropType<ProcessedEvalMetrics[]>,
     required: true,
@@ -11,18 +11,23 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  encode: {
+    type: String,
+    default: '',
+  },
+  color: {
+    type: String,
+    default: '',
+  },
 });
-
-const container = 'container-performance-evaluation';
 
 </script>
 
 <template>
   <line-chart
-    :container="container"
-    :data="data"
+    v-bind="props"
+    container="container-performance-evaluation"
     y="eval_perplexity"
-    :hide-title="hideTitle"
     title="Eval Perplexity"
   />
 </template>

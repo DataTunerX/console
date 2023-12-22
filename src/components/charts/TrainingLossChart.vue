@@ -2,7 +2,7 @@
 import { ProcessedTrainMetrics } from '@/api/finetune-metrics';
 import LineChart from './LineChart.vue';
 
-defineProps({
+const props = defineProps({
   data: {
     type: Array as PropType<ProcessedTrainMetrics[]>,
     required: true,
@@ -11,15 +11,25 @@ defineProps({
     type: String,
     default: 'container-training-loss',
   },
-
+  hideTitle: {
+    type: Boolean,
+    default: false,
+  },
+  encode: {
+    type: String,
+    default: '',
+  },
+  color: {
+    type: String,
+    default: '',
+  },
 });
 
 </script>
 
 <template>
   <line-chart
-    :container="container"
-    :data="data"
+    v-bind="props"
     y="loss"
     title="Training Loss"
   />

@@ -221,19 +221,31 @@ try {
       class="mt-[20px]"
     >
       <dao-card-item class="!basis-6/12 p-[20px]">
-        <learning-rate-chart :data="finetuneMetrics.train_metrics" />
+        <learning-rate-chart
+          :data="finetuneMetrics.train_metrics"
+          color="#1783FF"
+        />
       </dao-card-item>
 
       <dao-card-item class="!basis-6/12 p-[20px]">
-        <train-loss-chart :data="finetuneMetrics.train_metrics" />
+        <train-loss-chart
+          :data="finetuneMetrics.train_metrics"
+          color="#00C9C9"
+        />
       </dao-card-item>
 
       <dao-card-item class="!basis-6/12 p-[20px]">
-        <validation-loss-chart :data="finetuneMetrics.eval_metrics" />
+        <validation-loss-chart
+          :data="finetuneMetrics.eval_metrics"
+          color="#F0884D"
+        />
       </dao-card-item>
 
       <dao-card-item class="!basis-6/12 p-[20px]">
-        <performance-evaluation-chart :data="finetuneMetrics.eval_metrics" />
+        <performance-evaluation-chart
+          :data="finetuneMetrics.eval_metrics"
+          color="#D580FF"
+        />
       </dao-card-item>
     </dao-card>
   </div>

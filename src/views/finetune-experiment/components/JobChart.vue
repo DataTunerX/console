@@ -14,7 +14,7 @@
     <component
       :is="getChartComponent(metricType)"
       :data="getChartData(metricType)"
-      color="finetune_name"
+      encode="finetune_name"
       hide-title
     />
   </div>
