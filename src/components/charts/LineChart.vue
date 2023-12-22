@@ -29,7 +29,7 @@ const props = defineProps({
   },
   xAxis: {
     type: String,
-    default: 'Step',
+    default: 'Epochs',
   },
   yAxis: {
     type: String,
@@ -39,9 +39,17 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  encode: {
+    type: String,
+    default: '',
+  },
   height: {
     type: Number,
     default: 400,
+  },
+  margin: {
+    type: Array as PropType<number[]>,
+    default: () => [0, 20, 0, 0],
   },
 });
 
@@ -49,11 +57,24 @@ onMounted(() => {
   const chart = new Chart({
     container: props.container,
     autoFit: true,
-    margin: 0,
+    marginTop: props.margin[0],
+    marginRight: props.margin[1],
+    marginBottom: props.margin[2],
+    marginLeft: props.margin[3],
   });
 
-  chart
-    .line()
+  // Apply academy theme.
+  chart.theme({
+  });
+
+  if (props.color) {
+    chart.theme({
+      color: props.color,
+    });
+  }
+
+  chart.line()
+    .style('shape', 'smooth')
     .data(props.data)
     .encode('x', props.x)
     .encode('y', props.y)
@@ -64,13 +85,10 @@ onMounted(() => {
     })
     .axis('y', {
       title: props.yAxis,
-    })
-    .tooltip({
-      title: (d) => `${props.xAxis} ${d[props.x]}`,
     });
 
-  if (props.color) {
-    chart.encode('color', props.color);
+  if (props.encode) {
+    chart.encode('color', props.encode);
   }
 
   if (!props.hideTitle) {

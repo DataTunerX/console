@@ -2,10 +2,18 @@
 import { ProcessedTrainMetrics } from '@/api/finetune-metrics';
 import LineChart from './LineChart.vue';
 
-defineProps({
+const props = defineProps({
   data: {
     type: Array as PropType<ProcessedTrainMetrics[]>,
     required: true,
+  },
+  hideTitle: {
+    type: Boolean,
+    default: false,
+  },
+  encode: {
+    type: String,
+    default: '',
   },
   color: {
     type: String,
@@ -13,14 +21,12 @@ defineProps({
   },
 });
 
-const container = 'container-learning-rate';
 </script>
 
 <template>
   <line-chart
-    :container="container"
-    :data="data"
-    :color="color"
+    v-bind="props"
+    container="container-learning-rate"
     y="learning_rate"
     title="Learning Rate"
   />

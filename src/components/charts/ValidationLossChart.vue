@@ -2,10 +2,22 @@
 import { ProcessedEvalMetrics } from '@/api/finetune-metrics';
 import LineChart from './LineChart.vue';
 
-defineProps({
+const props = defineProps({
   data: {
     type: Array as PropType<ProcessedEvalMetrics[]>,
     required: true,
+  },
+  hideTitle: {
+    type: Boolean,
+    default: false,
+  },
+  encode: {
+    type: String,
+    default: '',
+  },
+  color: {
+    type: String,
+    default: '',
   },
 });
 
@@ -13,8 +25,8 @@ defineProps({
 
 <template>
   <line-chart
+    v-bind="props"
     container="container-validation-loss"
-    :data="data"
     y="eval_loss"
     title="Eval Loss"
   />
