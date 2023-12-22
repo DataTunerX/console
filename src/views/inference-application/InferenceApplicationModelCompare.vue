@@ -31,11 +31,15 @@ const selectedExample = (text: string) => {
 };
 
 const chatResults = ref<ChatResultMap[]>([]);
+const chatLoading = ref<boolean>(false);
 
 const fetchChatResult = async () => {
+  chatResults.value = [];
+  chatLoading.value = true;
   const result = await Promise.all(servicenames.value.map((name) => inference(namespace.value, name, { input: chatQuestion.value })));
 
   chatResults.value = map(result, 'data');
+  chatLoading.value = false;
 };
 
 const examplesList: ExampleMap[] = [
@@ -109,6 +113,7 @@ const examplesList: ExampleMap[] = [
         <ComparisonChatItem
           :key="index"
           :name="name"
+          :loading="chatLoading"
           :chat-result="chatResults[index]"
         />
       </dao-card-item>
@@ -198,7 +203,6 @@ const examplesList: ExampleMap[] = [
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
-      // margin-right: -12px;
 
     }
   }

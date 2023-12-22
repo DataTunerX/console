@@ -13,6 +13,8 @@ interface ServiceAccount {
   token: string;
 }
 
+const { t } = useI18n();
+
 const { handleSubmit } = useForm<ServiceAccount>({
   initialValues: {
     token: '',
@@ -46,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <div class="login-container">
-    <dao-card title="登录 DataTunerX">
+    <dao-card :title="`${t('views.Login.login')} DataTunerX`">
       <dao-card-item>
         <dao-form label-width="0">
           <dao-form-item-validate
@@ -65,7 +67,7 @@ onMounted(async () => {
           class="float-right w-[100px]"
           @click="onSubmit"
         >
-          登录
+          {{ t('views.Login.login') }}
         </dao-button>
       </dao-card-item>
     </dao-card>

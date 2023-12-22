@@ -18,6 +18,10 @@ const props = defineProps({
       output: '',
     }),
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 
@@ -35,7 +39,10 @@ const props = defineProps({
     </div>
 
     <div class="chat-markdown">
-      <Markdown :source="props.chatResult.output" />
+      <Markdown
+        :class="{loading: props.loading}"
+        :source="props.chatResult.output"
+      />
     </div>
 
     <div class="comparison-chat-item-container-footer">
@@ -90,6 +97,30 @@ const props = defineProps({
     overflow: scroll;
     border: 1px solid var(--dao-gray-blue-050);
     border-radius: 5px;
+
+    .loading {
+      &::before {
+        display: block;
+        width: 1px;
+        height: 16px;
+        content:' ';
+        background-color: var(--dao-gray-010);
+        animation: blink 1s infinite steps(1, start)
+      }
+    }
+    @keyframes blink {
+      0%{
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
   }
 
   &-footer{
