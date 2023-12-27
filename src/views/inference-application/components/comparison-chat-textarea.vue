@@ -5,10 +5,6 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  maxlength: {
-    type: Number,
-    default: 100,
-  },
   rows: {
     type: Number,
     default: 1,
@@ -20,6 +16,10 @@ const props = defineProps({
   sendQuestionFn: {
     type: Function as PropType<() => Promise<unknown>>,
     default: () => Promise.resolve(true),
+  },
+  emptyChatQuestionFn: {
+    type: Function,
+    default: () => null,
   },
 });
 
@@ -35,12 +35,9 @@ const chatInput = computed({
   },
 });
 
-const chatInputLength = computed(() => chatInput.value.length);
-
 const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
 const lineHeight = 2.1 * remInPixels;
-const padding = 2.8 * remInPixels;
-const height = ref<number>(lineHeight + padding);
+const height = ref<number>(lineHeight);
 // const height = computed(() => textLines.value * lineHeight + padding);
 
 watch(
@@ -57,83 +54,100 @@ const isOverflow = computed(() => height.value > 200);
 </script>
 
 <template>
-  <div class="dao-textarea-container">
-    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
-    <textarea
-      v-model="chatInput"
-      class="dao-textarea"
-      :class="{ 'is-overflow': isOverflow }"
-      :rows="props.rows"
-      :maxlength="props.maxlength"
-      :placeholder="props.placeholder"
-      :style="{ height: `${height}px` }"
-    />
-    <div class="dao-textarea-footer">
-      {{ `${chatInputLength}/${props.maxlength}` }}
-      <!-- <dao-action-icon
-      name="icon-slim-check"
-      class="dao-textarea-footer-icon"
-      size="xs"
-      type="button"
-    /> -->
-      <div
-        class="dao-textarea-footer-button"
-        @click="props.sendQuestionFn"
-      >
-        <SvgIcon
-          name="default-config"
-          :size="16"
-          color="var(--dao-gray-090)"
-        />
+  <div class="comparison-textarea">
+    <div
+      class="mr-[6px] mb-[8px] cursor-pointer"
+      @click="props.emptyChatQuestionFn"
+    >
+      <SvgIcon
+        name="empty"
+        :size="24"
+        color="var(--dao-text-page-title)"
+      />
+    </div>
+    <div class="comparison-textarea-container">
+      <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
+      <textarea
+        v-model="chatInput"
+        class="dao-textarea"
+        :class="{ 'is-overflow': isOverflow }"
+        :rows="props.rows"
+        :placeholder="props.placeholder"
+        :style="{ height: `${height}px`}"
+      />
+      <div class="right-button">
+        <div
+          class="textarea-button bg-[var(--dao-system-primary)]"
+          @click="props.sendQuestionFn"
+        >
+          <SvgIcon
+            name="send"
+            :size="14"
+            color="var(--dao-pure-white)"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.dao-textarea-container {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  vertical-align: bottom;
 
-  .dao-textarea {
-    position: relative;
+.comparison-textarea {
+  display: flex;
+  align-items: flex-end;
+
+  &-container {
+    display: flex;
+    align-items: flex-end;
     width: 100%;
-    min-height: unset;
-    max-height: 200px;
-    padding: 1.4rem;
-    overflow-y: hidden;
-    font-size: 1.4rem;
-    line-height: 2.1rem;
-    color: #000;
-    resize: none;
+    vertical-align: bottom;
     background-color: var(--dao-gray-200);
+    border: 1px solid var(--dao-gray-blue-050);
     border-radius: 10px;
-    transition: none;
 
-    &.is-overflow {
-      overflow-y: scroll;
-    }
+    .dao-textarea {
+      flex-grow: 1;
+      min-height: unset;
+      max-height: 200px;
+      padding: 0;
+      margin: 1.2rem 0 1.2rem 1.2rem;
+      overflow-y: hidden;
+      font-size: 1.4rem;
+      line-height: 2.1rem;
+      color: #000;
+      resize: none;
+      background-color: var(--dao-gray-200);
+      border: 0;
+      transition: none;
 
-    &-footer {
-      position: absolute;
-      right: 10px;
-      bottom: 6px;
-      display: flex;
-      align-items: center;
-      padding: 2px 4px;
-      font-size: 12px;
-      line-height: 14px;
-      color: var(--dao-gray-090);
-      background: rgb(241 243 246 / 76%);
-      border-radius: 4px;
+      &:focus{
+        box-shadow: none;
+      }
 
-      &-button {
-        margin-left: 6px;
-        cursor: pointer;
+      &.is-overflow {
+        overflow-y: scroll;
       }
     }
+
+    .right-button {
+      flex-grow: 0;
+      margin: 0 10px 0 6px;
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
+
+  .textarea-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
   }
 }
+
 </style>

@@ -9,6 +9,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  checkpoint: {
+    type: String,
+    default: '-',
+  },
   chatResult: {
     type: Object,
     default: () => ({
@@ -35,7 +39,7 @@ const props = defineProps({
         />
         <span class="app-name-text">{{ props.name }}</span>
       </div>
-      <dao-tag>aaa</dao-tag>
+      <dao-tag>{{ checkpoint }}</dao-tag>
     </div>
 
     <div class="chat-markdown">

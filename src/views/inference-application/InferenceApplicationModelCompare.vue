@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { LabelExtendColor } from '@dao-style/extend';
-import { ChatResultMap, inference } from '@/api/ray-service';
+import {
+  ChatResultMap, inference, rayServiceClient,
+} from '@/api/ray-service';
 import { useNamespaceStore } from '@/stores/namespace';
 import map from 'lodash/map';
+import isEmpty from 'lodash/isEmpty';
 import ComparisonChatItem from './components/comparison-chat-item.vue';
 import ComparisonChatTextarea from './components/comparison-chat-textarea.vue';
 
@@ -34,12 +37,17 @@ const chatResults = ref<ChatResultMap[]>([]);
 const chatLoading = ref<boolean>(false);
 
 const fetchChatResult = async () => {
+  if (isEmpty(chatQuestion.value) || chatLoading.value) return;
   chatResults.value = [];
   chatLoading.value = true;
   const result = await Promise.all(servicenames.value.map((name) => inference(namespace.value, name, { input: chatQuestion.value })));
 
   chatResults.value = map(result, 'data');
   chatLoading.value = false;
+};
+
+const emptyChatQuestion = () => {
+  chatQuestion.value = '';
 };
 
 const examplesList: ExampleMap[] = [
@@ -80,6 +88,14 @@ const examplesList: ExampleMap[] = [
   },
 ];
 
+const checkpoints = ref<(string | undefined)[]>([]);
+
+onMounted(async () => {
+  const result = await Promise.all(servicenames.value.map((name) => rayServiceClient.read(namespace.value, name)));
+
+  checkpoints.value = result.map(({ data }) => data.metadata?.annotations?.['core.datatunerx.io/llmCheckpoint']);
+});
+
 </script>
 
 <template>
@@ -113,6 +129,7 @@ const examplesList: ExampleMap[] = [
         <ComparisonChatItem
           :key="index"
           :name="name"
+          :checkpoint="checkpoints[index]"
           :loading="chatLoading"
           :chat-result="chatResults[index]"
         />
@@ -123,8 +140,8 @@ const examplesList: ExampleMap[] = [
       <ComparisonChatTextarea
         v-model="chatQuestion"
         :placeholder="'在这里输入问题，或挑选指令模板'"
-        :maxlength="4000"
         :send-question-fn="fetchChatResult"
+        :empty-chat-question-fn="emptyChatQuestion"
       />
       <div class="issue-example">
         <div class="issue-example-header">
