@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { LabelExtendColor } from '@dao-style/extend';
-import { ChatResultMap, inference } from '@/api/ray-service';
+import {
+  ChatResultMap, inference, rayServiceClient,
+} from '@/api/ray-service';
 import { useNamespaceStore } from '@/stores/namespace';
-import { COMPAREINFERENCES } from '@/utils/constant';
 import map from 'lodash/map';
 import isEmpty from 'lodash/isEmpty';
 import ComparisonChatItem from './components/comparison-chat-item.vue';
@@ -12,12 +13,6 @@ interface ExampleMap {
   label: string;
   text: string;
   color: LabelExtendColor;
-}
-
-interface InferenceMap {
-  [key: string]: {
-    checkpoint: string | undefined;
-  }
 }
 
 const { t } = useI18n();
@@ -31,8 +26,6 @@ const servicenames = computed(() => {
 
   return [query.servicename as string];
 });
-
-const inferences: InferenceMap = JSON.parse(localStorage.getItem(COMPAREINFERENCES) as string);
 
 const chatQuestion = ref<string>('');
 
@@ -95,6 +88,14 @@ const examplesList: ExampleMap[] = [
   },
 ];
 
+const checkpoints = ref<(string | undefined)[]>([]);
+
+onMounted(async () => {
+  const result = await Promise.all(servicenames.value.map((name) => rayServiceClient.read(namespace.value, name)));
+
+  checkpoints.value = result.map(({ data }) => data.metadata?.annotations?.['core.datatunerx.io/llmCheckpoint']);
+});
+
 </script>
 
 <template>
@@ -128,7 +129,7 @@ const examplesList: ExampleMap[] = [
         <ComparisonChatItem
           :key="index"
           :name="name"
-          :checkpoint="inferences[name].checkpoint"
+          :checkpoint="checkpoints[index]"
           :loading="chatLoading"
           :chat-result="chatResults[index]"
         />

@@ -6,16 +6,9 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { useQueryTable } from '@/hooks/useQueryTable';
 import { defineColumns } from '@dao-style/core';
 import { useDateFormat } from '@dao-style/extend';
-import { COMPAREINFERENCES } from '@/utils/constant';
 
 import ApplicationStatusComponent from './components/application-status.vue';
 import { useDeleteInferenceApplication } from './composition/inference-application';
-
-interface InferenceMap {
-  [key: string]: {
-    checkpoint: string | undefined;
-  }
-}
 
 const { namespace } = storeToRefs(useNamespaceStore());
 const { t } = useI18n();
@@ -81,15 +74,7 @@ const selectable = (row: RayService) => {
 
 const onCompare = () => {
   const queryList = selectedRows.value?.map(({ metadata }) => metadata?.name);
-  const selectedInference: InferenceMap = {};
 
-  selectedRows.value?.forEach(({ metadata }) => {
-    if (metadata?.name) {
-      selectedInference[metadata.name] = { checkpoint: metadata?.annotations?.['core.datatunerx.io/llmCheckpoint'] };
-    }
-  });
-
-  localStorage.setItem(COMPAREINFERENCES, JSON.stringify(selectedInference));
   router.push({
     name: 'InferenceApplicationModelCompare',
     query: { servicename: queryList },
