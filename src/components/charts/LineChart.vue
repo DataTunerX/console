@@ -74,7 +74,6 @@ onMounted(() => {
   }
 
   chart.line()
-    .style('shape', 'smooth')
     .data(props.data)
     .encode('x', props.x)
     .encode('y', props.y)
