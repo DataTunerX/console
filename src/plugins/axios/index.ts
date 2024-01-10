@@ -18,7 +18,6 @@ export {
 
 const httpClient = axios.create({
   baseURL: '/',
-  // headers: { Authorization: `Bearer ${process.env.VUE_APP_AUTH}` },
 });
 
 httpClient.interceptors.request.use(
@@ -40,7 +39,7 @@ httpClient.interceptors.response.use(
   (error) => {
     const { response = {} } = error;
 
-    if (response?.status === 401 || response?.status === 403) {
+    if (response?.status === 401) {
       localStorage.removeItem(TOKEN);
       window.location.reload();
     }

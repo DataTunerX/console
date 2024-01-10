@@ -8,7 +8,6 @@
     "header": "Delete Dataset",
     "content": "Are you sure you want to delete the dataset {name}?"
   },
-
   "tag": "Tag",
   "duplicateTags": "Duplicate Tags",
   "datasetName": "Dataset Name",
@@ -45,5 +44,21 @@
   "status": {
     "ready": "Ready",
     "unready": "Not Ready"
-  }
+  },
+  "textGeneration": "Text Generation",
+  "languageModeling": "Language Modeling",
+  "maskedLanguageModeling": "Masked Language Modeling",
+  "naturalLanguageInference": "Natural Language Inference",
+  "questionAnswering": "Question Answering",
+  "extractiveQA": "Extractive QA",
+  "openDomainQA": "Open Domain QA",
+  "multiChoiceQA": "Multiple Choice QA",
+  "closedDomainQA": "Closed Domain QA",
+  "textClassification": "Text Classification",
+  "multiClassClassification": "Multi-Class Classification",
+  "sentimentClassification": "Sentiment Classification",
+  "topicClassification": "Topic Classification",
+  "multiLabelClassification": "Multi-Label Classification",
+  "summarization": "Summarization",
+  "newsArticlesSummarization": "News Articles Summarization"
 }
