@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DaoSwitch, DaoSelect } from '@dao-style/core';
+import camelCase from 'lodash/camelCase';
 import { object, array, string } from 'yup';
 import {
   LicenseType,
@@ -376,7 +377,7 @@ const onSubmit = handleSubmit(async (values) => {
         <dao-option
           v-for="(_, category) in taskCategories"
           :key="category"
-          :label="category"
+          :label="$t(`views.Dataset.${camelCase(category)}`)"
           :value="category"
         />
       </dao-form-item-validate>
@@ -406,7 +407,7 @@ const onSubmit = handleSubmit(async (values) => {
               <dao-option
                 v-for="subTask in taskCategories[formModel.spec?.datasetMetadata.task?.name as keyof typeof taskCategories]"
                 :key="subTask"
-                :label="subTask"
+                :label="$t(`views.Dataset.${camelCase(subTask)}`)"
                 :value="subTask"
               />
             </dao-form-item-validate>

@@ -32,11 +32,7 @@ const marked = new Marked(
 const compiledMarkdown = computed(() => marked.parse(propsData.source));
 
 onMounted(async () => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    await import('highlight.js/styles/github-dark.css');
-  } else {
-    await import('highlight.js/styles/github.css');
-  }
+  await import('highlight.js/styles/github.css');
 });
 </script>
 

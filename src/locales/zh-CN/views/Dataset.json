@@ -44,5 +44,21 @@
   "status": {
     "ready": "就绪",
     "unready": "未就绪"
-  }
+  },
+  "textGeneration": "文本生成",
+  "languageModeling": "语言建模",
+  "maskedLanguageModeling": "掩蔽语言建模",
+  "naturalLanguageInference": "自然语言建模",
+  "questionAnswering": "QA对话",
+  "extractiveQA": "抽取式问答",
+  "openDomainQA": "开放领域回答",
+  "multiChoiceQA": "多项选择题问答",
+  "closedDomainQA": "封闭领域问答",
+  "textClassification": "文本分类",
+  "multiClassClassification": "多类分类",
+  "sentimentClassification": "情感分类",
+  "topicClassification": "主题分类",
+  "multiLabelClassification": "标签分类",
+  "summarization": "概括",
+  "newsArticlesSummarization": "新闻文章摘要"
 }
