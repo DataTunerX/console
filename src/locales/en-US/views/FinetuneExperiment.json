@@ -57,5 +57,8 @@
     "successful": "Successful",
     "unknown": "Unknown"
   },
-  "viewWorkloadLogs": "View logs"
+  "viewWorkloadLogs": "View logs",
+  "resourceAllocation": "Resource Allocation",
+  "monitoring": "Monitoring",
+  "resourceAllocationInfo": "By default, the system uses a resource configuration of 2 cores CPU, 48GiB memory, and 1 GPU for each job."
 }

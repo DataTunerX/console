@@ -57,5 +57,8 @@
     "successful": "成功",
     "unknown": "未知状态"
   },
-  "viewWorkloadLogs": "查看日志"
+  "viewWorkloadLogs": "查看日志",
+  "resourceAllocation": "资源配置",
+  "monitoring": "监控",
+  "resourceAllocationInfo": "系统默认每个任务使用 2 核 CPU，48GiB 内存，1 个 GPU 的资源配置"
 }
