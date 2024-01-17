@@ -170,6 +170,18 @@ try {
       </template>
     </dao-header>
 
+    <dao-expansion
+      type="doc"
+      class="mb-[10px]"
+    >
+      <dao-expansion-item
+        name="resourceAllocation"
+        :title="t('views.FinetuneExperiment.resourceAllocation')"
+      >
+        {{ $t('views.FinetuneExperiment.resourceAllocationInfo') }}
+      </dao-expansion-item>
+    </dao-expansion>
+
     <dao-empty v-if="isEmpty(finetuneJob)" />
 
     <dao-card
@@ -216,7 +228,7 @@ try {
 
     <dao-card
       v-if="loaded"
-      title="监控"
+      :title="t('views.FinetuneExperiment.monitoring')"
       type="simple"
       class="mt-[20px]"
     >
@@ -254,5 +266,9 @@ try {
 <style lang="scss" scoped>
 :deep(.dao-card-item-container) {
   flex-wrap: wrap;
+}
+
+:deep(.dao-expansion-item-action) {
+  display: none;
 }
 </style>

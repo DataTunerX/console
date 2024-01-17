@@ -177,6 +177,14 @@ const onSubmit = async () => {
     @cancel="$router.back"
     @confirm="onSubmit"
   >
+    <template #before-content>
+      <dao-message
+        type="info"
+        class="mr-[20px] ml-[20px] mb-[10px]"
+        :content="t('views.FinetuneExperiment.resourceAllocationInfo')"
+      />
+    </template>
+
     <dao-form>
       <dao-form-group :title="$t('common.basicInfo')">
         <dao-form-item-validate
