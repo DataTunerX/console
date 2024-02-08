@@ -34,7 +34,6 @@
   "default": "默认",
   "stop": "停止",
   "run": "运行中",
-
   "selectSearchPlaceholder": "搜索",
   "succeed": "成功",
   "failed": "失败",
@@ -49,7 +48,8 @@
   "fetchFailed": "获取数据失败，原因：",
   "fetchNotFound": "请求资源不存在",
   "dataSynced": "数据同步中...",
-
   "log": "日志",
-  "prompt": "提示"
+  "prompt": "提示",
+  "unsupportedFileTypes": "不支持的文件类型",
+  "upload": "上传"
 }

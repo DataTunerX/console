@@ -7,6 +7,11 @@ const proxyConfig = {
   changeOrigin: true,
 };
 
+const uploadConfig = {
+  target: process.env.VUE_APP_UPLOAD_URL,
+  changeOrigin: true,
+};
+
 module.exports = defineConfig({
   transpileDependencies: true,
   productionSourceMap: false,
@@ -91,6 +96,7 @@ module.exports = defineConfig({
   devServer: {
     port: 3000,
     proxy: {
+      '^/apis/util.datatunerx.io/v1beta1/upload': uploadConfig,
       '^/apis': proxyConfig,
       '^/api': proxyConfig,
       '^/inference': proxyConfig,

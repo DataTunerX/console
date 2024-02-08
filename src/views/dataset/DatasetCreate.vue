@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { DaoSwitch, DaoSelect } from '@dao-style/core';
+import { DaoSwitch, DaoSelect, InputStatus } from '@dao-style/core';
 import camelCase from 'lodash/camelCase';
+import cloneDeep from 'lodash/cloneDeep';
 import { object, array, string } from 'yup';
 import {
   LicenseType,
@@ -10,6 +11,7 @@ import {
   Subset,
   taskCategories,
   datasetClient,
+  datasetUploadClient,
   SubTaskName,
 } from '@/api/dataset';
 import { Plugin, dataPluginClient } from '@/api/plugin';
@@ -17,6 +19,7 @@ import { useNamespaceStore } from '@/stores/namespace';
 import { nError, nSuccess } from '@/utils/useNoty';
 import { HttpStatusCode, KubernetesError } from '@/plugins/axios';
 import KeyValueForm from '@/components/KeyValueForm.vue';
+import UploadFile from '@/components/UploadFile.vue';
 import { type DatasetForRender, convertDatasetForPost } from '@/api/dataset-for-render';
 
 import { useDataset } from './composition/dataset';
@@ -29,6 +32,17 @@ const router = useRouter();
 const { query } = useRoute();
 const isUpdate = computed(() => !!query.name as boolean);
 const title = computed(() => (isUpdate.value ? t('views.Dataset.update') : t('views.Dataset.create')));
+
+interface UploadStatusInterface {
+  status: InputStatus
+  url: string
+}
+
+interface SubsetSplitsInterface {
+  train: UploadStatusInterface
+  validate: UploadStatusInterface
+  test: UploadStatusInterface
+}
 
 const state = reactive({
   plugins: [] as Plugin[],
@@ -161,6 +175,7 @@ const removeSubtask = (index: number) => removeFromSubtasks(index);
 const {
   remove: removeFromRules,
   push: pushToRules,
+  update: updateRules,
   fields: subsets,
   replace,
 } = useFieldArray<Subset>('spec.datasetMetadata.datasetInfo.subsets');
@@ -168,6 +183,8 @@ const handleAddRule = () => pushToRules({});
 const handleDeleteRule = (index: number) => removeFromRules(index);
 
 const { value: loadPlugin } = useField<boolean>('spec.datasetMetadata.plugin.loadPlugin');
+
+const uploadStatus = ref<SubsetSplitsInterface[]>([]);
 
 watch(
   () => formModel.spec.datasetMetadata.task?.name,
@@ -244,6 +261,79 @@ const onSubmit = handleSubmit(async (values) => {
     }
   }
 });
+
+const changeInputStatus = (idx: number, field: keyof SubsetSplitsInterface) => {
+  if (uploadStatus.value[idx]) {
+    uploadStatus.value[idx][field].status = 'default';
+  }
+};
+
+const uploadFile = async (file: File, idx: number, field: keyof SubsetSplitsInterface) => {
+  try {
+    const initStatus: SubsetSplitsInterface = {
+      test: {
+        status: uploadStatus.value[idx]?.test?.status || 'default',
+        url: uploadStatus.value[idx]?.test?.url || '',
+      },
+      train: {
+        status: uploadStatus.value[idx]?.train?.status || 'default',
+        url: uploadStatus.value[idx]?.train?.url || '',
+      },
+      validate: {
+        status: uploadStatus.value[idx]?.validate?.status || 'default',
+        url: uploadStatus.value[idx]?.validate?.url || '',
+      },
+    };
+
+    uploadStatus.value[idx] = initStatus;
+    uploadStatus.value[idx][field].status = 'loading';
+
+    const res = await datasetUploadClient.upload({ file });
+
+    if (res && res.status === 200) {
+      uploadStatus.value[idx][field].status = 'success';
+      uploadStatus.value[idx][field].url = res.data.url;
+
+      if (formModel.spec?.datasetMetadata?.datasetInfo) {
+        if (formModel.spec?.datasetMetadata?.datasetInfo?.subsets) {
+          if (formModel.spec?.datasetMetadata?.datasetInfo?.subsets[idx]) {
+            const subsetItemCopy = cloneDeep(formModel.spec?.datasetMetadata?.datasetInfo?.subsets[idx]) as Subset;
+
+            if (subsetItemCopy?.splits && subsetItemCopy?.splits[field]) {
+              subsetItemCopy.splits = {
+                ...subsetItemCopy.splits,
+                [field]: {
+                  file: res.data.url,
+                },
+              };
+            }
+            updateRules(idx, subsetItemCopy);
+          }
+        }
+      }
+    } else {
+      uploadStatus.value[idx][field].status = 'error';
+    }
+  } catch (error) {
+    uploadStatus.value[idx][field].status = 'error';
+    nError(
+      t('common.notyError', {
+        name: t('common.upload'),
+      }),
+      error,
+    );
+  }
+};
+
+const beforeUpload = async (files: File[], idx: number, field: keyof SubsetSplitsInterface) => {
+  const filesArrr = Array.from(files);
+
+  filesArrr.forEach(async (file) => {
+    await uploadFile(file, idx, field);
+  });
+
+  return true;
+};
 </script>
 
 <template>
@@ -442,7 +532,7 @@ const onSubmit = handleSubmit(async (values) => {
       </dao-form-item>
 
       <dao-form-item :label="$t('views.Dataset.datasetInformation')">
-        <div class="datatunerx-form-block">
+        <div class="datatunerx-form-block w-[80%]">
           <dao-form-item-validate
             :label="$t('views.Dataset.pluginConfiguration')"
             name="spec.datasetMetadata.plugin.loadPlugin"
@@ -487,7 +577,18 @@ const onSubmit = handleSubmit(async (values) => {
                 class: 'input-form-width',
                 disabled: loadPlugin,
               }"
-            />
+            >
+              <template #control-content="{value}">
+                <div class="w-full flex">
+                  <div class="w-[80%] pr-[10px]">
+                    <dao-input
+                      v-model="value.value"
+                      block
+                    />
+                  </div>
+                </div>
+              </template>
+            </dao-form-item-validate>
             <dao-form-item-validate
               :label="$t('views.Dataset.trainingDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.train.file`"
@@ -497,7 +598,36 @@ const onSubmit = handleSubmit(async (values) => {
                 disabled: loadPlugin,
                 placeholder: 's3://mybucket/myfile.txt'
               }"
-            />
+            >
+              <template #control-content="{value}">
+                <div class="w-full flex">
+                  <div class="w-[80%] pr-[10px]">
+                    <dao-input
+                      v-model="value.value"
+                      block
+                      :status="uploadStatus[index]?.train?.status || 'default'"
+                      @change="() => changeInputStatus(index, 'train')"
+                    />
+                  </div>
+                  <UploadFile
+                    file-list-type=".csv"
+                    :is-multiple="false"
+                    @before-upload="(files: File[]) => beforeUpload(files, index, 'train')"
+                  >
+                    <div class="h-full flex justify-center items-center text-[#3569dd] cursor-pointer">
+                      <dao-icon
+                        class="text-[16px] pl-[5px]"
+                        use-font
+                        name="icon-upload"
+                      />
+                      <span class="pl-[10px]">
+                        {{ t('common.upload') }}
+                      </span>
+                    </div>
+                  </UploadFile>
+                </div>
+              </template>
+            </dao-form-item-validate>
             <dao-form-item-validate
               :label="$t('views.Dataset.validationDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.validate.file`"
@@ -506,16 +636,74 @@ const onSubmit = handleSubmit(async (values) => {
                 class: 'input-form-width',
                 disabled: loadPlugin,
               }"
-            />
+            >
+              <template #control-content="{value}">
+                <div class="w-full flex">
+                  <div class="w-[80%] pr-[10px]">
+                    <dao-input
+                      v-model="value.value"
+                      block
+                      :status="uploadStatus[index]?.validate?.status || 'default'"
+                      @change="() => changeInputStatus(index, 'validate')"
+                    />
+                  </div>
+                  <UploadFile
+                    file-list-type=".csv"
+                    :is-multiple="false"
+                    @before-upload="(files: File[]) => beforeUpload(files, index, 'validate')"
+                  >
+                    <div class="h-full flex justify-center items-center text-[#3569dd] cursor-pointer">
+                      <dao-icon
+                        class="text-[16px] pl-[5px]"
+                        use-font
+                        name="icon-upload"
+                      />
+                      <span class="pl-[10px]">
+                        {{ t('common.upload') }}
+                      </span>
+                    </div>
+                  </UploadFile>
+                </div>
+              </template>
+            </dao-form-item-validate>
             <dao-form-item-validate
               :label="$t('views.Dataset.testingDataFile')"
               :name="`spec.datasetMetadata.datasetInfo.subsets[${index}].splits.test.file`"
               required
               :control-props="{
-                class: 'input-form-width',
+                class: 'w-full input-form-width w-[500px]',
                 disabled: loadPlugin,
               }"
-            />
+            >
+              <template #control-content="{value}">
+                <div class="w-full flex">
+                  <div class="w-[80%] pr-[10px]">
+                    <dao-input
+                      v-model="value.value"
+                      block
+                      :status="uploadStatus[index]?.test?.status || 'default'"
+                      @change="() => changeInputStatus(index, 'test')"
+                    />
+                  </div>
+                  <UploadFile
+                    file-list-type=".csv"
+                    :is-multiple="false"
+                    @before-upload="(files: File[]) => beforeUpload(files, index, 'test')"
+                  >
+                    <div class="h-full flex justify-center items-center text-[#3569dd] cursor-pointer">
+                      <dao-icon
+                        class="text-[16px] pl-[5px]"
+                        use-font
+                        name="icon-upload"
+                      />
+                      <span class="pl-[10px]">
+                        {{ t('common.upload') }}
+                      </span>
+                    </div>
+                  </UploadFile>
+                </div>
+              </template>
+            </dao-form-item-validate>
             <dao-icon
               v-if="canRemove"
               class="datatunerx-form-block__remove-btn"

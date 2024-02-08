@@ -34,7 +34,6 @@
   "default": "Default",
   "stop": "Stop",
   "run": "Running",
-
   "selectSearchPlaceholder": "Search",
   "succeed": "Succeed",
   "reason": "Reason",
@@ -48,7 +47,8 @@
   "fetchFailed": "Failed to fetch data, reason:",
   "fetchNotFound": "Requested resource not found",
   "dataSynced": "Data syncing...",
-
   "log": "Log",
-  "prompt": "Prompt"
+  "prompt": "Prompt",
+  "unsupportedFileTypes": "Unsupported File Types",
+  "upload": "Upload"
 }
