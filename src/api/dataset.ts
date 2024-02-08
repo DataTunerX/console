@@ -2,6 +2,7 @@
 import type { ObjectMeta, ListMeta } from 'kubernetes-types/meta/v1';
 
 import { K8sClient } from '@/plugins/axios/client';
+import { UploadClient } from '@/plugins/axios/upload';
 
 export const Theme = 'blue' as const;
 
@@ -303,6 +304,8 @@ export enum State {
 }
 
 const apiVersion = 'extension.datatunerx.io/v1beta1';
+const uploadApiVersion = 'util.datatunerx.io/v1beta1';
 const kind = 'Dataset';
 
 export const datasetClient = new K8sClient<Dataset>(apiVersion, kind);
+export const datasetUploadClient = new UploadClient(uploadApiVersion);
