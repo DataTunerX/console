@@ -1,9 +1,9 @@
 {
   "list": {
-    "header": "Inference Application",
+    "header": "Inference Service",
     "table": {
       "header": {
-        "name": "Inference Application Name",
+        "name": "Inference Service Name",
         "checkpoint": "Checkpoint",
         "llm": "LLM",
         "hyperparameter": "Hyperparameter",
@@ -11,7 +11,7 @@
       }
     },
     "compare": "Compare Inference",
-    "compareLimit": "You can only compare up to 3 inference applications at a time."
+    "compareLimit": "You can only compare up to 3 inference Services at a time."
   },
   "applicationStatus": {
     "NOT_STARTED": "Not Started",
@@ -33,26 +33,23 @@
     "FailedToUpdateServingPodLabel": "FailedToUpdateServingPodLabel",
     "FailedToUpdateService": "FailedToUpdateService"
   },
-  "delete":{
-    "header": "Delete Inference Application",
-    "content": "Are you sure you want to delete this inference application?"
+  "delete": {
+    "header": "Delete Inference Service",
+    "content": "Are you sure you want to delete this inference service?"
   },
-
-  "create":{
-    "header": "Create Inference Application",
+  "create": {
+    "header": "Create Inference Service",
     "name": "Name",
     "llmCheckpoint": "Model",
-    "createSuccess": "Inference application created successfully",
-    "createFailed": "Failed to create inference application"
+    "createSuccess": "Inference service created successfully",
+    "createFailed": "Failed to create inference service"
   },
-  
   "compare": {
     "header": "Multi-model Comparison",
     "elapsedTime": "Elapsed Time(s)",
     "tokensTotalQuantity": "Tokens Total Quantity",
     "perSecond": "tokens/s"
   },
-
   "examples": {
     "e1": {
       "label": "Generating a Code Snippet",
