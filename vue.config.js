@@ -96,7 +96,7 @@ module.exports = defineConfig({
   devServer: {
     port: 3000,
     proxy: {
-      '^/apis/util.datatunerx.io/v1beta1/upload': uploadConfig,
+      '^/inference/apis': uploadConfig,
       '^/apis': proxyConfig,
       '^/api': proxyConfig,
       '^/inference': proxyConfig,
