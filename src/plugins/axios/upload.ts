@@ -16,7 +16,7 @@ export class UploadClient {
   private httpClient: HttpClient = httpClient;
 
   constructor(private apiVersion: string) {
-    this.pathTemplate = `/apis/${apiVersion}/upload`;
+    this.pathTemplate = `/inference/apis/${apiVersion}/upload`;
   }
 
   private getPath(): string {
