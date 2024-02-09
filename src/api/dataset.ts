@@ -270,16 +270,16 @@ export interface SubTask {
 }
 
 export enum SubTaskName {
-  ClosedDomainQA = 'closed-domain-qa',
-  ExtractiveQA = 'extractive-qa',
+  ClosedDomainQa = 'closed-domain-qa',
+  ExtractiveQa = 'extractive-qa',
   LanguageModeling = 'language-modeling',
   MaskedLanguageModeling = 'masked-language-modeling',
-  MultiChoiceQA = 'multi-choice-qa',
+  MultiChoiceQa = 'multi-choice-qa',
   MultiClassClassification = 'multi-class-classification',
   MultiLabelClassification = 'multi-label-classification',
   NaturalLanguageInference = 'natural-language-inference',
   NewsArticlesSummarization = 'news-articles-summarization',
-  OpenDomainQA = 'open-domain-qa',
+  OpenDomainQa = 'open-domain-qa',
   SentimentClassification = 'sentiment-classification',
   TopicClassification = 'topic-classification',
 }
